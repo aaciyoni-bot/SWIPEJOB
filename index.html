@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -5,18 +6,23 @@
     <title>GOOJOB - מערכת המגייסים החכמה</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
     
     <style>
         body {
             font-family: 'Assistant', sans-serif;
-            background-color: #f8fafc; /* רקע עדין ובהיר יותר למערכת עבודה */
+            background-color: #f8fafc;
             overflow: hidden;
             touch-action: none;
         }
 
+        /* פונט סריף מסורתי יותר לשמות בקורות חיים כדי לתת מראה של מסמך */
+        .cv-name {
+            font-family: 'Frank Ruhl Libre', serif;
+        }
+
         .app-container {
-            max-width: 480px; /* קצת יותר רחב לטובת הפתקית */
+            max-width: 480px;
             margin: 0 auto;
             height: 100vh;
             height: 100dvh;
@@ -27,25 +33,26 @@
             flex-direction: column;
         }
 
-        /* כרטיסיות ההחלקה */
         .cards-container {
             flex-grow: 1;
             position: relative;
             overflow: hidden;
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f1f5f9;
+            background-color: #e2e8f0; /* רקע קצת יותר כהה כדי שהדף הלבן יבלוט */
         }
 
+        /* עיצוב כרטיסיית קורות החיים (מסמך) */
         .swipe-card {
             position: absolute;
-            width: calc(100% - 2rem);
+            width: calc(100% - 3rem);
             height: calc(100% - 2rem);
             background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem; /* פינות פחות עגולות למראה של דף */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #cbd5e1;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -59,160 +66,79 @@
             cursor: grabbing;
         }
 
-        .card-image-placeholder {
-            height: 45%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 4rem;
-        }
-
-        .job-gradient {
-            background: linear-gradient(135deg, #13547a 0%, #80d0c7 100%);
-        }
-
         .card-content {
             padding: 1.5rem;
-            height: 55%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             background: white;
             position: relative;
         }
 
-        /* תגיות */
         .skill-tag {
             background-color: #f1f5f9;
             color: #475569;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
             margin-left: 0.4rem;
             margin-bottom: 0.4rem;
             display: inline-block;
             border: 1px solid #e2e8f0;
         }
 
-        .trending-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: #ef4444;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
-            animation: pulse-red 2s infinite;
-            z-index: 5;
-        }
-
-        @keyframes pulse-red {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6); }
-        }
-
         /* אנימציות העלמה */
-        .swipe-left-anim { transform: translateX(-150vw) rotate(-30deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
-        .swipe-right-anim { transform: translateX(150vw) rotate(30deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .swipe-left-anim { transform: translateX(-150vw) rotate(-20deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .swipe-right-anim { transform: translateX(150vw) rotate(20deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
         .swipe-super-anim { transform: translateY(-150vh) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
 
-        /* סטאמפים */
+        /* סטאמפים (חותמות) */
         .stamp {
             position: absolute;
-            top: 20px;
+            top: 40px;
             padding: 0.5rem 1rem;
             border: 4px solid;
-            border-radius: 10px;
-            font-size: 2rem;
-            font-weight: bold;
+            border-radius: 0.5rem;
+            font-size: 2.5rem;
+            font-weight: 900;
             text-transform: uppercase;
             opacity: 0;
             z-index: 10;
+            pointer-events: none;
         }
         .stamp-nope { right: 20px; color: #ef4444; border-color: #ef4444; transform: rotate(15deg); }
         .stamp-like { left: 20px; color: #10b981; border-color: #10b981; transform: rotate(-15deg); }
-        .stamp-super { bottom: 40px; left: 50%; transform: translateX(-50%) scale(1.5); color: #3b82f6; border-color: #3b82f6; }
+        .stamp-super { bottom: 60px; left: 50%; transform: translateX(-50%) scale(1.5); color: #3b82f6; border-color: #3b82f6; }
 
-        /* AI והתאמה */
         .ai-badge {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: white;
+            background: #f0fdf4;
+            color: #059669;
             padding: 0.15rem 0.5rem;
-            border-radius: 9999px;
+            border-radius: 0.25rem;
             font-size: 0.7rem;
             font-weight: bold;
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
-        }
-        .ai-highlight-text {
-            background-color: #f0fdf4;
-            border-right: 3px solid #10b981;
-            padding: 0.4rem;
-            margin: 0.4rem 0;
-            border-radius: 0.5rem;
-            font-size: 0.8rem;
-            color: #065f46;
+            border: 1px solid #bbf7d0;
         }
 
-        /* מודאלים מיוחדים */
-        #match-modal {
-            background-color: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(8px);
+        /* מודאל הראיון (החליף את הפתקית) */
+        #interview-modal {
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
         }
         
-        /* PhoneScreen AI Sticky Note Modal */
-        #sticky-note-modal {
-            background-color: rgba(0,0,0,0.6);
-            backdrop-filter: blur(3px);
-        }
-        
-        .sticky-paper {
-            background-color: #fffdf0;
-            border: 1px solid #e8e4c9;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .sticky-holes {
-            height: 16px;
-            background-color: #e8e4c9;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 12px;
-            flex-direction: row-reverse;
-        }
-        .sticky-hole {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: white;
-            opacity: 0.5;
-        }
-
-        .pulse-heart { animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        
-        /* שיפור גלילה פנימית בפתקית למובייל */
         .modal-scrollable-content {
-            max-height: calc(100vh - 80px);
+            max-height: calc(100vh - 40px);
             overflow-y: auto;
         }
 
-        /* --- הגדרות מיוחדות להדפסת הפתקית נטו --- */
+        /* --- הגדרות הדפסה --- */
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #sticky-note-modal, #sticky-note-modal * {
-                visibility: visible;
-            }
-            #sticky-note-modal {
+            body * { visibility: hidden; }
+            #interview-modal, #interview-modal * { visibility: visible; }
+            #interview-modal {
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -221,16 +147,14 @@
                 background: transparent !important;
                 padding: 0 !important;
             }
-            .sticky-paper {
+            .print-container {
                 box-shadow: none !important;
-                border: 1px solid #ccc !important;
+                border: none !important;
                 width: 100% !important;
                 max-width: 100% !important;
                 margin: 0 !important;
             }
-            .no-print {
-                display: none !important;
-            }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -238,36 +162,34 @@
 
 <div class="app-container" id="app">
 
-    <!-- מסך פתיחה למגייס (Onboarding) -->
+    <!-- מסך פתיחה למגייס -->
     <div id="welcome-screen" class="absolute inset-0 flex flex-col justify-center items-center bg-white z-50 p-6 text-center overflow-y-auto">
-        <div class="w-24 h-24 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-2xl flex justify-center items-center mb-6 shadow-lg flex-shrink-0">
-            <i class="fa-solid fa-layer-group text-white text-5xl"></i>
+        <div class="w-24 h-24 bg-slate-800 rounded-2xl flex justify-center items-center mb-6 shadow-lg flex-shrink-0">
+            <i class="fa-solid fa-file-lines text-white text-5xl"></i>
         </div>
         <h1 class="text-4xl font-extrabold text-slate-800 mb-2">GOOJOB</h1>
-        <p class="text-slate-500 mb-8 text-lg font-medium">סביבת עבודה למגייסים.</p>
+        <p class="text-slate-500 mb-8 text-lg font-medium">מערכת סינון קו"ח חכמה.</p>
 
         <!-- שלב 1: הגדרת משימת הסינון -->
         <div id="role-selection" class="w-full max-w-sm">
-            <h2 class="text-xl font-bold text-slate-700 mb-6 border-b pb-2">מה המשימה שלך עכשיו?</h2>
-            
-            <button onclick="showRegistration('employer')" class="w-full bg-white border-2 border-emerald-600 hover:bg-emerald-50 text-emerald-700 font-bold py-4 px-6 rounded-2xl mb-4 transition-all active:scale-95 text-lg flex items-center justify-start gap-4 shadow-sm text-right">
-                <div class="bg-emerald-100 p-3 rounded-full"><i class="fa-solid fa-users text-emerald-600"></i></div>
+            <button onclick="showRegistration('employer')" class="w-full bg-white border-2 border-slate-300 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-bold py-4 px-6 rounded-xl mb-4 transition-all text-lg flex items-center justify-start gap-4 shadow-sm text-right">
+                <div class="bg-emerald-100 p-3 rounded-full"><i class="fa-solid fa-user-tie text-emerald-600"></i></div>
                 <div>
-                    <div class="leading-tight">אני מסנן מועמדים</div>
-                    <div class="text-sm font-normal text-emerald-600/70">יש לי משרה, מחפש אנשים</div>
+                    <div class="leading-tight">אני מסנן קורות חיים</div>
+                    <div class="text-sm font-normal text-slate-500">מחפש מועמדים למשרה פתוחה</div>
                 </div>
             </button>
             
-            <button onclick="showRegistration('candidate')" class="w-full bg-white border-2 border-blue-600 hover:bg-blue-50 text-blue-700 font-bold py-4 px-6 rounded-2xl mb-4 transition-all active:scale-95 text-lg flex items-center justify-start gap-4 shadow-sm text-right">
+            <button onclick="showRegistration('candidate')" class="w-full bg-white border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 text-slate-700 font-bold py-4 px-6 rounded-xl mb-4 transition-all text-lg flex items-center justify-start gap-4 shadow-sm text-right">
                 <div class="bg-blue-100 p-3 rounded-full"><i class="fa-solid fa-briefcase text-blue-600"></i></div>
                 <div>
                     <div class="leading-tight">אני מסנן משרות</div>
-                    <div class="text-sm font-normal text-blue-600/70">יש לי מועמד פגז, מחפש משרה</div>
+                    <div class="text-sm font-normal text-slate-500">מחפש משרה עבור מועמד שלי</div>
                 </div>
             </button>
         </div>
 
-        <!-- שלב 2: הגדרות (28 קטגוריות!) -->
+        <!-- שלב 2: הגדרות -->
         <div id="registration-form" class="hidden w-full max-w-sm flex-col items-center text-right">
             <h2 class="text-xl font-bold text-slate-800 mb-6 w-full text-center border-b pb-2" id="setup-title">הגדרת סשן סינון</h2>
             
@@ -277,31 +199,31 @@
             </div>
 
             <div class="w-full mb-6">
-                <label class="block text-sm font-semibold text-slate-700 mb-1">קטגוריה רלוונטית למאגר</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">קטגוריה במאגר</label>
                 <select id="user-category-input" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50 max-h-48 overflow-y-auto font-medium">
-                    <!-- ימולא דינמית ב-JS עם כל 28 הקטגוריות -->
+                    <!-- Options populated by JS -->
                 </select>
             </div>
 
-            <button onclick="completeRegistration()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-transform transform active:scale-95 text-lg flex items-center justify-center gap-3">
+            <button onclick="completeRegistration()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform transform active:scale-95 text-lg flex items-center justify-center gap-3">
                 <i class="fa-solid fa-play"></i>
-                התחל סריקה במאגר
+                התחל סריקת קורות חיים
             </button>
             <button onclick="goBackToRoles()" class="mt-4 text-slate-500 hover:text-slate-700 text-sm w-full text-center font-medium">חזרה לאחור</button>
         </div>
     </div>
 
     <!-- מסך ראשי - זירת ההחלקה למגייס -->
-    <div id="main-screen" class="hidden flex-col h-full w-full bg-slate-100">
+    <div id="main-screen" class="hidden flex-col h-full w-full">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-slate-200 shadow-sm z-10 bg-white">
-            <div class="flex gap-3">
+            <div class="flex gap-4">
                 <button onclick="resetApp()" class="text-slate-400 hover:text-slate-600 transition-colors" title="סיום סשן">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
-                <button onclick="openArchive()" class="text-emerald-600 hover:text-emerald-700 transition-colors relative" title="ארכיון פתקיות">
+                <button onclick="openArchive()" class="text-emerald-600 hover:text-emerald-700 transition-colors relative" title="ארכיון ראיונות">
                     <i class="fa-solid fa-folder-open text-xl"></i>
-                    <span id="archive-badge" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold hidden">0</span>
+                    <span id="archive-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold hidden">0</span>
                 </button>
             </div>
 
@@ -309,178 +231,123 @@
                 <h1 class="text-lg font-black text-slate-800 flex items-center gap-1 tracking-tight">
                     GOOJOB
                 </h1>
-                <span class="text-[10px] bg-slate-100 text-slate-500 px-2 rounded-full font-bold">RECRUITER MODE</span>
             </div>
 
             <div class="text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-full shadow-sm border border-emerald-100 flex items-center gap-2">
-                <span id="match-count">0</span> <i class="fa-solid fa-handshake"></i>
+                <span id="match-count">0</span> <i class="fa-solid fa-user-check"></i>
             </div>
         </div>
 
-        <!-- מיני-הדר סשן -->
-        <div class="bg-emerald-600 text-white text-xs px-4 py-2 flex justify-between items-center shadow-inner">
-            <span class="font-medium opacity-90">סשן פעיל:</span>
-            <span id="session-target-name" class="font-bold truncate max-w-[200px]">טוען...</span>
+        <div class="bg-slate-800 text-white text-xs px-4 py-2 flex justify-between items-center">
+            <span class="font-medium opacity-70">מסנן עבור:</span>
+            <span id="session-target-name" class="font-bold truncate max-w-[200px]">...</span>
         </div>
 
         <!-- Cards Area -->
         <div class="cards-container" id="cards-container">
-            <div id="no-more-cards" class="hidden text-center text-slate-500">
+            <div id="no-more-cards" class="hidden text-center text-slate-500 w-full">
                 <div class="w-20 h-20 bg-white shadow-sm rounded-full flex justify-center items-center mx-auto mb-4 border border-slate-200">
                     <i class="fa-solid fa-inbox text-3xl text-slate-400"></i>
                 </div>
                 <h2 class="text-xl font-bold mb-2 text-slate-700">המאגר ריק כרגע</h2>
                 <p class="text-sm">סיימת לסרוק את כל הרשומות בקטגוריה זו.</p>
-                <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-bold transition-colors">רענן נתונים</button>
+                <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-slate-800 text-white rounded-full font-bold">רענן נתונים</button>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-center items-center gap-4 p-4 pb-6 bg-white z-10 border-t border-slate-200">
-            <button onclick="rewindCard()" class="w-12 h-12 bg-white rounded-full shadow border border-slate-100 flex justify-center items-center text-slate-400 text-xl hover:bg-slate-50 transition-all">
+        <div class="flex justify-center items-center gap-6 p-4 pb-6 bg-white z-10 border-t border-slate-200">
+            <button onclick="rewindCard()" class="w-12 h-12 bg-white rounded-full shadow border border-slate-200 flex justify-center items-center text-slate-400 text-xl hover:bg-slate-50 transition-all">
                 <i class="fa-solid fa-rotate-left"></i>
             </button>
-            <button onclick="handleButtonAction('left')" class="w-16 h-16 bg-white rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-100 flex justify-center items-center text-red-500 text-2xl hover:bg-red-50 transition-all active:scale-95">
+            <button onclick="handleButtonAction('left')" class="w-16 h-16 bg-white rounded-full shadow-md border border-slate-100 flex justify-center items-center text-red-500 text-2xl hover:bg-red-50 transition-all active:scale-95">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <button onclick="handleButtonAction('super')" class="w-12 h-12 bg-white rounded-full shadow border border-slate-100 flex justify-center items-center text-blue-500 text-xl hover:bg-blue-50 transition-all" title="שמור למועדפים">
-                <i class="fa-solid fa-bookmark"></i>
-            </button>
-            <button onclick="handleButtonAction('right')" class="w-16 h-16 bg-white rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-100 flex justify-center items-center text-emerald-500 text-2xl hover:bg-emerald-50 transition-all active:scale-95">
+            <button onclick="handleButtonAction('right')" class="w-16 h-16 bg-emerald-600 rounded-full shadow-md flex justify-center items-center text-white text-2xl hover:bg-emerald-700 transition-all active:scale-95">
                 <i class="fa-solid fa-check"></i>
             </button>
         </div>
     </div>
 
-    <!-- Match Modal (B2B Version) -->
-    <div id="match-modal" class="hidden absolute inset-0 z-[100] flex flex-col justify-center items-center text-center px-4">
-        <div class="bg-emerald-500/20 p-6 rounded-full mb-6">
-            <i class="fa-solid fa-check-double text-emerald-400 text-6xl pulse-heart"></i>
-        </div>
-        <h1 class="text-4xl font-black text-white mb-2">התאמה אושרה!</h1>
-        <p class="text-slate-300 text-lg mb-10 max-w-xs" id="match-text">המועמד נשמר בהצלחה למשרה המבוקשת.</p>
-        
-        <div class="w-full max-w-xs space-y-4">
-            <button onclick="openStickyNote()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-3 px-6 rounded-xl text-lg shadow-lg flex items-center justify-center gap-2 transition-colors">
-                <i class="fa-solid fa-magic"></i> הפק פתקית PhoneScreen
-            </button>
-            <button onclick="closeMatch()" class="w-full bg-transparent hover:bg-slate-800 border-2 border-slate-600 text-slate-300 font-bold py-3 px-6 rounded-xl text-lg transition-colors">
-                המשך בסינון
-            </button>
-        </div>
-    </div>
-
-    <!-- PhoneScreen AI Sticky Note Modal -->
-    <div id="sticky-note-modal" class="hidden absolute inset-0 z-[110] flex-col items-center justify-center p-4">
-        <div class="w-full max-w-lg sticky-paper rounded-xl overflow-hidden flex flex-col modal-scrollable-content relative animate-[fly-up_0.3s_ease-out_forwards]">
+    <!-- מסך ראיון / תיק מועמד (נפתח ישירות אחרי החלקה ימינה) -->
+    <div id="interview-modal" class="hidden absolute inset-0 z-[110] flex-col items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl flex flex-col modal-scrollable-content print-container relative animate-[fly-up_0.2s_ease-out_forwards]">
             
-            <!-- חורי דפדפת -->
-            <div class="sticky-holes flex-shrink-0">
-                <div class="sticky-hole"></div><div class="sticky-hole"></div><div class="sticky-hole"></div><div class="sticky-hole"></div><div class="sticky-hole"></div><div class="sticky-hole"></div>
+            <!-- Header פעולה מיידית -->
+            <div class="bg-slate-800 text-white p-6 rounded-t-xl text-center relative">
+                <button onclick="closeInterviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl no-print"><i class="fa-solid fa-xmark"></i></button>
+                
+                <h2 id="interview-name" class="text-2xl font-bold cv-name mb-1">שם המועמד</h2>
+                <p id="interview-title" class="text-emerald-400 text-sm font-medium mb-4">תפקיד נוכחי</p>
+                
+                <!-- מספר טלפון ענק לראיון מיידי -->
+                <div class="bg-white/10 rounded-lg p-3 inline-block w-full max-w-xs mx-auto border border-white/20 mb-4">
+                    <div class="text-xs text-slate-300 mb-1 uppercase tracking-widest font-bold">התקשר עכשיו</div>
+                    <div id="interview-phone" class="text-4xl font-black text-white tracking-wider dir-ltr inline-block">050-0000000</div>
+                </div>
+
+                <div class="flex justify-center gap-3 no-print">
+                    <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2" onclick="showToast('מחייג...', 'success')">
+                        <i class="fa-solid fa-phone"></i> חיוג
+                    </button>
+                    <button class="bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2" onclick="showToast('פותח וואטסאפ...', 'success')">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> הודעה
+                    </button>
+                </div>
             </div>
 
-            <!-- תוכן הפתקית -->
-            <div class="p-6 md:p-8 flex-grow text-right" dir="rtl">
+            <!-- תוכן התיק (קו"ח + שאלות) -->
+            <div class="p-6 text-right" dir="rtl">
                 
-                <!-- כותרת ותגיות -->
-                <div class="flex justify-between items-start mb-5 border-b border-[#e8e4c9] pb-4">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-file-signature text-emerald-700"></i>
-                            פתקית ראיון (AI)
-                        </h2>
-                        <p class="text-slate-600 mt-1 font-medium text-sm md:text-base">
-                            <span id="sticky-subject-label">מועמד:</span> <span id="sticky-subject-name" class="font-bold text-slate-800">שם</span>
-                        </p>
-                        <p class="text-slate-500 text-xs mt-0.5">מיועד ל: <span id="sticky-target-name">משרה</span></p>
-                    </div>
-                    <div class="flex flex-col gap-1 items-end">
-                        <div class="bg-amber-100 text-amber-800 text-[10px] md:text-xs px-2 py-1 rounded-md font-bold flex items-center gap-1 border border-amber-200">
-                            <i class="fa-solid fa-robot"></i> מופק ע"י AI
-                        </div>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs font-bold"><i class="fa-solid fa-robot"></i> AI התאמה: <span id="interview-score">90</span>%</span>
+                    <span class="text-xs text-slate-500">עבור: <span id="interview-target-name" class="font-bold">משרה</span></span>
+                </div>
+
+                <!-- תקציר קו"ח -->
+                <div class="mb-6">
+                    <h3 class="font-bold text-slate-800 border-b-2 border-slate-200 pb-1 mb-3 text-sm uppercase">תקציר קורות חיים</h3>
+                    <div class="space-y-3 text-sm text-slate-600">
+                        <div class="flex gap-2 items-start"><i class="fa-solid fa-briefcase text-slate-400 mt-1"></i> <span id="interview-experience">ניסיון</span></div>
+                        <div class="flex gap-2 items-start"><i class="fa-solid fa-graduation-cap text-slate-400 mt-1"></i> <span id="interview-education">השכלה</span></div>
+                        <div class="flex gap-2 items-start"><i class="fa-solid fa-money-bill-wave text-slate-400 mt-1"></i> <span id="interview-salary">שכר</span></div>
+                        <div class="mt-2 text-slate-700 bg-slate-50 p-3 rounded border border-slate-100" id="interview-about"></div>
+                        <div class="mt-2" id="interview-skills"></div>
                     </div>
                 </div>
 
-                <div class="space-y-5 text-slate-800">
-                    
-                    <!-- תקציר -->
-                    <section>
-                        <h3 class="font-bold text-base md:text-lg mb-2 text-emerald-900 border-b-2 border-emerald-200 inline-block">תקציר רקע:</h3>
-                        <p class="leading-relaxed bg-white/60 p-3 rounded border border-white text-sm" id="sticky-summary">
-                            מבוסס על הנתונים, זהו פרופיל חזק מאוד.
-                        </p>
-                    </section>
+                <!-- שאלות מומלצות לראיון -->
+                <div class="mb-2">
+                    <h3 class="font-bold text-emerald-700 border-b-2 border-emerald-100 pb-1 mb-3 text-sm uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question"></i> מדריך לראיון הטלפוני
+                    </h3>
+                    <ul class="list-none space-y-3 text-sm text-slate-700" id="interview-questions">
+                        <!-- Questions injected here -->
+                    </ul>
+                </div>
 
-                    <div class="grid grid-cols-1 gap-5">
-                        <!-- נקודות לבדיקה -->
-                        <section class="bg-white/60 p-4 rounded-lg border border-[#e8e4c9]">
-                            <h3 class="font-bold text-base mb-2 text-emerald-900 flex items-center gap-2">
-                                <i class="fa-solid fa-phone-volume text-amber-600"></i> שאלות מומלצות לטלפון:
-                            </h3>
-                            <ul class="list-disc list-inside space-y-1.5 text-sm marker:text-emerald-600" id="sticky-questions">
-                                <li>זמינות לתחילת עבודה?</li>
-                                <li>ציפיות שכר?</li>
-                            </ul>
-                        </section>
-
-                        <!-- דגלים ירוקים ואדומים -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <section class="bg-emerald-50/80 p-3 rounded-lg border border-emerald-200">
-                                <h3 class="font-bold text-emerald-800 flex items-center gap-2 mb-2 text-sm">
-                                    <i class="fa-solid fa-thumbs-up"></i> חוזקות בולטות:
-                                </h3>
-                                <ul class="list-disc list-inside space-y-1 text-xs text-emerald-900" id="sticky-green-flags">
-                                    <li>ניסיון מתאים</li>
-                                </ul>
-                            </section>
-                            
-                            <section class="bg-rose-50/80 p-3 rounded-lg border border-rose-200">
-                                <h3 class="font-bold text-rose-800 flex items-center gap-2 mb-2 text-sm">
-                                    <i class="fa-solid fa-circle-exclamation"></i> נקודות לבירור:
-                                </h3>
-                                <ul class="list-disc list-inside space-y-1 text-xs text-rose-900" id="sticky-red-flags">
-                                    <li>פערים בקורות החיים</li>
-                                </ul>
-                            </section>
-                        </div>
-                    </div>
-
-                    <!-- פעולות -->
-                    <div class="border-t border-[#e8e4c9] pt-4 mt-2 no-print">
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="saveAndCloseStickyNote()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors text-center shadow-md">
-                                <i class="fa-solid fa-folder-arrow-down ml-1"></i> שמור לארכיון והמשך
-                            </button>
-                            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors text-center shadow-md flex items-center gap-2">
-                                <i class="fa-solid fa-print"></i> הדפס
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap gap-2 mt-2">
-                            <button class="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-2 py-2 rounded-lg text-xs font-medium transition-colors border border-emerald-200" onclick="showToast('הקישור הועתק ללוח', 'success')">
-                                <i class="fa-regular fa-copy"></i> העתק פתקית
-                            </button>
-                            <button class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-2 rounded-lg text-xs font-medium transition-colors border border-blue-200" onclick="showToast('נשלח וואטסאפ לזימון', 'success')">
-                                <i class="fa-brands fa-whatsapp"></i> שלח זימון
-                            </button>
-                        </div>
-                    </div>
-
+                <!-- פעולות -->
+                <div class="border-t border-slate-200 pt-4 mt-6 no-print flex flex-col gap-2">
+                    <button onclick="saveAndCloseInterview()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-lg text-sm font-bold border border-slate-300 flex justify-center items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-folder-plus text-emerald-600"></i> שמור לארכיון והמשך לסרוק
+                    </button>
+                    <button onclick="window.print()" class="w-full text-slate-500 hover:text-slate-800 py-2 text-sm font-medium underline">
+                        הדפס תיק מועמד
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- מודאל ארכיון הפתקיות -->
+    <!-- מודאל ארכיון -->
     <div id="archive-modal" class="hidden absolute inset-0 z-[120] bg-slate-100 flex-col overflow-y-auto">
         <div class="p-4 bg-white shadow-sm flex justify-between items-center sticky top-0 z-10">
             <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-folder-open text-emerald-600"></i> ארכיון פתקיות
+                <i class="fa-solid fa-folder-open text-emerald-600"></i> ארכיון התאמות
             </h2>
             <button onclick="closeArchive()" class="text-slate-400 hover:text-slate-600 text-2xl"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="p-4 space-y-3" id="archive-list">
-            <!-- רשימת הפתקיות תרונדר כאן דינמית -->
-        </div>
+        <div class="p-4 space-y-3" id="archive-list"></div>
     </div>
 
     <!-- Toast Notification -->
@@ -492,56 +359,29 @@
 </div>
 
 <script>
-    // --- נתונים: 28 קטגוריות מקצועיות ---
+    // --- נתונים גנריים ---
     const categoriesData = {
-        'tech': { title: 'הייטק ופיתוח תוכנה', jobs: ['מפתח/ת Full Stack', 'מדען/ית נתונים', 'איש/אשת DevOps', 'מעצב/ת UX/UI'], skills: ['React', 'Node.js', 'Python', 'AWS'] },
-        'logistics': { title: 'לוגיסטיקה ורכש', jobs: ['מנהל/ת מחסן', 'מנהל/ת תפעול', 'קניין/ית רכש', 'מנהל/ת שרשרת אספקה'], skills: ['ניהול מלאי', 'ERP', 'סחר בינלאומי', 'תכנון רכש'] },
-        'marketing': { title: 'שיווק ודיגיטל', jobs: ['מנהל/ת קמפיינים', 'מומחה/ית SEO', 'מנהל/ת סושיאל', 'קופירייטר/ית'], skills: ['PPC', 'Google Analytics', 'ניהול תקציב', 'Meta Ads'] },
+        'tech': { title: 'הייטק ופיתוח תוכנה', jobs: ['מפתח/ת Full Stack', 'מדען/ית נתונים', 'איש/אשת DevOps', 'מעצב/ת UX/UI'], skills: ['React', 'Node.js', 'Python', 'AWS', 'SQL', 'Docker'] },
+        'logistics': { title: 'לוגיסטיקה ורכש', jobs: ['מנהל/ת מחסן', 'מנהל/ת תפעול', 'קניין/ית רכש', 'מנהל/ת שרשרת אספקה'], skills: ['ניהול מלאי', 'ERP', 'סחר בינלאומי', 'תכנון רכש', 'Priority'] },
+        'marketing': { title: 'שיווק ודיגיטל', jobs: ['מנהל/ת קמפיינים', 'מומחה/ית SEO', 'מנהל/ת סושיאל', 'קופירייטר/ית'], skills: ['PPC', 'Google Analytics', 'ניהול תקציב', 'Meta Ads', 'HubSpot'] },
         'finance': { title: 'כספים וראיית חשבון', jobs: ['רואה/ת חשבון', 'כלכלן/ית', 'חשב/ת שכר', 'מנהל/ת כספים'], skills: ['אקסל מתקדם', 'הנהלת חשבונות', 'חשבות', 'ניתוח דוחות'] },
-        'hr': { title: 'משאבי אנוש', jobs: ['מנהל/ת HR', 'רכז/ת גיוס', 'מנהל/ת רווחה', 'HRBP'], skills: ['גיוס והשמה', 'דיני עבודה', 'שימור עובדים', 'ראיונות עומק'] },
-        'design': { title: 'עיצוב ואמנות', jobs: ['מעצב/ת גרפי', 'ארט דירקטור', 'אנימטור/ית', 'מעצב/ת תעשייתי'], skills: ['Photoshop', 'Illustrator', 'Figma', 'קריאייטיב'] },
-        'education': { title: 'חינוך והדרכה', jobs: ['מורה', 'מנהל/ת הדרכה', 'גנן/ת', 'מפתח/ת למידה'], skills: ['הוראה', 'פיתוח מערכי שיעור', 'עמידה מול קהל', 'הדרכה טכנולוגית'] },
-        'healthcare': { title: 'רפואה ובריאות', jobs: ['אח/ות מוסמך/ת', 'רופא/ה', 'טכנאי/ת רנטגן', 'מנהל/ת מרפאה'], skills: ['החייאה', 'רפואת חירום', 'טיפול נמרץ', 'ניהול צוות רפואי'] },
-        'law': { title: 'משפטים ועריכת דין', jobs: ['עורך/ת דין', 'יועץ/ת משפטי', 'מתמחה', 'מנהל/ת חוזים'], skills: ['ליטיגציה', 'דיני תאגידים', 'ניסוח חוזים', 'דיני עבודה'] },
         'sales': { title: 'מכירות', jobs: ['מנהל/ת מכירות', 'איש/אשת מכירות שטח', 'SDR', 'מנהל/ת תיקי לקוחות'], skills: ['B2B', 'ניהול משא ומתן', 'Salesforce', 'שימור לקוחות'] },
-        'customer_service': { title: 'שירות לקוחות', jobs: ['נציג/ת שירות', 'מנהל/ת מוקד', 'אחראי/ת משמרת', 'מומחה/ית הצלחת לקוח (CSM)'], skills: ['שירותיות', 'פתרון בעיות', 'CRM', 'עבודה תחת לחץ'] },
-        'admin': { title: 'אדמיניסטרציה ומזכירות', jobs: ['מזכיר/ה', 'מנהל/ת משרד', 'עוזר/ת אישי/ת (PA)', 'פקיד/ת קבלה'], skills: ['ארגון וסדר', 'אופיס', 'ניהול יומנים', 'אנגלית ברמה גבוהה'] },
-        'engineering': { title: 'הנדסה (אזרחית/מכונות)', jobs: ['מהנדס/ת אזרחי', 'מהנדס/ת מכונות', 'שרטט/ת', 'מנהל/ת פרויקטים הנדסיים'], skills: ['AutoCAD', 'תכנון קונסטרוקציות', 'ניהול פרויקטים', 'SolidWorks'] },
-        'food': { title: 'מסעדנות ומזון', jobs: ['שף/ית', 'טבח/ית', 'מנהל/ת מסעדה', 'ברמן/ית'], skills: ['ניהול מטבח', 'קולינריה', 'תברואה', 'שירות'] },
-        'tourism': { title: 'תיירות ומלונאות', jobs: ['סוכן/ת נסיעות', 'מנהל/ת קבלה', 'מדריך/ת טיולים', 'מנהל/ת אירועים (מלון)'], skills: ['Amadeus', 'שפות זרות', 'שירות VIP', 'אופרציה'] },
-        'security': { title: 'אבטחה ושמירה', jobs: ['מאבטח/ת', 'מנהל/ת אבטחה', 'סייר/ת', 'קצין/ת בטחון'], skills: ['נשק אירגוני', 'קרב מגע', 'עבר ללא דופי', 'רישיון נשק'] },
-        'media': { title: 'תקשורת ועיתונאות', jobs: ['עיתונאי/ת', 'עורך/ת תוכן', 'כתב/ת שטח', 'מפיק/ה'], skills: ['כתיבה יוצרת', 'תחקיר', 'עריכת וידאו', 'קריינות'] },
-        'agriculture': { title: 'חקלאות וסביבה', jobs: ['אגרונום/ית', 'מנהל/ת משק', 'פקח/ית סביבה', 'עובד/ת חקלאות'], skills: ['גידולי שדה', 'השקיה', 'איכות הסביבה', 'הדברה'] },
-        'transport': { title: 'תחבורה ונהיגה', jobs: ['נהג/ת משאית', 'נהג/ת אוטובוס', 'מנהל/ת צי רכב', 'מלגזן/ית'], skills: ['רישיון ג', 'רישיון ציבורי', 'ניווט', 'הפצה'] },
-        'therapy': { title: 'טיפול ועבודה סוציאלית', jobs: ['עובד/ת סוציאלי', 'פסיכולוג/ית', 'מטפל/ת באמנות', 'קלינאי/ת תקשורת'], skills: ['אמפתיה', 'טיפול פרטני', 'הנחיית קבוצות', 'אבחון'] },
-        'real_estate': { title: 'נדל"ן', jobs: ['סוכן/ת נדל"ן', 'שמאי/ת מקרקעין', 'יזם/ית', 'מנהל/ת נכסים'], skills: ['מכירות', 'רישיון תיווך', 'הערכת שווי', 'יזמות'] },
-        'science': { title: 'מדע ומחקר', jobs: ['חוקר/ת', 'ביולוג/ית', 'לבורנט/ית', 'כימאי/ת'], skills: ['עבודת מעבדה', 'ניתוח סטטיסטי', 'כתיבה מדעית', 'מחקר קליני'] },
-        'retail': { title: 'קמעונאות וחנויות', jobs: ['מנהל/ת חנות', 'זכיין/ית', 'מוכרן/ית', 'קניין/ית אופנה'], skills: ['מיקרוס', 'ניהול צוות', 'מיצוב (VM)', 'מכירות פרונטליות'] },
-        'sports': { title: 'כושר וספורט', jobs: ['מאמן/ת כושר', 'מורה לחינוך גופני', 'תזונאי/ת', 'מנהל/ת חדר כושר'], skills: ['הדרכת ספינינג', 'אנטומיה', 'בניית תוכניות אימון', 'תזונת ספורט'] },
-        'events': { title: 'הפקות ואירועים', jobs: ['מפיק/ת אירועים', 'מנהל/ת במה', 'תאורן/ית', 'סאונדמן/ית'], skills: ['לוגיסטיקה', 'עבודה תחת לחץ', 'סאונד ותאורה', 'הפקת כנסים'] },
-        'beauty': { title: 'יופי וטיפוח', jobs: ['קוסמטיקאית', 'ספר/ית', 'מאפר/ת', 'טכנאי/ת ציפורניים'], skills: ['אסתטיקה', 'שירות', 'עיצוב שיער', 'טיפולי פנים'] },
-        'vet': { title: 'וטרינריה ובעלי חיים', jobs: ['וטרינר/ית', 'אסיסטנט/ית', 'מאלף/ת כלבים', 'ספר/ית כלבים'], skills: ['רפואת בעלי חיים', 'גישה לבע"ח', 'אילוף חיובי', 'סיוע בניתוחים'] },
-        'construction': { title: 'בניין ושיפוצים', jobs: ['מנהל/ת עבודה', 'קבלן/ית', 'חשמלאי/ת', 'אינסטלטור/ית'], skills: ['קריאת תוכניות', 'רישיון חשמלאי', 'ניהול קבלני משנה', 'בטיחות בבנייה'] }
+        'admin': { title: 'אדמיניסטרציה', jobs: ['מזכיר/ה', 'מנהל/ת משרד', 'עוזר/ת אישי/ת (PA)'], skills: ['ארגון וסדר', 'אופיס', 'ניהול יומנים', 'אנגלית ברמה גבוהה'] }
     };
 
-    // אכלוס סלקט הקטגוריות
     const selectEl = document.getElementById('user-category-input');
     Object.entries(categoriesData).forEach(([key, val]) => {
         const opt = document.createElement('option');
-        opt.value = key;
-        opt.innerText = val.title;
-        selectEl.appendChild(opt);
+        opt.value = key; opt.innerText = val.title; selectEl.appendChild(opt);
     });
 
     const firstNames = ['רועי', 'נועה', 'דוד', 'שרה', 'עומר', 'יעל', 'אבי', 'מיכל', 'תומר', 'רוני'];
     const lastNames = ['כהן', 'לוי', 'מזרחי', 'פרץ', 'ביטון', 'דגן', 'שפירא', 'אברהם'];
-    const companies = ['TechHub', 'DataCore', 'GlobalLogistics', 'FastDeliver', 'AdMasters', 'SocialBoost'];
-    const availabilities = ['משרה מלאה', 'חצי משרה', 'משמרות', 'פרילנס'];
-    const degrees = ['תואר ראשון', 'הנדסאי', 'הכשרה מקצועית', 'ללא תואר (ניסיון מעשי)'];
-
+    const companies = ['TechHub', 'DataCore', 'GlobalLogistics', 'FastDeliver', 'AdMasters', 'StartUp IL'];
+    
     function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function generatePhone() { return `05${Math.floor(Math.random() * 5 + 0)}-${Math.floor(Math.random() * 9000000 + 1000000)}`; }
 
-    // יצירת מועמדים ומשרות מוקאפ
     let mockCandidates = [];
     let mockJobs = [];
 
@@ -551,128 +391,87 @@
             const sharedSkills = [...data.skills].sort(() => 0.5 - Math.random()).slice(0, 3);
             
             mockJobs.push({
-                id: `j_${cat}_${i}`,
-                type: 'job',
-                category: cat,
+                id: `j_${cat}_${i}`, type: 'job', category: cat,
                 company: getRandomItem(companies),
                 title: getRandomItem(data.jobs),
                 location: getRandomItem(['תל אביב', 'הרצליה', 'רמת גן', 'חיפה', 'היברידי', 'מרחוק']),
-                salary: `${Math.floor(Math.random() * 15 + 10)}K`,
-                availability: getRandomItem(availabilities),
+                salary: `${Math.floor(Math.random() * 15 + 10)},000 ₪`,
+                availability: getRandomItem(['משרה מלאה', 'חצי משרה', 'משמרות']),
                 skills: sharedSkills,
-                about: `אנו מחפשים ${getRandomItem(data.jobs)} מקצועי/ת להשתלבות בצוות דינמי בחברה יציבה.`,
-                icon: 'fa-building',
-                culturalFit: Math.floor(Math.random() * 20 + 80)
+                about: `חברה בצמיחה מחפשת ${getRandomItem(data.jobs)} מקצועי/ת להשתלבות בצוות. סביבת עבודה טכנולוגית, נדרשת יכולת עבודה עצמאית.`,
+                culturalFit: Math.floor(Math.random() * 20 + 80),
+                phone: generatePhone()
             });
 
             mockCandidates.push({
-                id: `c_${cat}_${i}`,
-                type: 'candidate',
-                category: cat,
+                id: `c_${cat}_${i}`, type: 'candidate', category: cat,
                 name: `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`,
                 title: getRandomItem(data.jobs),
                 experience: `${Math.floor(Math.random() * 8) + 1} שנות ניסיון`,
-                salary: `${Math.floor(Math.random() * 15 + 10)}K ציפייה`,
-                degree: getRandomItem(degrees),
+                salary: `ציפיות: ${Math.floor(Math.random() * 15 + 10)},000 ₪`,
+                degree: getRandomItem(['תואר ראשון', 'הנדסאי', 'הכשרה מקצועית']),
                 skills: sharedSkills,
-                about: `פרופיל איכותי, יוזם/ת ואחראי/ת. מחפש/ת אתגר ב${data.title} לטווח הארוך.`,
-                icon: 'fa-user-tie',
-                culturalFit: Math.floor(Math.random() * 20 + 80)
+                about: `מחפש/ת אתגר מקצועי בתחום ה${data.title}. בעל/ת מוסר עבודה גבוה, יחסי אנוש מעולים ויכולת למידה מהירה.`,
+                culturalFit: Math.floor(Math.random() * 20 + 80),
+                phone: generatePhone()
             });
         }
     });
 
-    // --- State של המגייס ---
-    let currentUserRole = null; // 'employer' = מחפש מועמדים, 'candidate' = מחפש משרות (מטעם מועמד)
-    let currentTargetName = ''; // שם המשרה או המועמד שעבורם מסננים כעת
+    // --- State ---
+    let currentUserRole = null;
+    let currentTargetName = '';
     let currentUserCategory = 'tech';
     let currentDeck = [];
     let topCardIndex = 0;
     let matchCount = 0;
     let lastSwipedCard = null;
-    
-    // מידע נוכחי להצגה בפתקית:
-    let currentMatchedItem = null; // האובייקט שעליו החליקו ימינה
-    
-    // ארכיון לשמירת הפתקיות
+    let currentMatchedItem = null;
     let savedNotes = [];
 
-    // Elements
-    const welcomeScreen = document.getElementById('welcome-screen');
-    const roleSelection = document.getElementById('role-selection');
-    const registrationForm = document.getElementById('registration-form');
-    const mainScreen = document.getElementById('main-screen');
-    const cardsContainer = document.getElementById('cards-container');
-    const matchModal = document.getElementById('match-modal');
-
+    // --- פונקציות מסכים ---
     function showRegistration(role) {
         currentUserRole = role;
-        roleSelection.classList.add('hidden');
-        registrationForm.classList.remove('hidden');
-        registrationForm.classList.add('flex');
+        document.getElementById('role-selection').classList.add('hidden');
+        document.getElementById('registration-form').classList.remove('hidden');
+        document.getElementById('registration-form').classList.add('flex');
         
-        const label = document.getElementById('target-name-label');
-        const input = document.getElementById('target-name-input');
-        
-        if(role === 'employer') {
-            label.innerText = 'שם המשרה עבורה אתה מסנן:';
-            input.placeholder = 'לדוגמה: אנליסט שיווק במטה';
-        } else {
-            label.innerText = 'שם המועמד עבורו אתה מחפש:';
-            input.placeholder = 'לדוגמה: יעל כהן (מפתחת)';
-        }
+        document.getElementById('target-name-label').innerText = role === 'employer' ? 'עבור איזו משרה אתה מסנן?' : 'עבור מי אתה מחפש משרה?';
+        document.getElementById('target-name-input').placeholder = role === 'employer' ? 'לדוגמה: מפתח ג\'אווה' : 'לדוגמה: דניאל (מועמד)';
     }
 
     function goBackToRoles() {
-        registrationForm.classList.add('hidden');
-        registrationForm.classList.remove('flex');
-        roleSelection.classList.remove('hidden');
+        document.getElementById('registration-form').classList.add('hidden');
+        document.getElementById('registration-form').classList.remove('flex');
+        document.getElementById('role-selection').classList.remove('hidden');
     }
 
     function completeRegistration() {
         currentTargetName = document.getElementById('target-name-input').value || (currentUserRole === 'employer' ? 'משרה פתוחה' : 'מועמד בטיפול');
         currentUserCategory = document.getElementById('user-category-input').value;
-        startApp();
-    }
-
-    function startApp() {
-        welcomeScreen.classList.add('hidden');
-        mainScreen.classList.replace('hidden', 'flex');
-
+        
+        document.getElementById('welcome-screen').classList.add('hidden');
+        document.getElementById('main-screen').classList.replace('hidden', 'flex');
         document.getElementById('session-target-name').innerText = currentTargetName;
 
-        if (currentUserRole === 'employer') {
-            // מגייס מחפש מועמדים עבור משרה
-            currentDeck = mockCandidates.filter(c => c.category === currentUserCategory).sort(() => 0.5 - Math.random());
-        } else {
-            // מגייס מחפש משרות עבור מועמד
-            currentDeck = mockJobs.filter(j => j.category === currentUserCategory).sort(() => 0.5 - Math.random()); 
-        }
-
+        currentDeck = (currentUserRole === 'employer' ? mockCandidates : mockJobs)
+                        .filter(x => x.category === currentUserCategory)
+                        .sort(() => 0.5 - Math.random());
+        
         renderCards();
-        showToast('המאגר נטען בהצלחה', 'success');
     }
 
     function resetApp() {
-        mainScreen.classList.replace('flex', 'hidden');
-        welcomeScreen.classList.remove('hidden');
+        document.getElementById('main-screen').classList.replace('flex', 'hidden');
+        document.getElementById('welcome-screen').classList.remove('hidden');
         goBackToRoles();
         document.getElementById('target-name-input').value = '';
-        matchCount = 0;
-        document.getElementById('match-count').innerText = matchCount;
+        matchCount = 0; document.getElementById('match-count').innerText = matchCount;
         topCardIndex = 0;
-        document.getElementById('cards-container').innerHTML = `
-            <div id="no-more-cards" class="hidden text-center text-slate-500">
-                <div class="w-20 h-20 bg-white shadow-sm rounded-full flex justify-center items-center mx-auto mb-4 border border-slate-200">
-                    <i class="fa-solid fa-inbox text-3xl text-slate-400"></i>
-                </div>
-                <h2 class="text-xl font-bold mb-2 text-slate-700">המאגר ריק כרגע</h2>
-                <p class="text-sm">סיימת לסרוק את כל הרשומות בקטגוריה זו.</p>
-                <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-bold transition-colors">רענן נתונים</button>
-            </div>
-        `;
+        document.getElementById('cards-container').innerHTML = `<div id="no-more-cards" class="hidden text-center text-slate-500 w-full"><div class="w-20 h-20 bg-white shadow-sm rounded-full flex justify-center items-center mx-auto mb-4 border border-slate-200"><i class="fa-solid fa-inbox text-3xl text-slate-400"></i></div><h2 class="text-xl font-bold mb-2 text-slate-700">המאגר ריק כרגע</h2><button onclick="location.reload()" class="mt-4 px-6 py-2 bg-slate-800 text-white rounded-full font-bold">רענן נתונים</button></div>`;
     }
 
+    // --- רינדור קורות החיים (הכרטיסיות החדשות) ---
     function renderCards() {
         for (let i = topCardIndex; i < Math.min(topCardIndex + 3, currentDeck.length); i++) {
             if(document.getElementById(`card-${i}`)) continue;
@@ -684,64 +483,56 @@
             cardEl.style.zIndex = currentDeck.length - i;
             
             const isTopCard = i === topCardIndex;
-            
-            const stampNope = `<div class="stamp stamp-nope" id="stamp-nope-${i}">PASS</div>`;
-            const stampLike = `<div class="stamp stamp-like" id="stamp-like-${i}">MATCH</div>`;
-            const stampSuper = `<div class="stamp stamp-super" id="stamp-super-${i}">SAVE</div>`;
-
-            let aiHtml = `
-                <div class="ai-highlight-text mt-2 border border-emerald-100">
-                    <span class="ai-badge mb-1"><i class="fa-solid fa-crosshairs"></i> התאמת סינון</span><br/>
-                    <span class="text-xs font-bold text-emerald-800"><i class="fa-solid fa-puzzle-piece"></i> ציון התאמה: ${item.culturalFit}%</span><br/>
-                    <span class="text-xs">הפלטפורמה מזהה קשר ישיר לדרישות ב-<strong>${item.skills[0] || 'התחום'}</strong>.</span>
-                </div>`;
+            const stampNope = `<div class="stamp stamp-nope" id="stamp-nope-${i}">פסול</div>`;
+            const stampLike = `<div class="stamp stamp-like" id="stamp-like-${i}">אישור</div>`;
 
             if (item.type === 'job') {
+                // מראה של תיאור משרה רשמי (JD)
                 cardEl.innerHTML = `
-                    ${stampNope} ${stampLike} ${stampSuper}
-                    <div class="card-image-placeholder job-gradient">
-                        <i class="fa-solid ${item.icon}"></i>
-                    </div>
+                    ${stampNope} ${stampLike}
                     <div class="card-content">
-                        <div class="flex justify-between items-start mb-1">
+                        <div class="border-b-2 border-slate-800 pb-4 mb-4">
+                            <h2 class="text-3xl font-bold cv-name text-slate-900 mb-1 leading-tight">${item.company}</h2>
+                            <h3 class="text-lg text-slate-600 font-medium bg-slate-100 inline-block px-2 py-1 rounded">דרוש/ה: ${item.title}</h3>
+                        </div>
+                        <div class="flex-grow space-y-4">
+                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">פרטי משרה</h4><p class="text-sm text-slate-600"><i class="fa-solid fa-location-dot w-4"></i> ${item.location}<br><i class="fa-solid fa-money-bill-wave w-4"></i> תקציב: ${item.salary}<br><i class="fa-regular fa-clock w-4"></i> ${item.availability}</p></div>
+                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">על התפקיד</h4><p class="text-sm text-slate-600 leading-relaxed">${item.about}</p></div>
                             <div>
-                                <h2 class="text-2xl font-bold text-slate-800 leading-tight">${item.title}</h2>
-                                <h3 class="text-lg text-slate-500 font-semibold">${item.company}</h3>
+                                <h4 class="font-bold text-slate-800 text-sm mb-2 uppercase tracking-wider">דרישות חובה</h4>
+                                <div>${item.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}</div>
                             </div>
                         </div>
-                        <div class="flex flex-wrap gap-x-3 gap-y-1 text-slate-600 text-xs mb-1 font-medium">
-                            <span><i class="fa-solid fa-location-dot"></i> ${item.location}</span>
-                            <span><i class="fa-solid fa-money-bill-wave"></i> ${item.salary}</span>
-                        </div>
-                        ${aiHtml}
-                        <div class="mt-auto pt-3">
-                            ${item.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        <div class="mt-4 pt-3 border-t border-slate-200">
+                            <span class="ai-badge"><i class="fa-solid fa-crosshairs"></i> ${item.culturalFit}% התאמה לתנאי המועמד שלך</span>
                         </div>
                     </div>
                 `;
             } else {
+                // מראה של קורות חיים (CV) נקי
                 cardEl.innerHTML = `
-                    ${stampNope} ${stampLike} ${stampSuper}
-                    <div class="card-image-placeholder">
-                        <i class="fa-solid ${item.icon}"></i>
-                    </div>
+                    ${stampNope} ${stampLike}
                     <div class="card-content">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-0">${item.name}</h2>
-                        <h3 class="text-md text-emerald-600 font-bold mb-1">${item.title}</h3>
-                        <div class="flex flex-wrap gap-x-3 gap-y-1 text-slate-600 text-xs mb-1 font-medium">
-                            <span><i class="fa-solid fa-briefcase"></i> ${item.experience}</span>
-                            <span><i class="fa-solid fa-graduation-cap"></i> ${item.degree}</span>
+                        <div class="border-b-2 border-slate-800 pb-4 mb-4">
+                            <h2 class="text-3xl font-bold cv-name text-slate-900 mb-1">${item.name}</h2>
+                            <h3 class="text-lg text-slate-600">${item.title}</h3>
                         </div>
-                        ${aiHtml}
-                        <div class="mt-auto pt-3">
-                            ${item.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        <div class="flex-grow space-y-4">
+                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">תמצית מנהלים</h4><p class="text-sm text-slate-600 leading-relaxed">${item.about}</p></div>
+                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">ניסיון והשכלה</h4><p class="text-sm text-slate-600"><i class="fa-solid fa-briefcase w-4"></i> ${item.experience}<br><i class="fa-solid fa-graduation-cap w-4"></i> ${item.degree}<br><i class="fa-solid fa-money-bill-wave w-4"></i> ${item.salary}</p></div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm mb-2 uppercase tracking-wider">כישורים טכניים</h4>
+                                <div>${item.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200">
+                            <span class="ai-badge"><i class="fa-solid fa-crosshairs"></i> ${item.culturalFit}% התאמה לדרישות המשרה</span>
                         </div>
                     </div>
                 `;
             }
 
             document.getElementById('cards-container').insertBefore(cardEl, document.getElementById('no-more-cards'));
-
             if (isTopCard) initDragLogic(cardEl, i);
         }
         updateCardPositions();
@@ -755,20 +546,17 @@
             else if (index === 2) card.style.transform = 'scale(0.90) translateY(20px)';
             else card.style.display = 'none';
         });
-        
         if(cards.length === 0) document.getElementById('no-more-cards').classList.remove('hidden');
     }
 
-    // --- Drag Logic ---
+    // --- Drag & Swipe Logic ---
     function initDragLogic(card, index) {
         let isDragging = false, startX = 0, startY = 0, currentX = 0, currentY = 0;
-        
         const stampNope = document.getElementById(`stamp-nope-${index}`);
         const stampLike = document.getElementById(`stamp-like-${index}`);
 
         const handleStart = (e) => {
-            isDragging = true;
-            card.classList.add('dragging');
+            isDragging = true; card.classList.add('dragging');
             startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
             startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
         };
@@ -777,8 +565,7 @@
             if (!isDragging) return;
             currentX = (e.type.includes('mouse') ? e.clientX : e.touches[0].clientX) - startX;
             currentY = (e.type.includes('mouse') ? e.clientY : e.touches[0].clientY) - startY;
-
-            card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${currentX * 0.05}deg)`;
+            card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${currentX * 0.03}deg)`;
 
             if (currentX > 50) { stampLike.style.opacity = Math.min(currentX/100, 1); stampNope.style.opacity = 0; } 
             else if (currentX < -50) { stampNope.style.opacity = Math.min(Math.abs(currentX)/100, 1); stampLike.style.opacity = 0; } 
@@ -787,27 +574,18 @@
 
         const handleEnd = () => {
             if (!isDragging) return;
-            isDragging = false;
-            card.classList.remove('dragging');
-
+            isDragging = false; card.classList.remove('dragging');
             const threshold = window.innerWidth * 0.25;
 
-            if (currentY < -threshold * 1.5 && Math.abs(currentX) < threshold) processSwipe('super', card, index);
-            else if (currentX > threshold) processSwipe('right', card, index);
+            if (currentX > threshold) processSwipe('right', card, index);
             else if (currentX < -threshold) processSwipe('left', card, index);
-            else {
-                card.style.transform = 'scale(1) translateY(0)';
-                stampLike.style.opacity = 0; stampNope.style.opacity = 0;
-            }
+            else { card.style.transform = 'scale(1) translateY(0)'; stampLike.style.opacity = 0; stampNope.style.opacity = 0; }
             currentX = 0; currentY = 0;
         };
 
-        card.addEventListener('mousedown', handleStart);
-        card.addEventListener('touchstart', handleStart, {passive: true});
-        document.addEventListener('mousemove', handleMove);
-        document.addEventListener('touchmove', handleMove, {passive: true});
-        document.addEventListener('mouseup', handleEnd);
-        document.addEventListener('touchend', handleEnd);
+        card.addEventListener('mousedown', handleStart); card.addEventListener('touchstart', handleStart, {passive: true});
+        document.addEventListener('mousemove', handleMove); document.addEventListener('touchmove', handleMove, {passive: true});
+        document.addEventListener('mouseup', handleEnd); document.addEventListener('touchend', handleEnd);
         card._dragListeners = { handleMove, handleEnd };
     }
 
@@ -822,16 +600,15 @@
             document.removeEventListener('touchend', cardEl._dragListeners.handleEnd);
         }
 
-        if (direction === 'right' || direction === 'super') {
-            cardEl.classList.add(direction === 'super' ? 'swipe-super-anim' : 'swipe-right-anim');
-            document.getElementById(direction === 'super' ? `stamp-super-${index}` : `stamp-like-${index}`).style.opacity = 1;
+        if (direction === 'right') {
+            cardEl.classList.add('swipe-right-anim');
+            document.getElementById(`stamp-like-${index}`).style.opacity = 1;
             
-            // במערכת מגייסים, כל החלקה ימינה היא שמירה/מאץ' בטוח כי הוא מחליט.
+            // שינוי מהותי: פותחים ישירות את תיק המועמד ללא מסך מקשר!
             currentMatchedItem = currentDeck[index];
-            matchCount++;
-            document.getElementById('match-count').innerText = matchCount;
+            matchCount++; document.getElementById('match-count').innerText = matchCount;
             
-            setTimeout(() => showMatchModal(), 400);
+            setTimeout(() => openInterviewModal(), 300);
 
         } else {
             cardEl.classList.add('swipe-left-anim');
@@ -839,9 +616,7 @@
         }
 
         setTimeout(() => {
-            cardEl.remove();
-            topCardIndex++;
-            renderCards();
+            cardEl.remove(); topCardIndex++; renderCards();
             const nextCard = document.getElementById(`card-${topCardIndex}`);
             if (nextCard) initDragLogic(nextCard, topCardIndex);
         }, 300);
@@ -852,155 +627,90 @@
         if(topCard) processSwipe(dir, topCard, topCardIndex);
     }
 
-    // --- התראות ומודאלים ---
-    function showToast(msg, type = 'info') {
-        const toast = document.getElementById('toast');
-        toast.querySelector('span').innerHTML = msg;
-        toast.querySelector('i').className = type === 'error' ? 'fa-solid fa-triangle-exclamation text-red-400' : type === 'success' ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-circle-info text-blue-400';
-        toast.style.bottom = '30px';
-        setTimeout(() => { toast.style.bottom = '-100px'; }, 3000);
-    }
-
-    function showMatchModal() {
-        const textEl = document.getElementById('match-text');
-        if(currentUserRole === 'employer') {
-            textEl.innerText = `המועמד ${currentMatchedItem.name} נשמר למשרה ${currentTargetName}.`;
-        } else {
-            textEl.innerText = `המשרה בחברת ${currentMatchedItem.company} נשמרה עבור ${currentTargetName}.`;
-        }
-        document.getElementById('match-modal').classList.replace('hidden', 'flex');
-    }
-
-    function closeMatch() { 
-        document.getElementById('match-modal').classList.replace('flex', 'hidden'); 
-    }
-
-    // --- PhoneScreen AI Sticky Note ---
-    function openStickyNote(item = currentMatchedItem, targetName = currentTargetName) {
-        closeMatch();
-        
-        // עדכון האייטם הנוכחי כדי שההדפסה והשמירה יעבדו נכון (רלוונטי גם כשפותחים מהארכיון)
+    // --- תיק מועמד והכנה לראיון (מחליף את הפתקית) ---
+    function openInterviewModal(item = currentMatchedItem, targetName = currentTargetName) {
         currentMatchedItem = item;
         currentTargetName = targetName;
         
-        // הגדרת תוכן הפתקית דינמית לפי מה שסונן
-        const subjectNameEl = document.getElementById('sticky-subject-name');
-        const subjectLabelEl = document.getElementById('sticky-subject-label');
-        const targetNameEl = document.getElementById('sticky-target-name');
+        // הגדרת תוכן התיק
+        document.getElementById('interview-phone').innerText = currentMatchedItem.phone;
+        document.getElementById('interview-target-name').innerText = currentTargetName;
+        document.getElementById('interview-score').innerText = currentMatchedItem.culturalFit;
         
-        const summaryEl = document.getElementById('sticky-summary');
-        const questionsEl = document.getElementById('sticky-questions');
-        const greenEl = document.getElementById('sticky-green-flags');
-        const redEl = document.getElementById('sticky-red-flags');
+        document.getElementById('interview-skills').innerHTML = currentMatchedItem.skills.map(s => `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs ml-1 inline-block border border-slate-200">${s}</span>`).join('');
+
+        const questionsUl = document.getElementById('interview-questions');
 
         if(currentUserRole === 'employer') {
-            // מסננים מועמדים (currentMatchedItem הוא מועמד)
-            subjectLabelEl.innerText = "מועמד/ת:";
-            subjectNameEl.innerText = currentMatchedItem.name;
-            targetNameEl.innerText = currentTargetName;
+            // התיק מציג קורות חיים של מועמד
+            document.getElementById('interview-name').innerText = currentMatchedItem.name;
+            document.getElementById('interview-title').innerText = currentMatchedItem.title;
+            document.getElementById('interview-experience').innerText = currentMatchedItem.experience;
+            document.getElementById('interview-education').innerText = currentMatchedItem.degree;
+            document.getElementById('interview-salary').innerText = currentMatchedItem.salary;
+            document.getElementById('interview-about').innerText = currentMatchedItem.about;
             
-            summaryEl.innerText = `מועמד/ת בעל/ת ${currentMatchedItem.experience} (${currentMatchedItem.degree}). מציג/ה רקע חזק ב-${currentMatchedItem.skills.join(', ')}.`;
-            
-            questionsEl.innerHTML = `
-                <li>מה הייתה רמת האחריות בתפקיד האחרון?</li>
-                <li>זמינות לתחילת עבודה מול דרישות ${currentTargetName}?</li>
-                <li>בירור ציפיות שכר מול התקציב (${currentMatchedItem.salary})</li>
+            questionsUl.innerHTML = `
+                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">1</div> <div>"שמתי לב לניסיון שלך ב-${currentMatchedItem.skills[0]}, תוכל/י לפרט על פרויקט מרכזי שעשית בתחום?"</div></li>
+                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">2</div> <div>"מה הזמינות שלך לתחילת עבודה במשרה של ${currentTargetName}?"</div></li>
+                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">3</div> <div>"אילו אתגרים מקצועיים אתה/את מחפש/ת בתפקיד הבא?"</div></li>
             `;
-            
-            greenEl.innerHTML = `<li>השכלה מתאימה: ${currentMatchedItem.degree}</li><li>ניסיון פרקטי ב-${currentMatchedItem.skills[0]}</li>`;
-            redEl.innerHTML = `<li>לבדוק יציבות תעסוקתית</li><li>לבדוק התאמת ציפיות שכר</li>`;
-            
         } else {
-            // מסננים משרות (currentMatchedItem הוא משרה)
-            subjectLabelEl.innerText = "חברה מיועדת:";
-            subjectNameEl.innerText = currentMatchedItem.company;
-            targetNameEl.innerText = `מועמד/ת: ${currentTargetName}`;
+            // התיק מציג פרטי משרה (החברה היא ה"מועמד" לאישור)
+            document.getElementById('interview-name').innerText = currentMatchedItem.company;
+            document.getElementById('interview-title').innerText = `דרוש/ה: ${currentMatchedItem.title}`;
+            document.getElementById('interview-experience').innerText = `מיקום: ${currentMatchedItem.location}`;
+            document.getElementById('interview-education').innerText = currentMatchedItem.availability;
+            document.getElementById('interview-salary').innerText = `תקציב: ${currentMatchedItem.salary}`;
+            document.getElementById('interview-about').innerText = currentMatchedItem.about;
             
-            summaryEl.innerText = `משרת ${currentMatchedItem.title} במיקום ${currentMatchedItem.location}. נדרש ידע ב-${currentMatchedItem.skills.join(', ')}.`;
-            
-            questionsEl.innerHTML = `
-                <li>בירור גמישות במודל ההעסקה (${currentMatchedItem.availability})?</li>
-                <li>האם השכר המקסימלי גמיש מעבר ל-${currentMatchedItem.salary}?</li>
-                <li>בירור תהליך הגיוס בחברה</li>
+            questionsUl.innerHTML = `
+                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">1</div> <div>"היי, אני מתקשר בקשר למועמד/ת שלי (${currentTargetName}). האם המשרה ב-${currentMatchedItem.location} עדיין רלוונטית?"</div></li>
+                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">2</div> <div>"האם המודל (${currentMatchedItem.availability}) גמיש במידת הצורך?"</div></li>
+                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">3</div> <div>"המועמד חזק מאוד ב-${currentMatchedItem.skills[0]}, האם זה פקטור משמעותי עבורכם?"</div></li>
             `;
-            
-            greenEl.innerHTML = `<li>הגדרת תפקיד מתאימה לפרופיל המועמד</li><li>דרישת כישורים תואמת (${currentMatchedItem.skills[0]})</li>`;
-            redEl.innerHTML = `<li>לוודא התאמת מיקום (${currentMatchedItem.location}) למועמד</li>`;
         }
 
-        document.getElementById('sticky-note-modal').classList.replace('hidden', 'flex');
+        document.getElementById('interview-modal').classList.replace('hidden', 'flex');
     }
 
-    function closeStickyNote() {
-        document.getElementById('sticky-note-modal').classList.replace('flex', 'hidden');
+    function closeInterviewModal() {
+        document.getElementById('interview-modal').classList.replace('flex', 'hidden');
     }
 
-    // --- פונקציות ניהול ארכיון והדפסה ---
-    
-    function saveAndCloseStickyNote() {
-        // בודקים אם הפתקית כבר נשמרה לפי ה-ID שלה
+    function saveAndCloseInterview() {
         const exists = savedNotes.find(note => note.item.id === currentMatchedItem.id);
-        
         if (!exists) {
             savedNotes.push({
-                item: currentMatchedItem,
-                targetName: currentTargetName,
-                role: currentUserRole,
+                item: currentMatchedItem, targetName: currentTargetName, role: currentUserRole,
                 timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
             });
-            
-            // עדכון מונה הארכיון למעלה
             const badge = document.getElementById('archive-badge');
-            badge.innerText = savedNotes.length;
-            badge.classList.remove('hidden');
-            
-            showToast('הפתקית נשמרה בארכיון', 'success');
+            badge.innerText = savedNotes.length; badge.classList.remove('hidden');
+            showToast('התיק נשמר בארכיון', 'success');
         }
-        
-        closeStickyNote();
+        closeInterviewModal();
     }
 
-    function openArchive() {
-        renderArchive();
-        document.getElementById('archive-modal').classList.replace('hidden', 'flex');
-    }
-
-    function closeArchive() {
-        document.getElementById('archive-modal').classList.replace('flex', 'hidden');
-    }
+    function openArchive() { renderArchive(); document.getElementById('archive-modal').classList.replace('hidden', 'flex'); }
+    function closeArchive() { document.getElementById('archive-modal').classList.replace('flex', 'hidden'); }
 
     function renderArchive() {
         const listEl = document.getElementById('archive-list');
-        
         if (savedNotes.length === 0) {
-            listEl.innerHTML = `
-                <div class="text-center text-slate-400 mt-16">
-                    <i class="fa-solid fa-folder-open text-6xl mb-4 text-slate-300"></i>
-                    <h3 class="text-lg font-bold text-slate-600">הארכיון ריק</h3>
-                    <p class="text-sm mt-1">אשרו התאמות ושמרו פתקיות כדי לראות אותן כאן.</p>
-                </div>
-            `;
+            listEl.innerHTML = `<div class="text-center text-slate-400 mt-16"><i class="fa-solid fa-folder-open text-6xl mb-4 text-slate-300"></i><h3 class="text-lg font-bold text-slate-600">הארכיון ריק</h3></div>`;
             return;
         }
-
-        // הופכים את הסדר כדי שהחדש ביותר יופיע למעלה
         listEl.innerHTML = savedNotes.map((note, index) => {
             const isEmployer = note.role === 'employer';
             const subject = isEmployer ? note.item.name : note.item.company;
-            const icon = isEmployer ? 'fa-user-tie' : 'fa-building';
-            
             return `
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center transition-all hover:shadow-md">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center hover:border-emerald-300 transition-all cursor-pointer" onclick="viewArchivedNote(${index})">
                     <div>
-                        <h4 class="font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid ${icon} text-emerald-600"></i> ${subject}
-                        </h4>
+                        <h4 class="font-bold text-slate-800 cv-name text-lg">${subject}</h4>
                         <p class="text-xs text-slate-500 mt-1">עבור: ${note.targetName}</p>
-                        <p class="text-[10px] text-slate-400 mt-1"><i class="fa-regular fa-clock"></i> נשמר ב-${note.timestamp}</p>
                     </div>
-                    <button onclick="viewArchivedNote(${index})" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg text-sm font-bold transition-colors">
-                        פתח <i class="fa-solid fa-arrow-left ml-1"></i>
-                    </button>
+                    <div class="text-slate-400"><i class="fa-solid fa-chevron-left"></i></div>
                 </div>
             `;
         }).reverse().join('');
@@ -1008,31 +718,28 @@
 
     function viewArchivedNote(index) {
         const note = savedNotes[index];
-        // שומרים זמנית את התפקיד כדי שהפתקית תרונדר בכיוון הנכון
         const originalRole = currentUserRole;
         currentUserRole = note.role;
-        
-        openStickyNote(note.item, note.targetName);
-        
+        openInterviewModal(note.item, note.targetName);
         currentUserRole = originalRole;
     }
 
     function rewindCard() {
-        if (!lastSwipedCard) return showToast('אין כרטיס לחזור אליו', 'info');
-        
-        // החזרת המצב
-        if (lastSwipedCard.direction === 'right' || lastSwipedCard.direction === 'super') {
-            matchCount = Math.max(0, matchCount - 1);
-            document.getElementById('match-count').innerText = matchCount;
+        if (!lastSwipedCard) return showToast('אין פעולה לבטל', 'info');
+        if (lastSwipedCard.direction === 'right') {
+            matchCount = Math.max(0, matchCount - 1); document.getElementById('match-count').innerText = matchCount;
         }
-        
-        topCardIndex--; 
-        lastSwipedCard = null;
+        topCardIndex--; lastSwipedCard = null;
         document.getElementById('cards-container').querySelectorAll('.swipe-card').forEach(c => c.remove());
-        renderCards();
-        showToast('הכרטיס הוחזר בהצלחה', 'success');
+        renderCards(); showToast('הכרטיס הוחזר', 'success');
     }
 
+    function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').innerHTML = msg;
+        toast.querySelector('i').className = type === 'error' ? 'fa-solid fa-triangle-exclamation text-red-400' : type === 'success' ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-circle-info text-blue-400';
+        toast.style.bottom = '30px'; setTimeout(() => { toast.style.bottom = '-100px'; }, 3000);
+    }
 </script>
 </body>
 </html>
