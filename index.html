@@ -1,0 +1,816 @@
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GOOJOB - הדור הבא של חיפוש עבודה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #f3f4f6;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            height: 100dvh;
+            background-color: white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* כרטיסיות ההחלקה */
+        .cards-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swipe-card {
+            position: absolute;
+            width: calc(100% - 2rem);
+            height: calc(100% - 2rem);
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            will-change: transform;
+            cursor: grab;
+            transition: transform 0.3s ease-out;
+        }
+
+        .swipe-card.dragging {
+            transition: none;
+            cursor: grabbing;
+        }
+
+        .card-image-placeholder {
+            height: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+
+        .job-gradient {
+            background: linear-gradient(135deg, #13547a 0%, #80d0c7 100%);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            position: relative;
+        }
+
+        /* תגיות */
+        .skill-tag {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            margin-left: 0.4rem;
+            margin-bottom: 0.4rem;
+            display: inline-block;
+        }
+
+        .trending-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: #ef4444;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+            animation: pulse-red 2s infinite;
+            z-index: 5;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6); }
+        }
+
+        /* אנימציות העלמה */
+        .swipe-left-anim { transform: translateX(-150vw) rotate(-30deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .swipe-right-anim { transform: translateX(150vw) rotate(30deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .swipe-super-anim { transform: translateY(-150vh) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+
+        /* סטאמפים */
+        .stamp {
+            position: absolute;
+            top: 20px;
+            padding: 0.5rem 1rem;
+            border: 4px solid;
+            border-radius: 10px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0;
+            z-index: 10;
+        }
+        .stamp-nope { right: 20px; color: #ef4444; border-color: #ef4444; transform: rotate(15deg); }
+        .stamp-like { left: 20px; color: #22c55e; border-color: #22c55e; transform: rotate(-15deg); }
+        .stamp-super { bottom: 40px; left: 50%; transform: translateX(-50%) scale(1.5); color: #3b82f6; border-color: #3b82f6; }
+
+        /* AI והתאמה */
+        .ai-badge {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .ai-highlight-text {
+            background-color: #fdf4ff;
+            border-right: 3px solid #d946ef;
+            padding: 0.4rem;
+            margin: 0.4rem 0;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            color: #701a75;
+        }
+
+        /* מודאלים מיוחדים */
+        .blur-card {
+            filter: blur(8px);
+            transition: filter 0.5s ease;
+        }
+        .blur-card.revealed { filter: blur(0); }
+
+        #boost-overlay {
+            background: linear-gradient(to top, rgba(147, 51, 234, 0.9), rgba(236, 72, 153, 0.9));
+        }
+        .rocket-fly {
+            animation: fly-up 2s ease-in-out forwards;
+        }
+        @keyframes fly-up {
+            0% { transform: translateY(100px) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-800px) scale(0.5); opacity: 0; }
+        }
+
+        #match-modal {
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+        }
+        .pulse-heart { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="app">
+
+    <!-- מסך פתיחה (Onboarding) -->
+    <div id="welcome-screen" class="absolute inset-0 flex flex-col justify-center items-center bg-white z-50 p-6 text-center overflow-y-auto">
+        <div class="w-24 h-24 bg-gradient-to-tr from-pink-500 to-purple-500 rounded-full flex justify-center items-center mb-6 shadow-lg flex-shrink-0">
+            <i class="fa-solid fa-fire-flame-curved text-white text-4xl"></i>
+        </div>
+        <h1 class="text-4xl font-extrabold text-gray-800 mb-2">GOOJOB</h1>
+        <p class="text-gray-500 mb-6 text-lg">קריירה מוצאים בהחלקה.</p>
+
+        <!-- שלב 1: בחירת תפקיד -->
+        <div id="role-selection" class="w-full">
+            <h2 class="text-2xl font-bold text-gray-700 mb-6">מי אתם?</h2>
+            <button onclick="showRegistration('candidate')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-2xl mb-4 shadow-md transition-transform transform active:scale-95 text-lg flex items-center justify-center gap-3">
+                <i class="fa-solid fa-user"></i>
+                אני מחפש/ת עבודה
+            </button>
+            <button onclick="showRegistration('employer')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-2xl mb-4 shadow-md transition-transform transform active:scale-95 text-lg flex items-center justify-center gap-3">
+                <i class="fa-solid fa-building"></i>
+                אנחנו מחפשים עובדים
+            </button>
+        </div>
+
+        <!-- שלב 2: הגדרות (28 קטגוריות!) -->
+        <div id="registration-form" class="hidden w-full flex-col items-center text-right">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 w-full text-center">הגדרת הפרופיל (AI)</h2>
+            
+            <div class="w-full mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">שם מלא / שם החברה</label>
+                <input type="text" id="user-name-input" placeholder="לדוגמה: ישראל ישראלי" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-500 outline-none">
+            </div>
+
+            <div class="w-full mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">תחום מקצועי (AI יסנן עבורך)</label>
+                <select id="user-category-input" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-500 outline-none bg-white max-h-48 overflow-y-auto">
+                    <!-- ימולא דינמית ב-JS עם כל 28 הקטגוריות -->
+                </select>
+            </div>
+
+            <div class="w-full bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 text-center">
+                <p class="text-yellow-800 font-bold mb-1"><i class="fa-solid fa-gift"></i> מתנת הצטרפות!</p>
+                <p class="text-sm text-yellow-700 mb-3">קיבלת 100 צ'יפים להתחלה.</p>
+                <button onclick="openCheckout()" class="text-sm bg-white border border-yellow-400 text-yellow-600 px-4 py-1 rounded-full font-semibold hover:bg-yellow-100 transition-colors">
+                    <i class="fa-solid fa-store"></i> לחנות הצ'יפים
+                </button>
+            </div>
+
+            <button onclick="completeRegistration()" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-transform transform active:scale-95 text-lg flex items-center justify-center gap-3">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                התחל להחליק (הפעל AI)
+            </button>
+            <button onclick="goBackToRoles()" class="mt-4 text-gray-500 hover:text-gray-700 underline text-sm w-full text-center">חזרה</button>
+        </div>
+    </div>
+
+    <!-- מסך ראשי - זירת ההחלקה -->
+    <div id="main-screen" class="hidden flex-col h-full w-full">
+        <!-- Header -->
+        <div class="flex justify-between items-center p-4 border-b border-gray-100 shadow-sm z-10 bg-white">
+            <div class="flex gap-3">
+                <!-- Secret Admirers Feature -->
+                <div class="text-pink-500 text-xl cursor-pointer hover:text-pink-600 relative" onclick="openAdmirers()">
+                    <i class="fa-solid fa-heart"></i>
+                    <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">2</span>
+                </div>
+                <!-- Boost Feature -->
+                <div class="text-purple-500 text-xl cursor-pointer hover:text-purple-600" onclick="activateBoost()">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+            </div>
+
+            <h1 class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400 flex items-center gap-1 italic tracking-tight" id="header-title">
+                GOOJOB
+            </h1>
+
+            <div class="text-yellow-600 font-bold bg-yellow-50 px-3 py-1 rounded-full cursor-pointer shadow-sm border border-yellow-200 flex items-center gap-2 hover:bg-yellow-100" onclick="openCheckout()">
+                <span id="chip-count">100</span> <i class="fa-solid fa-coins"></i>
+            </div>
+        </div>
+
+        <!-- Cards Area -->
+        <div class="cards-container" id="cards-container">
+            <div id="no-more-cards" class="hidden text-center text-gray-500">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex justify-center items-center mx-auto mb-4">
+                    <i class="fa-solid fa-satellite-dish text-3xl"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-2">אין יותר כרטיסים כרגע</h2>
+                <p class="text-sm">הרחב את הסינון או חזור מאוחר יותר.</p>
+                <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-pink-500 text-white rounded-full font-bold">רענן</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-center items-center gap-4 p-4 pb-6 bg-white z-10">
+            <button onclick="rewindCard()" class="w-12 h-12 bg-white rounded-full shadow flex justify-center items-center text-yellow-500 text-xl hover:bg-yellow-50 transition-all relative group">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span class="absolute -top-8 bg-gray-800 text-white text-xs px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">-5 <i class="fa-solid fa-coins"></i></span>
+            </button>
+            <button onclick="handleButtonAction('left')" class="w-16 h-16 bg-white rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex justify-center items-center text-red-500 text-2xl hover:bg-red-50 transition-all active:scale-95">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button onclick="handleButtonAction('super')" class="w-12 h-12 bg-white rounded-full shadow flex justify-center items-center text-blue-500 text-xl hover:bg-blue-50 transition-all relative group">
+                <i class="fa-solid fa-star"></i>
+                <span class="absolute -top-8 bg-gray-800 text-white text-xs px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">-1 <i class="fa-solid fa-coins"></i></span>
+            </button>
+            <button onclick="handleButtonAction('right')" class="w-16 h-16 bg-white rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex justify-center items-center text-green-500 text-2xl hover:bg-green-50 transition-all active:scale-95">
+                <i class="fa-solid fa-handshake"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Feature: Secret Admirers Modal -->
+    <div id="admirers-modal" class="hidden absolute inset-0 z-[110] bg-black/80 flex flex-col items-center pt-20 px-4 backdrop-blur-md">
+        <button onclick="closeAdmirers()" class="absolute top-6 right-6 text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+        <h2 class="text-3xl font-bold text-white mb-2"><i class="fa-solid fa-heart-crack text-pink-500"></i> מעריצים סודיים</h2>
+        <p class="text-gray-300 mb-8 text-center">הם כבר החליקו ימינה עליך! שלם 20 צ'יפים כדי לחשוף את זהותם וליצור Match מיידי.</p>
+        
+        <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+            <!-- כרטיס מטושטש 1 -->
+            <div class="bg-white rounded-xl overflow-hidden relative cursor-pointer" onclick="revealAdmirer(this)">
+                <div class="h-32 bg-gradient-to-br from-purple-400 to-pink-500 flex justify-center items-center">
+                    <i class="fa-solid fa-user-secret text-4xl text-white/50 blur-[2px]"></i>
+                </div>
+                <div class="p-3 text-center blur-card">
+                    <h3 class="font-bold text-gray-800">ישראל י...</h3>
+                    <p class="text-xs text-gray-500">תל אביב</p>
+                </div>
+                <div class="absolute inset-0 bg-black/20 flex flex-col justify-center items-center unlock-overlay">
+                    <i class="fa-solid fa-lock text-white text-2xl mb-1"></i>
+                    <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-bold">20 צ'יפים</span>
+                </div>
+            </div>
+             <!-- כרטיס מטושטש 2 -->
+             <div class="bg-white rounded-xl overflow-hidden relative cursor-pointer" onclick="revealAdmirer(this)">
+                <div class="h-32 bg-gradient-to-br from-blue-400 to-cyan-500 flex justify-center items-center">
+                    <i class="fa-solid fa-building text-4xl text-white/50 blur-[2px]"></i>
+                </div>
+                <div class="p-3 text-center blur-card">
+                    <h3 class="font-bold text-gray-800">חברת ט...</h3>
+                    <p class="text-xs text-gray-500">הרצליה</p>
+                </div>
+                <div class="absolute inset-0 bg-black/20 flex flex-col justify-center items-center unlock-overlay">
+                    <i class="fa-solid fa-lock text-white text-2xl mb-1"></i>
+                    <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-bold">20 צ'יפים</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature: Boost Overlay -->
+    <div id="boost-overlay" class="hidden absolute inset-0 z-[120] flex-col justify-center items-center text-white">
+        <i class="fa-solid fa-rocket text-8xl rocket-fly mb-4"></i>
+        <h2 class="text-4xl font-black italic">BOOSTED!</h2>
+        <p class="text-lg opacity-90">הפרופיל שלך הוקפץ לראש הרשימה.</p>
+    </div>
+
+    <!-- Match Modal -->
+    <div id="match-modal" class="hidden absolute inset-0 z-[100] flex flex-col justify-center items-center text-center px-4">
+        <h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400 mb-8 italic">It's a Match!</h1>
+        <i class="fa-solid fa-handshake text-orange-400 text-8xl mb-8 pulse-heart"></i>
+        <p class="text-white text-xl mb-10" id="match-text">יש כאן פוטנציאל לעבודה מעולה.</p>
+        
+        <div class="w-full max-w-xs space-y-4">
+            <button onclick="sendMessage()" class="w-full bg-gradient-to-r from-pink-500 to-orange-400 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg flex items-center justify-center gap-2">
+                שליחת הודעה (3 <i class="fa-solid fa-coins text-sm"></i>)
+            </button>
+            <button onclick="closeMatch()" class="w-full bg-transparent border-2 border-white text-white font-bold py-3 px-6 rounded-full text-lg">המשך להחליק</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="hidden absolute inset-0 z-[110] bg-black/60 flex flex-col justify-center items-center px-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">חנות צ'יפים <i class="fa-solid fa-store text-yellow-500"></i></h2>
+                <button onclick="closeCheckout()" class="text-gray-400 hover:text-red-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-gray-600 text-sm mb-6">רכשו חבילת 50 צ'יפים כדי להשתמש בפיצ'רים מתקדמים.</p>
+            
+            <div class="space-y-4 text-right">
+                <div><input type="text" id="cc-number" placeholder="כרטיס אשראי 123456789" class="w-full border rounded-xl px-4 py-2 dir-ltr"></div>
+                <div class="flex gap-4">
+                    <div class="flex-1"><input type="text" id="cc-exp" placeholder="תוקף 01/30" class="w-full border rounded-xl px-4 py-2 dir-ltr"></div>
+                    <div class="flex-1"><input type="text" id="cc-cvv" placeholder="CVV 123" class="w-full border rounded-xl px-4 py-2 dir-ltr"></div>
+                </div>
+                <button onclick="processCheckout()" class="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl shadow-md text-lg">
+                    שלם וקבל 50 צ'יפים
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-[-100px] left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 z-[130] flex items-center gap-3 w-11/12 max-w-sm">
+        <i class="fa-solid fa-circle-info text-blue-400"></i>
+        <span id="toast-msg" class="text-sm">הודעה</span>
+    </div>
+
+</div>
+
+<script>
+    // --- נתונים: 28 קטגוריות מקצועיות! ---
+    const categoriesData = {
+        'tech': { title: 'הייטק ופיתוח תוכנה', jobs: ['מפתח/ת Full Stack', 'מדען/ית נתונים', 'איש/אשת DevOps', 'מעצב/ת UX/UI'], skills: ['React', 'Node.js', 'Python', 'AWS'] },
+        'logistics': { title: 'לוגיסטיקה ורכש', jobs: ['מנהל/ת מחסן', 'מנהל/ת תפעול', 'קניין/ית רכש', 'מנהל/ת שרשרת אספקה'], skills: ['ניהול מלאי', 'ERP', 'סחר בינלאומי', 'תכנון רכש'] },
+        'marketing': { title: 'שיווק ודיגיטל', jobs: ['מנהל/ת קמפיינים', 'מומחה/ית SEO', 'מנהל/ת סושיאל', 'קופירייטר/ית'], skills: ['PPC', 'Google Analytics', 'ניהול תקציב', 'Meta Ads'] },
+        'finance': { title: 'כספים וראיית חשבון', jobs: ['רואה/ת חשבון', 'כלכלן/ית', 'חשב/ת שכר', 'מנהל/ת כספים'], skills: ['אקסל מתקדם', 'הנהלת חשבונות', 'חשבות', 'ניתוח דוחות'] },
+        'hr': { title: 'משאבי אנוש', jobs: ['מנהל/ת HR', 'רכז/ת גיוס', 'מנהל/ת רווחה', 'HRBP'], skills: ['גיוס והשמה', 'דיני עבודה', 'שימור עובדים', 'ראיונות עומק'] },
+        'design': { title: 'עיצוב ואמנות', jobs: ['מעצב/ת גרפי', 'ארט דירקטור', 'אנימטור/ית', 'מעצב/ת תעשייתי'], skills: ['Photoshop', 'Illustrator', 'Figma', 'קריאייטיב'] },
+        'education': { title: 'חינוך והדרכה', jobs: ['מורה', 'מנהל/ת הדרכה', 'גנן/ת', 'מפתח/ת למידה'], skills: ['הוראה', 'פיתוח מערכי שיעור', 'עמידה מול קהל', 'הדרכה טכנולוגית'] },
+        'healthcare': { title: 'רפואה ובריאות', jobs: ['אח/ות מוסמך/ת', 'רופא/ה', 'טכנאי/ת רנטגן', 'מנהל/ת מרפאה'], skills: ['החייאה', 'רפואת חירום', 'טיפול נמרץ', 'ניהול צוות רפואי'] },
+        'law': { title: 'משפטים ועריכת דין', jobs: ['עורך/ת דין', 'יועץ/ת משפטי', 'מתמחה', 'מנהל/ת חוזים'], skills: ['ליטיגציה', 'דיני תאגידים', 'ניסוח חוזים', 'דיני עבודה'] },
+        'sales': { title: 'מכירות', jobs: ['מנהל/ת מכירות', 'איש/אשת מכירות שטח', 'SDR', 'מנהל/ת תיקי לקוחות'], skills: ['B2B', 'ניהול משא ומתן', 'Salesforce', 'שימור לקוחות'] },
+        'customer_service': { title: 'שירות לקוחות', jobs: ['נציג/ת שירות', 'מנהל/ת מוקד', 'אחראי/ת משמרת', 'מומחה/ית הצלחת לקוח (CSM)'], skills: ['שירותיות', 'פתרון בעיות', 'CRM', 'עבודה תחת לחץ'] },
+        'admin': { title: 'אדמיניסטרציה ומזכירות', jobs: ['מזכיר/ה', 'מנהל/ת משרד', 'עוזר/ת אישי/ת (PA)', 'פקיד/ת קבלה'], skills: ['ארגון וסדר', 'אופיס', 'ניהול יומנים', 'אנגלית ברמה גבוהה'] },
+        'engineering': { title: 'הנדסה (אזרחית/מכונות)', jobs: ['מהנדס/ת אזרחי', 'מהנדס/ת מכונות', 'שרטט/ת', 'מנהל/ת פרויקטים הנדסיים'], skills: ['AutoCAD', 'תכנון קונסטרוקציות', 'ניהול פרויקטים', 'SolidWorks'] },
+        'food': { title: 'מסעדנות ומזון', jobs: ['שף/ית', 'טבח/ית', 'מנהל/ת מסעדה', 'ברמן/ית'], skills: ['ניהול מטבח', 'קולינריה', 'תברואה', 'שירות'] },
+        'tourism': { title: 'תיירות ומלונאות', jobs: ['סוכן/ת נסיעות', 'מנהל/ת קבלה', 'מדריך/ת טיולים', 'מנהל/ת אירועים (מלון)'], skills: ['Amadeus', 'שפות זרות', 'שירות VIP', 'אופרציה'] },
+        'security': { title: 'אבטחה ושמירה', jobs: ['מאבטח/ת', 'מנהל/ת אבטחה', 'סייר/ת', 'קצין/ת בטחון'], skills: ['נשק אירגוני', 'קרב מגע', 'עבר ללא דופי', 'רישיון נשק'] },
+        'media': { title: 'תקשורת ועיתונאות', jobs: ['עיתונאי/ת', 'עורך/ת תוכן', 'כתב/ת שטח', 'מפיק/ה'], skills: ['כתיבה יוצרת', 'תחקיר', 'עריכת וידאו', 'קריינות'] },
+        'agriculture': { title: 'חקלאות וסביבה', jobs: ['אגרונום/ית', 'מנהל/ת משק', 'פקח/ית סביבה', 'עובד/ת חקלאות'], skills: ['גידולי שדה', 'השקיה', 'איכות הסביבה', 'הדברה'] },
+        'transport': { title: 'תחבורה ונהיגה', jobs: ['נהג/ת משאית', 'נהג/ת אוטובוס', 'מנהל/ת צי רכב', 'מלגזן/ית'], skills: ['רישיון ג', 'רישיון ציבורי', 'ניווט', 'הפצה'] },
+        'therapy': { title: 'טיפול ועבודה סוציאלית', jobs: ['עובד/ת סוציאלי', 'פסיכולוג/ית', 'מטפל/ת באמנות', 'קלינאי/ת תקשורת'], skills: ['אמפתיה', 'טיפול פרטני', 'הנחיית קבוצות', 'אבחון'] },
+        'real_estate': { title: 'נדל"ן', jobs: ['סוכן/ת נדל"ן', 'שמאי/ת מקרקעין', 'יזם/ית', 'מנהל/ת נכסים'], skills: ['מכירות', 'רישיון תיווך', 'הערכת שווי', 'יזמות'] },
+        'science': { title: 'מדע ומחקר', jobs: ['חוקר/ת', 'ביולוג/ית', 'לבורנט/ית', 'כימאי/ת'], skills: ['עבודת מעבדה', 'ניתוח סטטיסטי', 'כתיבה מדעית', 'מחקר קליני'] },
+        'retail': { title: 'קמעונאות וחנויות', jobs: ['מנהל/ת חנות', 'זכיין/ית', 'מוכרן/ית', 'קניין/ית אופנה'], skills: ['מיקרוס', 'ניהול צוות', 'מיצוב (VM)', 'מכירות פרונטליות'] },
+        'sports': { title: 'כושר וספורט', jobs: ['מאמן/ת כושר', 'מורה לחינוך גופני', 'תזונאי/ת', 'מנהל/ת חדר כושר'], skills: ['הדרכת ספינינג', 'אנטומיה', 'בניית תוכניות אימון', 'תזונת ספורט'] },
+        'events': { title: 'הפקות ואירועים', jobs: ['מפיק/ת אירועים', 'מנהל/ת במה', 'תאורן/ית', 'סאונדמן/ית'], skills: ['לוגיסטיקה', 'עבודה תחת לחץ', 'סאונד ותאורה', 'הפקת כנסים'] },
+        'beauty': { title: 'יופי וטיפוח', jobs: ['קוסמטיקאית', 'ספר/ית', 'מאפר/ת', 'טכנאי/ת ציפורניים'], skills: ['אסתטיקה', 'שירות', 'עיצוב שיער', 'טיפולי פנים'] },
+        'vet': { title: 'וטרינריה ובעלי חיים', jobs: ['וטרינר/ית', 'אסיסטנט/ית', 'מאלף/ת כלבים', 'ספר/ית כלבים'], skills: ['רפואת בעלי חיים', 'גישה לבע"ח', 'אילוף חיובי', 'סיוע בניתוחים'] },
+        'construction': { title: 'בניין ושיפוצים', jobs: ['מנהל/ת עבודה', 'קבלן/ית', 'חשמלאי/ת', 'אינסטלטור/ית'], skills: ['קריאת תוכניות', 'רישיון חשמלאי', 'ניהול קבלני משנה', 'בטיחות בבנייה'] }
+    };
+
+    // אכלוס סלקט הקטגוריות
+    const selectEl = document.getElementById('user-category-input');
+    Object.entries(categoriesData).forEach(([key, val]) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.innerText = val.title;
+        selectEl.appendChild(opt);
+    });
+
+    const firstNames = ['רועי', 'נועה', 'דוד', 'שרה', 'עומר', 'יעל', 'אבי', 'מיכל', 'תומר', 'רוני'];
+    const lastNames = ['כהן', 'לוי', 'מזרחי', 'פרץ', 'ביטון', 'דגן', 'שפירא', 'אברהם'];
+    const companies = ['TechHub', 'DataCore', 'GlobalLogistics', 'FastDeliver', 'AdMasters', 'SocialBoost'];
+    const availabilities = ['משרה מלאה', 'חצי משרה', 'משמרות', 'פרילנס'];
+    const degrees = ['תואר ראשון', 'הנדסאי', 'הכשרה מקצועית', 'ללא תואר (ניסיון)'];
+
+    function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    // יצירת מועמדים ומשרות
+    let mockCandidates = [];
+    let mockJobs = [];
+
+    Object.keys(categoriesData).forEach(cat => {
+        const data = categoriesData[cat];
+        // נייצר 10 לכל קטגוריה כדי לא להעמיס את הזיכרון (סה"כ 280 כרטיסים לכל צד)
+        for(let i=0; i<10; i++) {
+            const isTrending = Math.random() > 0.8; // Feature 5: Trending
+            const culturalFit = Math.floor(Math.random() * 20 + 80); // Feature 4: Cultural Fit AI
+
+            const sharedSkills = [...data.skills].sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            mockJobs.push({
+                id: `j_${cat}_${i}`,
+                type: 'job',
+                category: cat,
+                company: getRandomItem(companies),
+                title: getRandomItem(data.jobs),
+                location: getRandomItem(['תל אביב', 'הרצליה', 'רמת גן', 'חיפה', 'היברידי', 'מרחוק']),
+                salary: `${Math.floor(Math.random() * 15 + 10)}K`,
+                availability: getRandomItem(availabilities),
+                skills: sharedSkills,
+                about: `מחפשים ${getRandomItem(data.jobs)} מקצועי/ת לחברה מובילה בתחומה. אווירה מעולה.`,
+                icon: 'fa-briefcase',
+                isTrending,
+                culturalFit
+            });
+
+            mockCandidates.push({
+                id: `c_${cat}_${i}`,
+                type: 'candidate',
+                category: cat,
+                name: `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`,
+                title: getRandomItem(data.jobs),
+                experience: `${Math.floor(Math.random() * 8) + 1} שנות ניסיון`,
+                salary: `${Math.floor(Math.random() * 15 + 10)}K`,
+                degree: getRandomItem(degrees),
+                skills: sharedSkills,
+                about: `מחפש/ת אתגר חדש ב${data.title}. מביא/ה מוסר עבודה ויכולת למידה.`,
+                icon: 'fa-user-tie',
+                isTrending,
+                culturalFit
+            });
+        }
+    });
+
+    // --- State ---
+    let currentUserRole = null;
+    let currentUserCategory = 'tech';
+    let currentDeck = [];
+    let topCardIndex = 0;
+    let userChips = 100;
+    let lastSwipedCard = null;
+
+    // Elements
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const roleSelection = document.getElementById('role-selection');
+    const registrationForm = document.getElementById('registration-form');
+    const mainScreen = document.getElementById('main-screen');
+    const cardsContainer = document.getElementById('cards-container');
+    const matchModal = document.getElementById('match-modal');
+    const headerTitle = document.getElementById('header-title');
+
+    function showRegistration(role) {
+        currentUserRole = role;
+        roleSelection.classList.add('hidden');
+        registrationForm.classList.remove('hidden');
+        registrationForm.classList.add('flex');
+    }
+
+    function goBackToRoles() {
+        registrationForm.classList.add('hidden');
+        registrationForm.classList.remove('flex');
+        roleSelection.classList.remove('hidden');
+    }
+
+    function completeRegistration() {
+        currentUserCategory = document.getElementById('user-category-input').value;
+        startApp();
+    }
+
+    function startApp() {
+        welcomeScreen.classList.add('hidden');
+        mainScreen.classList.replace('hidden', 'flex');
+
+        if (currentUserRole === 'candidate') {
+            headerTitle.innerHTML = categoriesData[currentUserCategory].title;
+            currentDeck = mockJobs.filter(j => j.category === currentUserCategory).sort(() => 0.5 - Math.random()); 
+        } else {
+            headerTitle.innerHTML = `מועמדים: ${categoriesData[currentUserCategory].title}`;
+            currentDeck = mockCandidates.filter(c => c.category === currentUserCategory).sort(() => 0.5 - Math.random());
+        }
+
+        setTimeout(() => showToast(`מאתר התאמות בתחום: ${categoriesData[currentUserCategory].title}...`, 'success'), 500);
+        renderCards();
+    }
+
+    function renderCards() {
+        for (let i = topCardIndex; i < Math.min(topCardIndex + 3, currentDeck.length); i++) {
+            if(document.getElementById(`card-${i}`)) continue;
+            
+            const item = currentDeck[i];
+            const cardEl = document.createElement('div');
+            cardEl.className = 'swipe-card';
+            cardEl.id = `card-${i}`;
+            cardEl.style.zIndex = currentDeck.length - i;
+            
+            const isTopCard = i === topCardIndex;
+            
+            const stampNope = `<div class="stamp stamp-nope" id="stamp-nope-${i}">NOPE</div>`;
+            const stampLike = `<div class="stamp stamp-like" id="stamp-like-${i}">LIKE</div>`;
+            const stampSuper = `<div class="stamp stamp-super" id="stamp-super-${i}">SUPER</div>`;
+
+            // Feature 5: Trending Badge
+            const trendingHtml = item.isTrending ? `<div class="trending-badge"><i class="fa-solid fa-fire"></i> חם אש!</div>` : '';
+            
+            // Feature 3: Voice Note
+            const voiceNoteHtml = Math.random() > 0.5 ? `<button onclick="playVoiceNote('${item.name || item.company}')" class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1 px-3 rounded-full text-xs font-bold border border-gray-300 flex items-center gap-2 w-fit"><i class="fa-solid fa-play text-pink-500"></i> פתיח קולי (1 <i class="fa-solid fa-coins"></i>)</button>` : '';
+
+            // AI Highlight & Feature 4: Cultural Fit
+            let aiHtml = `
+                <div class="ai-highlight-text mt-2">
+                    <span class="ai-badge mb-1"><i class="fa-solid fa-robot"></i> התאמת AI</span><br/>
+                    <span class="text-sm font-bold text-purple-600"><i class="fa-solid fa-puzzle-piece"></i> ${item.culturalFit}% התאמה תרבותית</span><br/>
+                    <span class="text-xs">הפרופיל הותאם להבליט ניסיון ב-<strong>${item.skills[0] || 'התחום'}</strong>.</span>
+                </div>`;
+
+            if (item.type === 'job') {
+                cardEl.innerHTML = `
+                    ${trendingHtml} ${stampNope} ${stampLike} ${stampSuper}
+                    <div class="card-image-placeholder job-gradient">
+                        <i class="fa-solid ${item.icon}"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="flex justify-between items-start mb-1">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 leading-tight">${item.title}</h2>
+                                <h3 class="text-lg text-gray-600 font-semibold">${item.company}</h3>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-x-3 gap-y-1 text-gray-500 text-xs mb-1">
+                            <span><i class="fa-solid fa-location-dot"></i> ${item.location}</span>
+                            <span><i class="fa-solid fa-money-bill-wave"></i> ${item.salary}</span>
+                        </div>
+                        ${aiHtml}
+                        ${voiceNoteHtml}
+                        <div class="mt-auto pt-2">
+                            ${item.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                cardEl.innerHTML = `
+                    ${trendingHtml} ${stampNope} ${stampLike} ${stampSuper}
+                    <div class="card-image-placeholder">
+                        <i class="fa-solid ${item.icon}"></i>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-0">${item.name}</h2>
+                        <h3 class="text-md text-pink-500 font-semibold mb-1">${item.title}</h3>
+                        <div class="flex flex-wrap gap-x-3 gap-y-1 text-gray-500 text-xs mb-1">
+                            <span><i class="fa-solid fa-briefcase"></i> ${item.experience}</span>
+                            <span><i class="fa-solid fa-graduation-cap"></i> ${item.degree}</span>
+                        </div>
+                        ${aiHtml}
+                        ${voiceNoteHtml}
+                        <div class="mt-auto pt-2">
+                            ${item.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('cards-container').insertBefore(cardEl, document.getElementById('no-more-cards'));
+
+            if (isTopCard) initDragLogic(cardEl, i);
+        }
+        updateCardPositions();
+    }
+
+    function updateCardPositions() {
+        const cards = Array.from(document.getElementById('cards-container').querySelectorAll('.swipe-card:not(.swiped)'));
+        cards.forEach((card, index) => {
+            if (index === 0) card.style.transform = 'scale(1) translateY(0)';
+            else if (index === 1) card.style.transform = 'scale(0.95) translateY(10px)';
+            else if (index === 2) card.style.transform = 'scale(0.90) translateY(20px)';
+            else card.style.display = 'none';
+        });
+        
+        if(cards.length === 0) document.getElementById('no-more-cards').classList.remove('hidden');
+    }
+
+    // --- Drag Logic ---
+    function initDragLogic(card, index) {
+        let isDragging = false, startX = 0, startY = 0, currentX = 0, currentY = 0;
+        
+        const stampNope = document.getElementById(`stamp-nope-${index}`);
+        const stampLike = document.getElementById(`stamp-like-${index}`);
+
+        const handleStart = (e) => {
+            // אל תתחיל גרירה אם לוחצים על כפתור הפליי בתוך הכרטיס
+            if(e.target.closest('button')) return; 
+            
+            isDragging = true;
+            card.classList.add('dragging');
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        };
+
+        const handleMove = (e) => {
+            if (!isDragging) return;
+            currentX = (e.type.includes('mouse') ? e.clientX : e.touches[0].clientX) - startX;
+            currentY = (e.type.includes('mouse') ? e.clientY : e.touches[0].clientY) - startY;
+
+            card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${currentX * 0.05}deg)`;
+
+            if (currentX > 50) { stampLike.style.opacity = Math.min(currentX/100, 1); stampNope.style.opacity = 0; } 
+            else if (currentX < -50) { stampNope.style.opacity = Math.min(Math.abs(currentX)/100, 1); stampLike.style.opacity = 0; } 
+            else { stampLike.style.opacity = 0; stampNope.style.opacity = 0; }
+        };
+
+        const handleEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            card.classList.remove('dragging');
+
+            const threshold = window.innerWidth * 0.25;
+
+            if (currentY < -threshold * 1.5 && Math.abs(currentX) < threshold) processSwipe('super', card, index);
+            else if (currentX > threshold) processSwipe('right', card, index);
+            else if (currentX < -threshold) processSwipe('left', card, index);
+            else {
+                card.style.transform = 'scale(1) translateY(0)';
+                stampLike.style.opacity = 0; stampNope.style.opacity = 0;
+            }
+            currentX = 0; currentY = 0;
+        };
+
+        card.addEventListener('mousedown', handleStart);
+        card.addEventListener('touchstart', handleStart, {passive: true});
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('touchmove', handleMove, {passive: true});
+        document.addEventListener('mouseup', handleEnd);
+        document.addEventListener('touchend', handleEnd);
+        card._dragListeners = { handleMove, handleEnd };
+    }
+
+    function processSwipe(direction, cardEl, index) {
+        if (direction === 'super' && userChips < 1) {
+            showToast("אין מספיק צ'יפים ל-Super Like", 'error');
+            openCheckout();
+            cardEl.style.transform = 'scale(1) translateY(0)';
+            return;
+        }
+
+        cardEl.classList.add('swiped');
+        lastSwipedCard = { direction, index, item: currentDeck[index] };
+        
+        if(cardEl._dragListeners) {
+            document.removeEventListener('mousemove', cardEl._dragListeners.handleMove);
+            document.removeEventListener('touchmove', cardEl._dragListeners.handleMove);
+            document.removeEventListener('mouseup', cardEl._dragListeners.handleEnd);
+            document.removeEventListener('touchend', cardEl._dragListeners.handleEnd);
+        }
+
+        if (direction === 'right') {
+            cardEl.classList.add('swipe-right-anim');
+            document.getElementById(`stamp-like-${index}`).style.opacity = 1;
+            if(Math.random() > 0.8) setTimeout(() => showMatch(currentDeck[index]), 400);
+        } else if (direction === 'super') {
+            userChips -= 1; updateChipDisplay();
+            cardEl.classList.add('swipe-super-anim');
+            document.getElementById(`stamp-super-${index}`).style.opacity = 1;
+            if(Math.random() > 0.2) setTimeout(() => showMatch(currentDeck[index]), 400);
+        } else {
+            cardEl.classList.add('swipe-left-anim');
+            document.getElementById(`stamp-nope-${index}`).style.opacity = 1;
+        }
+
+        setTimeout(() => {
+            cardEl.remove();
+            topCardIndex++;
+            renderCards();
+            const nextCard = document.getElementById(`card-${topCardIndex}`);
+            if (nextCard) initDragLogic(nextCard, topCardIndex);
+        }, 300);
+    }
+
+    function handleButtonAction(dir) {
+        const topCard = document.getElementById(`card-${topCardIndex}`);
+        if(topCard) processSwipe(dir, topCard, topCardIndex);
+    }
+
+    // --- Features & Utils ---
+    function updateChipDisplay() { document.getElementById('chip-count').innerText = userChips; }
+
+    function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').innerHTML = msg;
+        toast.querySelector('i').className = type === 'error' ? 'fa-solid fa-triangle-exclamation text-red-400' : type === 'success' ? 'fa-solid fa-circle-check text-green-400' : 'fa-solid fa-circle-info text-blue-400';
+        toast.style.bottom = '30px';
+        setTimeout(() => { toast.style.bottom = '-100px'; }, 3000);
+    }
+
+    function showMatch(item) {
+        document.getElementById('match-text').innerText = currentUserRole === 'candidate' ? `חברת ${item.company} החליקה עליך ימינה גם!` : `${item.name} הראה/תה עניין במשרה!`;
+        document.getElementById('match-modal').classList.replace('hidden', 'flex');
+    }
+
+    function closeMatch() { document.getElementById('match-modal').classList.replace('flex', 'hidden'); }
+
+    function sendMessage() {
+        if (userChips >= 3) {
+            userChips -= 3; updateChipDisplay(); closeMatch();
+            showToast('ההודעה נשלחה בהצלחה!', 'success');
+        } else {
+            showToast('אין מספיק צ\'יפים לשליחת הודעה', 'error'); openCheckout();
+        }
+    }
+
+    function rewindCard() {
+        if (!lastSwipedCard) return showToast('אין כרטיס לחזור אליו', 'info');
+        if (userChips < 5) return openCheckout();
+        
+        userChips -= 5; updateChipDisplay();
+        topCardIndex--; lastSwipedCard = null;
+        document.getElementById('cards-container').querySelectorAll('.swipe-card').forEach(c => c.remove());
+        renderCards();
+        showToast('הכרטיס הוחזר בהצלחה', 'success');
+    }
+
+    // Feature 3: Voice Note Logic
+    function playVoiceNote(name) {
+        if (userChips < 1) return openCheckout();
+        userChips -= 1; updateChipDisplay();
+        showToast(`🔊 מנגן: "היי, מדבר/ת ${name}. אני ממש מחפש את האתגר הבא בסביבה מדהימה..."`, 'info');
+    }
+
+    // Feature 2: Boost Logic
+    function activateBoost() {
+        if (userChips < 10) return openCheckout();
+        userChips -= 10; updateChipDisplay();
+        const overlay = document.getElementById('boost-overlay');
+        overlay.classList.replace('hidden', 'flex');
+        setTimeout(() => { overlay.classList.replace('flex', 'hidden'); showToast('הפרופיל שלך קודם בהצלחה!', 'success'); }, 2000);
+    }
+
+    // Feature 1: Secret Admirers Logic
+    function openAdmirers() { document.getElementById('admirers-modal').classList.replace('hidden', 'flex'); }
+    function closeAdmirers() { document.getElementById('admirers-modal').classList.replace('flex', 'hidden'); }
+    function revealAdmirer(cardEl) {
+        if (cardEl.querySelector('.blur-card').classList.contains('revealed')) return; // כבר פתוח
+        if (userChips < 20) return openCheckout();
+        
+        userChips -= 20; updateChipDisplay();
+        cardEl.querySelector('.blur-card').classList.add('revealed');
+        cardEl.querySelector('.unlock-overlay').style.display = 'none';
+        
+        setTimeout(() => {
+            closeAdmirers();
+            showMatch({ name: "מעריץ סודי", company: "מעסיק סודי" });
+        }, 1000);
+    }
+
+    // Checkout Logic
+    function openCheckout() { document.getElementById('checkout-modal').classList.replace('hidden', 'flex'); }
+    function closeCheckout() { document.getElementById('checkout-modal').classList.replace('flex', 'hidden'); }
+    function processCheckout() {
+        if (document.getElementById('cc-number').value === '123456789' && document.getElementById('cc-cvv').value === '123') {
+            userChips += 50; updateChipDisplay(); closeCheckout();
+            showToast('רכישת צ\'יפים בוצעה בהצלחה!', 'success');
+        } else showToast('פרטי אשראי שגויים', 'error');
+    }
+</script>
+</body>
+</html>
