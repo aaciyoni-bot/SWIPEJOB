@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -203,6 +204,35 @@
             max-height: calc(100vh - 80px);
             overflow-y: auto;
         }
+
+        /* --- הגדרות מיוחדות להדפסת הפתקית נטו --- */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #sticky-note-modal, #sticky-note-modal * {
+                visibility: visible;
+            }
+            #sticky-note-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: transparent !important;
+                padding: 0 !important;
+            }
+            .sticky-paper {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -269,6 +299,10 @@
             <div class="flex gap-3">
                 <button onclick="resetApp()" class="text-slate-400 hover:text-slate-600 transition-colors" title="סיום סשן">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+                <button onclick="openArchive()" class="text-emerald-600 hover:text-emerald-700 transition-colors relative" title="ארכיון פתקיות">
+                    <i class="fa-solid fa-folder-open text-xl"></i>
+                    <span id="archive-badge" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold hidden">0</span>
                 </button>
             </div>
 
@@ -413,10 +447,13 @@
                     </div>
 
                     <!-- פעולות -->
-                    <div class="border-t border-[#e8e4c9] pt-4 mt-2">
+                    <div class="border-t border-[#e8e4c9] pt-4 mt-2 no-print">
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="closeStickyNote()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors text-center">
-                                סגור והמשך לסרוק
+                            <button onclick="saveAndCloseStickyNote()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors text-center shadow-md">
+                                <i class="fa-solid fa-folder-arrow-down ml-1"></i> שמור לארכיון והמשך
+                            </button>
+                            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors text-center shadow-md flex items-center gap-2">
+                                <i class="fa-solid fa-print"></i> הדפס
                             </button>
                         </div>
                         <div class="flex flex-wrap gap-2 mt-2">
@@ -431,6 +468,19 @@
 
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- מודאל ארכיון הפתקיות -->
+    <div id="archive-modal" class="hidden absolute inset-0 z-[120] bg-slate-100 flex-col overflow-y-auto">
+        <div class="p-4 bg-white shadow-sm flex justify-between items-center sticky top-0 z-10">
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-folder-open text-emerald-600"></i> ארכיון פתקיות
+            </h2>
+            <button onclick="closeArchive()" class="text-slate-400 hover:text-slate-600 text-2xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="p-4 space-y-3" id="archive-list">
+            <!-- רשימת הפתקיות תרונדר כאן דינמית -->
         </div>
     </div>
 
@@ -544,6 +594,9 @@
     
     // מידע נוכחי להצגה בפתקית:
     let currentMatchedItem = null; // האובייקט שעליו החליקו ימינה
+    
+    // ארכיון לשמירת הפתקיות
+    let savedNotes = [];
 
     // Elements
     const welcomeScreen = document.getElementById('welcome-screen');
@@ -824,8 +877,12 @@
     }
 
     // --- PhoneScreen AI Sticky Note ---
-    function openStickyNote() {
+    function openStickyNote(item = currentMatchedItem, targetName = currentTargetName) {
         closeMatch();
+        
+        // עדכון האייטם הנוכחי כדי שההדפסה והשמירה יעבדו נכון (רלוונטי גם כשפותחים מהארכיון)
+        currentMatchedItem = item;
+        currentTargetName = targetName;
         
         // הגדרת תוכן הפתקית דינמית לפי מה שסונן
         const subjectNameEl = document.getElementById('sticky-subject-name');
@@ -877,6 +934,88 @@
 
     function closeStickyNote() {
         document.getElementById('sticky-note-modal').classList.replace('flex', 'hidden');
+    }
+
+    // --- פונקציות ניהול ארכיון והדפסה ---
+    
+    function saveAndCloseStickyNote() {
+        // בודקים אם הפתקית כבר נשמרה לפי ה-ID שלה
+        const exists = savedNotes.find(note => note.item.id === currentMatchedItem.id);
+        
+        if (!exists) {
+            savedNotes.push({
+                item: currentMatchedItem,
+                targetName: currentTargetName,
+                role: currentUserRole,
+                timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+            });
+            
+            // עדכון מונה הארכיון למעלה
+            const badge = document.getElementById('archive-badge');
+            badge.innerText = savedNotes.length;
+            badge.classList.remove('hidden');
+            
+            showToast('הפתקית נשמרה בארכיון', 'success');
+        }
+        
+        closeStickyNote();
+    }
+
+    function openArchive() {
+        renderArchive();
+        document.getElementById('archive-modal').classList.replace('hidden', 'flex');
+    }
+
+    function closeArchive() {
+        document.getElementById('archive-modal').classList.replace('flex', 'hidden');
+    }
+
+    function renderArchive() {
+        const listEl = document.getElementById('archive-list');
+        
+        if (savedNotes.length === 0) {
+            listEl.innerHTML = `
+                <div class="text-center text-slate-400 mt-16">
+                    <i class="fa-solid fa-folder-open text-6xl mb-4 text-slate-300"></i>
+                    <h3 class="text-lg font-bold text-slate-600">הארכיון ריק</h3>
+                    <p class="text-sm mt-1">אשרו התאמות ושמרו פתקיות כדי לראות אותן כאן.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // הופכים את הסדר כדי שהחדש ביותר יופיע למעלה
+        listEl.innerHTML = savedNotes.map((note, index) => {
+            const isEmployer = note.role === 'employer';
+            const subject = isEmployer ? note.item.name : note.item.company;
+            const icon = isEmployer ? 'fa-user-tie' : 'fa-building';
+            
+            return `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center transition-all hover:shadow-md">
+                    <div>
+                        <h4 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid ${icon} text-emerald-600"></i> ${subject}
+                        </h4>
+                        <p class="text-xs text-slate-500 mt-1">עבור: ${note.targetName}</p>
+                        <p class="text-[10px] text-slate-400 mt-1"><i class="fa-regular fa-clock"></i> נשמר ב-${note.timestamp}</p>
+                    </div>
+                    <button onclick="viewArchivedNote(${index})" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg text-sm font-bold transition-colors">
+                        פתח <i class="fa-solid fa-arrow-left ml-1"></i>
+                    </button>
+                </div>
+            `;
+        }).reverse().join('');
+    }
+
+    function viewArchivedNote(index) {
+        const note = savedNotes[index];
+        // שומרים זמנית את התפקיד כדי שהפתקית תרונדר בכיוון הנכון
+        const originalRole = currentUserRole;
+        currentUserRole = note.role;
+        
+        openStickyNote(note.item, note.targetName);
+        
+        currentUserRole = originalRole;
     }
 
     function rewindCard() {
