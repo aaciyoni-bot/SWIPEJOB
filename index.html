@@ -445,7 +445,7 @@ function buildJobs(n){
   }
   return jobs;
 }
-const ALL_JOBS = buildJobs(500);
+const ALL_JOBS = buildJobs(10000);  // large pool → renders 24 at a time via load-more (stays light on low-end phones)
 
 /* ---------- images (Unsplash CDN w/ graceful fallback) ---------- */
 const IMG = id => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`;
@@ -568,12 +568,12 @@ function App(){
               <h1 style={{marginTop:14}}>Your new life <span className="grad">abroad</span> starts here.</h1>
               <p className="sub">Verified relocation jobs across the world — with <b>flights, visa and housing arranged</b>. Real opportunities for hard-working people ready to build a better future.</p>
               <div className="hero-cta">
-                <button className="btn btn-primary btn-lg" onClick={()=>scrollTo("jobs")}>Browse 500+ jobs →</button>
+                <button className="btn btn-primary btn-lg" onClick={()=>scrollTo("jobs")}>Browse 10,000+ jobs →</button>
                 <button className="btn btn-ghost btn-lg" onClick={()=>scrollTo("how")}>How it works</button>
               </div>
               <div className="flags"><span className="fl">🇿🇲</span><span className="fl">🇳🇬</span> Now open for applicants in Zambia & Nigeria</div>
               <div className="hero-stats">
-                <div className="st"><b>500+</b><span>Open positions</span></div>
+                <div className="st"><b>10,000+</b><span>Open positions</span></div>
                 <div className="st"><b>26,000+</b><span>ZMW / month</span></div>
                 <div className="st"><b>75%</b><span>Include flight + visa</span></div>
               </div>
@@ -606,7 +606,7 @@ function App(){
             <div className="sec-head">
               <span className="eyebrow">Open positions</span>
               <h2>Find the job that changes everything</h2>
-              <p>Browse hundreds of verified relocation jobs. Anyone can view the listings — a Mobile Money subscription unlocks the ability to apply and send your profile.</p>
+              <p>Browse thousands of verified relocation jobs. Anyone can view the listings — a Mobile Money subscription unlocks the ability to apply and send your profile.</p>
             </div>
 
             {/* category chips */}
@@ -721,7 +721,7 @@ function App(){
             </div>
             <div className="steps">
               <div className="step"><div className="num">1</div><h3>Subscribe with Mobile Money</h3><p>Activate your membership in seconds using MTN, Airtel, Zamtel, OPay and more.</p></div>
-              <div className="step"><div className="num">2</div><h3>Browse verified jobs</h3><p>Explore 500+ relocation positions with clear salary, housing and travel details.</p></div>
+              <div className="step"><div className="num">2</div><h3>Browse verified jobs</h3><p>Explore 10,000+ relocation positions with clear salary, housing and travel details.</p></div>
               <div className="step"><div className="num">3</div><h3>Send your profile</h3><p>Share your details, a photo and a short questionnaire — no CV needed.</p></div>
               <div className="step"><div className="num">4</div><h3>Get contacted</h3><p>The employer reviews your profile and reaches out to arrange the next steps.</p></div>
             </div>
@@ -775,7 +775,7 @@ function App(){
           <div className="wrap">
             <div className="cta-band">
               <h2>Your future is one application away.</h2>
-              <p>Subscribe with Mobile Money and unlock 500+ relocation jobs today.</p>
+              <p>Subscribe with Mobile Money and unlock 10,000+ relocation jobs today.</p>
               <div style={{marginTop:26,position:"relative"}}>
                 {subscribed
                   ? <button className="btn btn-accent btn-lg" onClick={()=>scrollTo("jobs")}>Browse jobs →</button>
@@ -945,7 +945,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
         <div className="modal-head">
           <button className="x" onClick={onClose} aria-label="Close">✕</button>
           <h3 className="mtitle">Activate your membership</h3>
-          <p className="msub">{ctx&&ctx.intent==="apply"?"One quick step and you can apply to this job.":"Unlock applications to all 500+ jobs."}</p>
+          <p className="msub">{ctx&&ctx.intent==="apply"?"One quick step and you can apply to this job.":"Unlock applications to all 10,000+ jobs."}</p>
         </div>
         <div className="modal-body">
           {stage==="form" ? (
