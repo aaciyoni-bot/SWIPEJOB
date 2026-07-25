@@ -1,744 +1,1153 @@
-<html lang="he" dir="rtl">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GOOJOB - מערכת המגייסים החכמה</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Assistant', sans-serif;
-            background-color: #f8fafc;
-            overflow: hidden;
-            touch-action: none;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GOOJOB — Work Abroad. Change Your Life. Relocation Jobs for Zambia & Nigeria</title>
+<meta name="description" content="Verified relocation jobs across the world. Flights, visa and housing arranged. Built for workers from Zambia and Nigeria. Salaries from 26,000 ZMW/month. Couples, families and single mothers welcome." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root{
+    /* Neutrals — warm, tinted toward the brand */
+    --bg:#fbfaf7;
+    --surface:#ffffff;
+    --surface-2:#f5f3ee;
+    --line:#e7e3da;
+    --ink:#14110c;
+    --ink-2:#4a4436;
+    --muted:#7c7566;
+    /* Brand — deep trustworthy indigo + hopeful sunrise amber */
+    --brand:#1d3a8a;
+    --brand-2:#2c56c9;
+    --brand-ink:#0d1f52;
+    --accent:#f6a623;
+    --accent-2:#ff7a45;
+    --gold:#d99a1c;
+    --success:#0f8a5f;
+    --success-bg:#e6f5ee;
+    /* radii + shadow system */
+    --r-sm:10px; --r:16px; --r-lg:24px; --r-xl:34px;
+    --sh-1:0 1px 2px rgba(20,17,12,.05), 0 1px 3px rgba(20,17,12,.06);
+    --sh-2:0 4px 12px rgba(20,17,12,.07), 0 2px 4px rgba(20,17,12,.05);
+    --sh-3:0 18px 44px -12px rgba(20,17,12,.22);
+    --sh-brand:0 16px 40px -12px rgba(29,58,138,.45);
+    --maxw:1180px;
+    --font-head:'Plus Jakarta Sans',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--font-body);font-size:16px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  h1,h2,h3,h4{font-family:var(--font-head);line-height:1.12;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  img{display:block;max-width:100%}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-2)}
+  .imgfallback{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e9edfb,#f6ede0);font-size:2.4rem}
 
-        /* פונט סריף מסורתי יותר לשמות בקורות חיים כדי לתת מראה של מסמך */
-        .cv-name {
-            font-family: 'Frank Ruhl Libre', serif;
-        }
+  /* ---------- Buttons ---------- */
+  .btn{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;font-size:15px;
+    padding:14px 26px;border-radius:999px;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;white-space:nowrap}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--brand-2),var(--brand));color:#fff;box-shadow:var(--sh-brand)}
+  .btn-primary:hover{filter:brightness(1.07);transform:translateY(-2px)}
+  .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#3a1d00;box-shadow:0 14px 34px -12px rgba(246,166,35,.7)}
+  .btn-accent:hover{filter:brightness(1.05);transform:translateY(-2px)}
+  .btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--sh-1)}
+  .btn-ghost:hover{border-color:var(--brand-2);color:var(--brand-2)}
+  .btn-lg{padding:17px 34px;font-size:16px}
+  .btn-block{width:100%;justify-content:center}
 
-        .app-container {
-            max-width: 480px;
-            margin: 0 auto;
-            height: 100vh;
-            height: 100dvh;
-            background-color: white;
-            position: relative;
-            box-shadow: 0 0 25px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-        }
+  /* ---------- Header ---------- */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(251,250,247,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;gap:20px;height:70px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:22px;letter-spacing:-.03em}
+  .logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--brand-2),var(--brand));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:var(--sh-brand)}
+  .logo b{color:var(--brand)}
+  .logo .go-accent{color:var(--accent-2)}
+  .nav-links{display:flex;gap:26px;margin-inline-start:14px}
+  .nav-links a{font-size:14.5px;font-weight:600;color:var(--ink-2);transition:color .15s}
+  .nav-links a:hover{color:var(--brand-2)}
+  .nav-spacer{flex:1}
+  .sub-pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success);background:var(--success-bg);padding:8px 14px;border-radius:999px}
+  .hamburger{display:none;font-size:26px;color:var(--ink);padding:6px}
 
-        .cards-container {
-            flex-grow: 1;
-            position: relative;
-            overflow: hidden;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #e2e8f0; /* רקע קצת יותר כהה כדי שהדף הלבן יבלוט */
-        }
+  /* ---------- Hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:64px 0 40px;
+    background:
+      radial-gradient(1200px 520px at 82% -8%,rgba(246,166,35,.20),transparent 60%),
+      radial-gradient(900px 500px at 6% 4%,rgba(44,86,201,.14),transparent 55%),
+      linear-gradient(180deg,#fbfaf7 0%,#f7f4ee 100%);}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+  .hero h1{font-size:clamp(34px,5vw,58px);font-weight:800}
+  .hero h1 .grad{background:linear-gradient(120deg,var(--accent-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{margin-top:20px;font-size:clamp(16px,1.6vw,19px);color:var(--ink-2);max-width:36ch}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .flags{display:inline-flex;align-items:center;gap:8px;margin-top:26px;font-size:14px;font-weight:600;color:var(--ink-2)}
+  .flags .fl{font-size:20px}
+  .hero-stats{display:flex;gap:26px;margin-top:34px;flex-wrap:wrap}
+  .hero-stats .st b{display:block;font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--brand)}
+  .hero-stats .st span{font-size:13px;color:var(--muted);font-weight:600}
 
-        /* עיצוב כרטיסיית קורות החיים (מסמך) */
-        .swipe-card {
-            position: absolute;
-            width: calc(100% - 3rem);
-            height: calc(100% - 2rem);
-            background-color: white;
-            border-radius: 0.5rem; /* פינות פחות עגולות למראה של דף */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #cbd5e1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            will-change: transform;
-            cursor: grab;
-            transition: transform 0.3s ease-out;
-        }
+  /* hero collage */
+  .collage{position:relative;height:480px}
+  .collage .ph{position:absolute;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-3);border:5px solid #fff}
+  .collage .ph img,.collage .ph .imgfallback{width:100%;height:100%;object-fit:cover}
+  .ph.a{width:58%;height:64%;inset-inline-start:0;top:0;z-index:2}
+  .ph.b{width:44%;height:50%;inset-inline-end:0;top:8%;z-index:3}
+  .ph.c{width:50%;height:46%;inset-inline-start:8%;bottom:0;z-index:4}
+  .ph.d{width:38%;height:40%;inset-inline-end:2%;bottom:6%;z-index:5}
+  .badge-float{position:absolute;z-index:6;background:#fff;border-radius:14px;box-shadow:var(--sh-3);padding:11px 15px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
+  .badge-float .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+  .badge-float.one{top:-2%;inset-inline-end:16%}
+  .badge-float.two{bottom:16%;inset-inline-start:-4%}
 
-        .swipe-card.dragging {
-            transition: none;
-            cursor: grabbing;
-        }
+  /* ---------- Trust strip ---------- */
+  .trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface)}
+  .trust-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;padding:20px 0}
+  .trust .ti{display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:var(--ink-2)}
+  .trust .ti .ic{font-size:20px}
 
-        .card-content {
-            padding: 1.5rem;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: white;
-            position: relative;
-        }
+  /* ---------- Sections ---------- */
+  section{padding:80px 0}
+  .sec-head{max-width:720px;margin-bottom:40px}
+  .sec-head h2{font-size:clamp(27px,3.5vw,40px);font-weight:800;margin-top:12px}
+  .sec-head p{margin-top:14px;color:var(--ink-2);font-size:17px}
 
-        .skill-tag {
-            background-color: #f1f5f9;
-            color: #475569;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            margin-left: 0.4rem;
-            margin-bottom: 0.4rem;
-            display: inline-block;
-            border: 1px solid #e2e8f0;
-        }
+  /* category chips */
+  .cats{display:flex;gap:11px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);
+    font-size:14px;font-weight:600;color:var(--ink-2);transition:all .16s;box-shadow:var(--sh-1)}
+  .chip:hover{border-color:var(--brand-2);color:var(--brand-2);transform:translateY(-1px)}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:var(--sh-brand)}
+  .chip .em{font-size:16px}
 
-        /* אנימציות העלמה */
-        .swipe-left-anim { transform: translateX(-150vw) rotate(-20deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
-        .swipe-right-anim { transform: translateX(150vw) rotate(20deg) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
-        .swipe-super-anim { transform: translateY(-150vh) !important; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+  /* filter bar */
+  .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--sh-1)}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .inp,select.inp{padding:11px 13px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);font-family:inherit;font-size:14.5px;color:var(--ink);min-width:150px;transition:border .15s,box-shadow .15s}
+  .inp:focus{outline:none;border-color:var(--brand-2);box-shadow:0 0 0 3px rgba(44,86,201,.15)}
+  .search-wrap{flex:1;min-width:200px;position:relative}
+  .search-wrap .inp{width:100%;padding-inline-start:38px}
+  .search-wrap .mag{position:absolute;inset-inline-start:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .toggle-row{display:flex;gap:8px;flex-wrap:wrap}
+  .tgl{font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);transition:all .15s}
+  .tgl.on{background:var(--brand-ink);color:#fff;border-color:var(--brand-ink)}
+  .result-count{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:18px}
 
-        /* סטאמפים (חותמות) */
-        .stamp {
-            position: absolute;
-            top: 40px;
-            padding: 0.5rem 1rem;
-            border: 4px solid;
-            border-radius: 0.5rem;
-            font-size: 2.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            opacity: 0;
-            z-index: 10;
-            pointer-events: none;
-        }
-        .stamp-nope { right: 20px; color: #ef4444; border-color: #ef4444; transform: rotate(15deg); }
-        .stamp-like { left: 20px; color: #10b981; border-color: #10b981; transform: rotate(-15deg); }
-        .stamp-super { bottom: 60px; left: 50%; transform: translateX(-50%) scale(1.5); color: #3b82f6; border-color: #3b82f6; }
+  /* job grid */
+  .jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .jcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1);
+    display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease,border-color .2s;position:relative}
+  .jcard:hover{transform:translateY(-4px);box-shadow:var(--sh-3);border-color:#dcd6c8}
+  .jcard-top{padding:18px 18px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .jcat{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--brand-2);background:#eef2fd;padding:6px 11px;border-radius:999px}
+  .jflag{font-size:15px;background:var(--surface-2);border-radius:9px;padding:5px 9px;font-weight:700;display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+  .jcard h3{font-size:18px;font-weight:700;padding:14px 18px 2px;line-height:1.2}
+  .jemp{padding:0 18px;color:var(--muted);font-size:13.5px;font-weight:600}
+  .jsalary{margin:14px 18px 0;padding:12px 14px;border-radius:var(--r-sm);background:var(--success-bg);display:flex;align-items:baseline;justify-content:space-between}
+  .jsalary.nohouse{background:#fff4e6}
+  .jsalary .amt{font-family:var(--font-head);font-weight:800;font-size:19px;color:var(--success)}
+  .jsalary.nohouse .amt{color:var(--gold)}
+  .jsalary .per{font-size:12px;color:var(--muted);font-weight:600}
+  .jtags{display:flex;flex-wrap:wrap;gap:6px;padding:14px 18px 0}
+  .jtag{font-size:11.5px;font-weight:700;padding:5px 9px;border-radius:8px;display:inline-flex;align-items:center;gap:4px}
+  .jtag.house{background:#e6f5ee;color:var(--success)}
+  .jtag.nohouse{background:#fdeede;color:var(--gold)}
+  .jtag.flight{background:#e9edfb;color:var(--brand-2)}
+  .jtag.vac{background:#fbe9f4;color:#b23a86}
+  .jtag.couple{background:#efe6fb;color:#7b3fd1}
+  .jtag.kids{background:#e6f2fb;color:#2b7cc4}
+  .jcard-foot{margin-top:auto;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);margin-top:16px}
+  .jcard-foot .posted{font-size:12px;color:var(--muted);font-weight:600}
+  .apply-mini{font-size:13.5px;font-weight:700;color:#fff;background:var(--brand);padding:9px 16px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;transition:filter .15s,transform .15s}
+  .apply-mini:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .apply-mini.locked{background:var(--surface-2);color:var(--ink-2)}
+  .load-more{display:flex;justify-content:center;margin-top:40px}
+  .empty{text-align:center;padding:70px 20px;color:var(--muted)}
+  .empty .big{font-size:3rem;margin-bottom:10px}
 
-        .ai-badge {
-            background: #f0fdf4;
-            color: #059669;
-            padding: 0.15rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.7rem;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            border: 1px solid #bbf7d0;
-        }
+  /* program cards (couples / single mothers) */
+  .prog{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+  .prog-media{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3);aspect-ratio:4/3}
+  .prog-media img,.prog-media .imgfallback{width:100%;height:100%;object-fit:cover}
+  .prog-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:38px;box-shadow:var(--sh-2)}
+  .prog-card h2{font-size:clamp(25px,3vw,36px);font-weight:800}
+  .benefit{display:flex;gap:13px;align-items:flex-start;margin-top:18px}
+  .benefit .bic{flex:none;width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#eef2fd}
+  .benefit b{font-size:15.5px;display:block}
+  .benefit span{font-size:14px;color:var(--ink-2)}
+  .alt{background:linear-gradient(180deg,#fff,#faf6ee)}
 
-        /* מודאל הראיון (החליף את הפתקית) */
-        #interview-modal {
-            background-color: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(4px);
-        }
-        
-        .modal-scrollable-content {
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
-        }
+  /* how it works */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 24px;box-shadow:var(--sh-1);position:relative}
+  .step .num{font-family:var(--font-head);font-weight:800;font-size:15px;color:#fff;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand-2),var(--brand));display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-brand)}
+  .step h3{font-size:18px;margin-top:16px}
+  .step p{margin-top:8px;color:var(--ink-2);font-size:14.5px}
 
-        /* --- הגדרות הדפסה --- */
-        @media print {
-            body * { visibility: hidden; }
-            #interview-modal, #interview-modal * { visibility: visible; }
-            #interview-modal {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: transparent !important;
-                padding: 0 !important;
-            }
-            .print-container {
-                box-shadow: none !important;
-                border: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                margin: 0 !important;
-            }
-            .no-print { display: none !important; }
-        }
-    </style>
+  /* testimonials */
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .tcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh-1)}
+  .tcard .quote{font-size:15.5px;color:var(--ink-2);line-height:1.65}
+  .tcard .who{display:flex;align-items:center;gap:12px;margin-top:20px}
+  .tcard .who .av,.tcard .who .av img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+  .tcard .who b{font-size:14.5px;display:block}
+  .tcard .who span{font-size:13px;color:var(--muted)}
+  .stars{color:var(--accent);font-size:14px;margin-bottom:12px}
+
+  /* FAQ */
+  .faq{max-width:800px;margin:0 auto}
+  .qa{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh-1)}
+  .qa button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px 22px;font-family:var(--font-head);font-weight:700;font-size:16.5px;text-align:start;color:var(--ink)}
+  .qa .ans{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;color:var(--ink-2);font-size:15px}
+  .qa.open .ans{max-height:320px;padding:0 22px 22px}
+  .qa .pm{font-size:22px;color:var(--brand-2);transition:transform .25s}
+  .qa.open .pm{transform:rotate(45deg)}
+
+  /* CTA band */
+  .cta-band{background:linear-gradient(120deg,var(--brand-ink),var(--brand-2));border-radius:var(--r-xl);padding:56px;text-align:center;color:#fff;position:relative;overflow:hidden;box-shadow:var(--sh-3)}
+  .cta-band::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 300px at 80% 0,rgba(246,166,35,.35),transparent 60%);pointer-events:none}
+  .cta-band h2{color:#fff;font-size:clamp(26px,3.4vw,40px);position:relative}
+  .cta-band p{color:#d7dcf2;margin-top:14px;font-size:18px;position:relative}
+
+  /* footer */
+  footer{background:#0f0d09;color:#cdc7ba;padding:60px 0 28px;margin-top:10px}
+  footer .fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:36px}
+  footer h4{color:#fff;font-size:15px;margin-bottom:14px}
+  footer a{display:block;color:#a9a293;font-size:14px;padding:5px 0;transition:color .15s}
+  footer a:hover{color:#fff}
+  footer .logo{color:#fff}
+  footer .logo b{color:#8ea6f0}
+  footer .disc{border-top:1px solid #2a271f;margin-top:34px;padding-top:20px;font-size:12.5px;color:#7c7566;line-height:1.6}
+
+  /* ---------- Modal ---------- */
+  .overlay{position:fixed;inset:0;z-index:100;background:rgba(15,13,9,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:28px 16px;overflow-y:auto;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--surface);border-radius:var(--r-lg);max-width:560px;width:100%;box-shadow:var(--sh-3);position:relative;animation:pop .24s cubic-bezier(.2,.9,.3,1.3);margin:auto}
+  .modal.wide{max-width:640px}
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .modal-head{position:relative;padding:26px 28px 0}
+  .modal-head .x{position:absolute;top:16px;inset-inline-end:16px;width:38px;height:38px;border-radius:50%;background:var(--surface-2);color:var(--ink-2);font-size:20px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+  .modal-head .x:hover{background:var(--line)}
+  .modal-body{padding:20px 28px 28px}
+  .modal h3.mtitle{font-size:23px;font-weight:800}
+  .modal .msub{color:var(--muted);font-size:14.5px;margin-top:6px}
+
+  /* job detail */
+  .jd-hero{border-radius:var(--r);overflow:hidden;height:150px;position:relative;margin-bottom:8px}
+  .jd-hero img,.jd-hero .imgfallback{width:100%;height:100%;object-fit:cover}
+  .jd-hero .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,31,82,.05),rgba(13,31,82,.75))}
+  .jd-hero .cat{position:absolute;bottom:12px;inset-inline-start:14px;color:#fff;font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center}
+  .jd-sal{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0}
+  .jd-sal .box{flex:1;min-width:150px;padding:16px;border-radius:var(--r-sm);border:1px solid var(--line)}
+  .jd-sal .box b{font-family:var(--font-head);font-size:22px;display:block;color:var(--ink)}
+  .jd-sal .box.pay{background:var(--success-bg);border-color:transparent}
+  .jd-sal .box.pay b{color:var(--success)}
+  .jd-sal .box.nohouse{background:#fff4e6}
+  .jd-sal .box.nohouse b{color:var(--gold)}
+  .jd-sal .box span{font-size:12px;color:var(--muted);font-weight:600}
+  .jd-list{margin:8px 0 0;padding:0;list-style:none}
+  .jd-list li{display:flex;gap:10px;padding:8px 0;font-size:14.5px;color:var(--ink-2);border-bottom:1px solid var(--surface-2)}
+  .jd-list li .ic{color:var(--success);flex:none}
+  .locked-note{display:flex;gap:10px;align-items:center;background:#fff4e6;border:1px solid #f6d9a8;color:#8a5a10;padding:12px 14px;border-radius:var(--r-sm);font-size:13.5px;font-weight:600;margin-top:14px}
+
+  /* forms in modal */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  .form-grid .full{grid-column:1/-1}
+  .fld{display:flex;flex-direction:column;gap:6px}
+  .fld label{font-size:13px;font-weight:700;color:var(--ink-2)}
+  .fld input,.fld select,.fld textarea{padding:12px 13px;border:1px solid var(--line);border-radius:var(--r-sm);font-family:inherit;font-size:14.5px;background:var(--surface);color:var(--ink);transition:border .15s,box-shadow .15s}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--brand-2);box-shadow:0 0 0 3px rgba(44,86,201,.14)}
+  .fld textarea{resize:vertical;min-height:80px}
+  .part-head{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:16px;border-top:2px dashed var(--line);font-family:var(--font-head);font-weight:800;font-size:16px}
+  .part-head .pn{width:28px;height:28px;border-radius:8px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .photo-drop{grid-column:1/-1;border:2px dashed var(--line);border-radius:var(--r);padding:18px;display:flex;align-items:center;gap:16px;background:var(--surface-2);transition:border .15s}
+  .photo-drop:hover{border-color:var(--brand-2)}
+  .photo-drop .prev{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--muted)}
+  .photo-drop .t b{font-size:14.5px}
+  .photo-drop .t span{font-size:12.5px;color:var(--muted)}
+
+  /* provider grid */
+  .plan-row{display:flex;gap:12px;margin:6px 0 4px}
+  .plan{flex:1;border:2px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .15s;background:var(--surface);text-align:center}
+  .plan.on{border-color:var(--brand-2);background:#f4f7ff;box-shadow:0 0 0 3px rgba(44,86,201,.1)}
+  .plan .price{font-family:var(--font-head);font-weight:800;font-size:24px;color:var(--brand)}
+  .plan .cur{font-size:12px;color:var(--muted);font-weight:600}
+  .prov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  .prov{border:2px solid var(--line);border-radius:var(--r-sm);padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s;background:var(--surface);font-size:12.5px;font-weight:700;color:var(--ink-2)}
+  .prov:hover{border-color:var(--brand-2)}
+  .prov.on{border-color:var(--brand-2);background:#f4f7ff;color:var(--brand)}
+  .prov .lg{font-size:22px;display:block;margin-bottom:4px}
+  .country-tabs{display:flex;gap:8px;margin:4px 0 14px}
+  .ctab{flex:1;padding:11px;border-radius:var(--r-sm);border:2px solid var(--line);background:var(--surface);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
+  .ctab.on{border-color:var(--brand-2);background:#f4f7ff;color:var(--brand)}
+  .pay-note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.55}
+  .secure{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12.5px;color:var(--success);font-weight:700;margin-top:10px}
+
+  .success-wrap{text-align:center;padding:14px 4px 6px}
+  .success-wrap .ring{width:82px;height:82px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 16px;animation:pop .4s ease}
+  .success-wrap h3{font-size:24px;font-weight:800}
+  .success-wrap p{color:var(--ink-2);margin-top:10px;font-size:15px}
+
+  .divider-or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;font-weight:700;margin:16px 0}
+  .divider-or::before,.divider-or::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* mobile */
+  @media(max-width:940px){
+    .hero-grid{grid-template-columns:1fr;gap:34px}
+    .collage{height:380px;max-width:460px;margin:0 auto}
+    .prog{grid-template-columns:1fr}
+    .steps{grid-template-columns:repeat(2,1fr)}
+    .jobs-grid,.tgrid{grid-template-columns:repeat(2,1fr)}
+    footer .fgrid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:680px){
+    .nav-links{display:none}
+    .hamburger{display:block}
+    section{padding:56px 0}
+    .jobs-grid,.tgrid,.steps{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr}
+    .cta-band{padding:36px 22px}
+    .prog-card{padding:26px}
+    .hero-stats{gap:18px}
+    .prov-grid{grid-template-columns:repeat(2,1fr)}
+    footer .fgrid{grid-template-columns:1fr}
+    .mobile-menu{display:flex}
+  }
+  .mobile-menu{display:none;flex-direction:column;gap:2px;padding:10px 22px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .mobile-menu a{padding:12px 6px;font-weight:600;border-bottom:1px solid var(--surface-2);color:var(--ink-2)}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+</style>
 </head>
 <body>
+<div id="root"></div>
+<!-- hidden target so form posts don't navigate away -->
+<iframe name="goojob_sink" style="display:none" title="sink"></iframe>
 
-<div class="app-container" id="app">
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
 
-    <!-- מסך פתיחה למגייס -->
-    <div id="welcome-screen" class="absolute inset-0 flex flex-col justify-center items-center bg-white z-50 p-6 text-center overflow-y-auto">
-        <div class="w-24 h-24 bg-slate-800 rounded-2xl flex justify-center items-center mb-6 shadow-lg flex-shrink-0">
-            <i class="fa-solid fa-file-lines text-white text-5xl"></i>
+/* ============================================================
+   CONFIG — where applications & subscriptions are delivered.
+   All leads route to ONE inbox. Applicants never see this.
+   Swap INBOX below, or use a FormSubmit hashed endpoint
+   (https://formsubmit.co/el/xxxxx) to keep the address private.
+   ============================================================ */
+const INBOX = "aaci.yoni@gmail.com";
+const FORM_ENDPOINT = "https://formsubmit.co/" + INBOX;
+
+const PLAN = {
+  zambia:  { price: 150,   cur: "ZMW", label: "K150", flag: "🇿🇲", name: "Zambia" },
+  nigeria: { price: 5000,  cur: "NGN", label: "₦5,000", flag: "🇳🇬", name: "Nigeria" },
+};
+const PROVIDERS = {
+  zambia: [
+    { id:"mtn",    name:"MTN MoMo",     lg:"🟡" },
+    { id:"airtel", name:"Airtel Money", lg:"🔴" },
+    { id:"zamtel", name:"Zamtel Kwacha",lg:"🟢" },
+  ],
+  nigeria: [
+    { id:"mtn-ng",  name:"MTN MoMo",     lg:"🟡" },
+    { id:"airtel-ng",name:"Airtel Money",lg:"🔴" },
+    { id:"opay",    name:"OPay",         lg:"🟢" },
+    { id:"palmpay", name:"PalmPay",      lg:"🟣" },
+    { id:"paga",    name:"Paga",         lg:"🟠" },
+  ],
+};
+
+/* ---------- deterministic data generation ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+const CATS = [
+  {id:"aupair",   name:"Au Pair & Nanny",         icon:"👶", titles:["Live-in Au Pair","Family Nanny","Childcare Assistant","Au Pair — Twins Family"]},
+  {id:"caregiver",name:"Caregiver & Elderly Care", icon:"🧑‍⚕️",titles:["Live-in Caregiver","Elderly Care Assistant","Home Care Aide","Personal Care Worker"]},
+  {id:"driver",   name:"Driver",                   icon:"🚗", titles:["Family Driver","Delivery Driver","Company Chauffeur","Van Driver"]},
+  {id:"farm",     name:"Agriculture & Farm",       icon:"🌾", titles:["Farm Worker","Greenhouse Picker","Dairy Farm Hand","Fruit Harvester"]},
+  {id:"chef",     name:"Chef & Cook",              icon:"👨‍🍳",titles:["Line Cook","Restaurant Cook","Kitchen Chef","Commis Chef"]},
+  {id:"kitchen",  name:"Kitchen Porter",           icon:"🍽️", titles:["Dishwasher","Kitchen Porter","Kitchen Steward","Kitchen Assistant"]},
+  {id:"cleaning", name:"Housekeeping & Cleaning",  icon:"🧹", titles:["Hotel Housekeeper","Office Cleaner","Room Attendant","Domestic Housekeeper"]},
+  {id:"construction",name:"Construction",          icon:"🏗️", titles:["Construction Helper","General Laborer","Site Worker","Steel Fixer"]},
+  {id:"hospitality",name:"Hospitality & Waiter",   icon:"☕", titles:["Waiter / Waitress","Café Server","Banquet Server","Barista"]},
+  {id:"warehouse",name:"Warehouse & Factory",      icon:"📦", titles:["Warehouse Operative","Factory Line Worker","Packing Assistant","Order Picker"]},
+  {id:"security", name:"Security Guard",            icon:"🛡️", titles:["Security Guard","Night Watchman","Site Security Officer","Gatekeeper"]},
+  {id:"garden",   name:"Gardening & Landscaping",  icon:"🌳", titles:["Gardener","Landscaping Worker","Grounds Keeper","Nursery Worker"]},
+  {id:"hotel",    name:"Hotel Staff",              icon:"🏨", titles:["Hotel Porter","Laundry Attendant","Hotel Steward","Front Desk Helper"]},
+  {id:"nurse",    name:"Nurse Assistant",          icon:"🩺", titles:["Nursing Assistant","Care Home Aide","Hospital Support Worker","Ward Assistant"]},
+];
+const DEST = [
+  {c:"Israel",flag:"🇮🇱",city:["Tel Aviv","Haifa","Netanya","Ashdod"]},
+  {c:"Poland",flag:"🇵🇱",city:["Warsaw","Kraków","Wrocław","Gdańsk"]},
+  {c:"Germany",flag:"🇩🇪",city:["Berlin","Munich","Hamburg","Frankfurt"]},
+  {c:"Canada",flag:"🇨🇦",city:["Toronto","Calgary","Vancouver","Winnipeg"]},
+  {c:"United Arab Emirates",flag:"🇦🇪",city:["Dubai","Abu Dhabi","Sharjah"]},
+  {c:"Qatar",flag:"🇶🇦",city:["Doha","Al Rayyan","Lusail"]},
+  {c:"Saudi Arabia",flag:"🇸🇦",city:["Riyadh","Jeddah","Dammam"]},
+  {c:"Romania",flag:"🇷🇴",city:["Bucharest","Cluj-Napoca","Timișoara"]},
+  {c:"Portugal",flag:"🇵🇹",city:["Lisbon","Porto","Faro"]},
+  {c:"Netherlands",flag:"🇳🇱",city:["Amsterdam","Rotterdam","Eindhoven"]},
+  {c:"United Kingdom",flag:"🇬🇧",city:["London","Manchester","Birmingham"]},
+  {c:"Cyprus",flag:"🇨🇾",city:["Nicosia","Limassol","Larnaca"]},
+  {c:"Malta",flag:"🇲🇹",city:["Valletta","Sliema","St Julian's"]},
+  {c:"Czech Republic",flag:"🇨🇿",city:["Prague","Brno","Ostrava"]},
+  {c:"Kuwait",flag:"🇰🇼",city:["Kuwait City","Hawalli"]},
+  {c:"Oman",flag:"🇴🇲",city:["Muscat","Salalah"]},
+  {c:"Australia",flag:"🇦🇺",city:["Sydney","Melbourne","Perth"]},
+];
+const EMP_PREFIX=["Green Valley","Royal","Sunrise","Nordic","Golden Gate","Blue Harbor","Grand","Premier","Global","Unity","Northstar","Crown","Atlas","Horizon","Elite","Evergreen","Riverside","Highland","Coastal","Continental","Alpine","Summit","Silverline","Meadow"];
+const EMP_SUFFIX={farm:"Farms",caregiver:"Care Group",nurse:"Care Group",hotel:"Hotels & Resorts",hospitality:"Hospitality",chef:"Restaurants",kitchen:"Restaurants",cleaning:"Facilities",construction:"Construction",warehouse:"Logistics",driver:"Transport",security:"Security Services",garden:"Landscapes",aupair:"Family Placement"};
+
+function pick(r,arr){return arr[Math.floor(r()*arr.length)];}
+function round500(n){return Math.round(n/500)*500;}
+
+function buildJobs(n){
+  const jobs=[];
+  for(let i=0;i<n;i++){
+    const r=mulberry32(i*2654435761>>>0 ^ 0x9e3779b9);
+    const cat=pick(r,CATS);
+    const dest=pick(r,DEST);
+    const isCouple=r()<0.30;
+    const housing=isCouple? true : r()<0.55;      // couples always include housing
+    const salary=housing? round500(26000+r()*19000) : round500(46000+r()*29000);
+    const flightVisa=r()<0.75;
+    const vacation=r()<0.60;
+    const childrenAllowed=isCouple? true : r()<0.45;
+    const posted=1+Math.floor(r()*20);
+    const slots=isCouple? (2+Math.floor(r()*3))*2 : 2+Math.floor(r()*8);
+    jobs.push({
+      id:i,
+      cat:cat.id, catName:cat.name, icon:cat.icon,
+      title:pick(r,cat.titles),
+      employer:pick(r,EMP_PREFIX)+" "+(EMP_SUFFIX[cat.id]||"Group"),
+      country:dest.c, flag:dest.flag, city:pick(r,dest.city),
+      type:isCouple?"couple":"individual",
+      housing, salary, flightVisa, vacation, childrenAllowed,
+      singleMotherWelcome: childrenAllowed,
+      posted, slots,
+    });
+  }
+  return jobs;
+}
+const ALL_JOBS = buildJobs(500);
+
+/* ---------- images (Unsplash CDN w/ graceful fallback) ---------- */
+const IMG = id => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`;
+const HERO_PHOTOS=["photo-1521737604893-d14cc237f11d","photo-1522202176988-66273c2fd55f","photo-1600880292203-757bb62b4baf","photo-1531123897727-8f129e1688ce"];
+const CAT_IMG={farm:"photo-1500937386664-56d1dfef3854",hotel:"photo-1566073771259-6a8506099945",chef:"photo-1577219491135-ce391730fb2c",caregiver:"photo-1576091160399-112ba8d25d1d",construction:"photo-1504307651254-35680f356dfd",driver:"photo-1449965408869-eaa3f722e40d",cleaning:"photo-1581578731548-c64695cc6952",default:"photo-1521737604893-d14cc237f11d"};
+const TESTI=[
+  {name:"Grace M.",role:"Caregiver in Israel 🇮🇱",img:"photo-1531123897727-8f129e1688ce",q:"I applied from Lusaka on a Sunday. Two weeks later I had my flight and visa sorted. Today I send money home every month.",r:5},
+  {name:"Emeka O.",role:"Farm Worker in Portugal 🇵🇹",img:"photo-1507003211169-0a1dd7228f2d",q:"Housing is included so I save almost everything I earn. GOOJOB made the whole process simple and clear.",r:5},
+  {name:"Joyce & Peter",role:"Couple, Hotel Staff in Cyprus 🇨🇾",img:"photo-1521572163474-6864f9cf17ab",q:"We travelled together and work at the same resort. Our daughter is with us and school costs are covered. A dream.",r:5},
+];
+
+function SmartImg({src,alt,fb}){
+  const [err,setErr]=useState(false);
+  if(err||!src) return <div className="imgfallback" aria-hidden="true">{fb||"🌍"}</div>;
+  return <img src={src} alt={alt||""} loading="lazy" onError={()=>setErr(true)} />;
+}
+
+const fmt = n => n.toLocaleString("en-US");
+
+/* ============================================================ APP ============ */
+function App(){
+  const [subscribed,setSubscribed]=useState(()=>localStorage.getItem("goojob_sub")==="1");
+  const [menu,setMenu]=useState(false);
+  const [detail,setDetail]=useState(null);      // job object
+  const [subOpen,setSubOpen]=useState(false);
+  const [applyJob,setApplyJob]=useState(null);   // job to apply to
+  const [success,setSuccess]=useState(null);     // {type,msg}
+
+  // filters
+  const [cat,setCat]=useState("all");
+  const [country,setCountry]=useState("all");
+  const [ftype,setFtype]=useState("all");        // all|individual|couple|single
+  const [q,setQ]=useState("");
+  const [tFlight,setTFlight]=useState(false);
+  const [tHouse,setTHouse]=useState(false);
+  const [tVac,setTVac]=useState(false);
+  const [visible,setVisible]=useState(24);
+
+  useEffect(()=>{ if(subscribed) localStorage.setItem("goojob_sub","1"); },[subscribed]);
+  // lock body scroll when a modal is open
+  useEffect(()=>{
+    const open=detail||subOpen||applyJob||success;
+    document.body.style.overflow=open?"hidden":"";
+  },[detail,subOpen,applyJob,success]);
+
+  const filtered=useMemo(()=>{
+    const qq=q.trim().toLowerCase();
+    return ALL_JOBS.filter(j=>{
+      if(cat!=="all"&&j.cat!==cat) return false;
+      if(country!=="all"&&j.country!==country) return false;
+      if(ftype==="individual"&&j.type!=="individual") return false;
+      if(ftype==="couple"&&j.type!=="couple") return false;
+      if(ftype==="single"&&!j.singleMotherWelcome) return false;
+      if(tFlight&&!j.flightVisa) return false;
+      if(tHouse&&!j.housing) return false;
+      if(tVac&&!j.vacation) return false;
+      if(qq){
+        const hay=(j.title+" "+j.employer+" "+j.country+" "+j.city+" "+j.catName).toLowerCase();
+        if(!hay.includes(qq)) return false;
+      }
+      return true;
+    });
+  },[cat,country,ftype,q,tFlight,tHouse,tVac]);
+
+  useEffect(()=>{setVisible(24);},[cat,country,ftype,q,tFlight,tHouse,tVac]);
+
+  function onApplyClick(job){
+    setDetail(null);
+    if(subscribed) setApplyJob(job);
+    else setSubOpen({intent:"apply",job});
+  }
+  function handleSubscribed(){
+    setSubscribed(true);
+    const pending=subOpen&&subOpen.job;
+    setSubOpen(false);
+    if(pending) setTimeout(()=>setApplyJob(pending),120);
+    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money subscription is active. You can now apply to any job on GOOJOB. Browse and send your profile — employers will contact you directly."});
+  }
+
+  const scrollTo=(id)=>{setMenu(false);const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});};
+
+  return (
+    <React.Fragment>
+      {/* ---------------- NAV ---------------- */}
+      <header className="nav">
+        <div className="wrap nav-inner">
+          <a href="#top" className="logo" onClick={e=>{e.preventDefault();scrollTo("top");}}>
+            <span className="mark">✈</span><span>GOO<span className="go-accent">JOB</span></span>
+          </a>
+          <nav className="nav-links">
+            <a onClick={()=>scrollTo("jobs")}>Jobs</a>
+            <a onClick={()=>scrollTo("couples")}>Couples</a>
+            <a onClick={()=>scrollTo("single-mothers")}>Single Mothers</a>
+            <a onClick={()=>scrollTo("how")}>How it works</a>
+            <a onClick={()=>scrollTo("faq")}>FAQ</a>
+          </nav>
+          <div className="nav-spacer"></div>
+          {subscribed
+            ? <span className="sub-pill">✓ Subscribed</span>
+            : <button className="btn btn-primary" onClick={()=>setSubOpen({intent:"nav"})} style={{padding:"11px 22px"}}>Subscribe</button>}
+          <button className="hamburger" aria-label="menu" onClick={()=>setMenu(m=>!m)}>{menu?"✕":"☰"}</button>
         </div>
-        <h1 class="text-4xl font-extrabold text-slate-800 mb-2">GOOJOB</h1>
-        <p class="text-slate-500 mb-8 text-lg font-medium">מערכת סינון קו"ח חכמה.</p>
+        {menu&&(
+          <div className="mobile-menu">
+            <a onClick={()=>scrollTo("jobs")}>Jobs</a>
+            <a onClick={()=>scrollTo("couples")}>Couples & Families</a>
+            <a onClick={()=>scrollTo("single-mothers")}>Single Mothers</a>
+            <a onClick={()=>scrollTo("how")}>How it works</a>
+            <a onClick={()=>scrollTo("faq")}>FAQ</a>
+          </div>
+        )}
+      </header>
 
-        <!-- שלב 1: הגדרת משימת הסינון -->
-        <div id="role-selection" class="w-full max-w-sm">
-            <button onclick="showRegistration('employer')" class="w-full bg-white border-2 border-slate-300 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-bold py-4 px-6 rounded-xl mb-4 transition-all text-lg flex items-center justify-start gap-4 shadow-sm text-right">
-                <div class="bg-emerald-100 p-3 rounded-full"><i class="fa-solid fa-user-tie text-emerald-600"></i></div>
-                <div>
-                    <div class="leading-tight">אני מסנן קורות חיים</div>
-                    <div class="text-sm font-normal text-slate-500">מחפש מועמדים למשרה פתוחה</div>
-                </div>
-            </button>
-            
-            <button onclick="showRegistration('candidate')" class="w-full bg-white border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 text-slate-700 font-bold py-4 px-6 rounded-xl mb-4 transition-all text-lg flex items-center justify-start gap-4 shadow-sm text-right">
-                <div class="bg-blue-100 p-3 rounded-full"><i class="fa-solid fa-briefcase text-blue-600"></i></div>
-                <div>
-                    <div class="leading-tight">אני מסנן משרות</div>
-                    <div class="text-sm font-normal text-slate-500">מחפש משרה עבור מועמד שלי</div>
-                </div>
-            </button>
+      <main id="top">
+        {/* ---------------- HERO ---------------- */}
+        <section className="hero" style={{paddingTop:56}}>
+          <div className="wrap hero-grid">
+            <div>
+              <span className="eyebrow">Relocation jobs · Zambia 🇿🇲 & Nigeria 🇳🇬 pilot</span>
+              <h1 style={{marginTop:14}}>Your new life <span className="grad">abroad</span> starts here.</h1>
+              <p className="sub">Verified relocation jobs across the world — with <b>flights, visa and housing arranged</b>. Real opportunities for hard-working people ready to build a better future.</p>
+              <div className="hero-cta">
+                <button className="btn btn-primary btn-lg" onClick={()=>scrollTo("jobs")}>Browse 500+ jobs →</button>
+                <button className="btn btn-ghost btn-lg" onClick={()=>scrollTo("how")}>How it works</button>
+              </div>
+              <div className="flags"><span className="fl">🇿🇲</span><span className="fl">🇳🇬</span> Now open for applicants in Zambia & Nigeria</div>
+              <div className="hero-stats">
+                <div className="st"><b>500+</b><span>Open positions</span></div>
+                <div className="st"><b>26,000+</b><span>ZMW / month</span></div>
+                <div className="st"><b>75%</b><span>Include flight + visa</span></div>
+              </div>
+            </div>
+            <div className="collage" aria-hidden="true">
+              <div className="ph a"><SmartImg src={IMG(HERO_PHOTOS[0])} fb="👷🏾" /></div>
+              <div className="ph b"><SmartImg src={IMG(HERO_PHOTOS[1])} fb="👩🏾‍🍳" /></div>
+              <div className="ph c"><SmartImg src={IMG(HERO_PHOTOS[2])} fb="🤝" /></div>
+              <div className="ph d"><SmartImg src={IMG(HERO_PHOTOS[3])} fb="😄" /></div>
+              <div className="badge-float one"><span className="ic" style={{background:"#e6f5ee"}}>🏠</span><span>Housing included</span></div>
+              <div className="badge-float two"><span className="ic" style={{background:"#e9edfb"}}>✈️</span><span>Flight + visa sorted</span></div>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- TRUST ---------------- */}
+        <div className="trust">
+          <div className="wrap trust-inner">
+            <div className="ti"><span className="ic">✅</span> Verified employers</div>
+            <div className="ti"><span className="ic">✈️</span> Flights &amp; visa arranged</div>
+            <div className="ti"><span className="ic">🏠</span> Housing options</div>
+            <div className="ti"><span className="ic">👨‍👩‍👧</span> Couples &amp; families welcome</div>
+            <div className="ti"><span className="ic">💳</span> Pay with Mobile Money</div>
+          </div>
         </div>
 
-        <!-- שלב 2: הגדרות -->
-        <div id="registration-form" class="hidden w-full max-w-sm flex-col items-center text-right">
-            <h2 class="text-xl font-bold text-slate-800 mb-6 w-full text-center border-b pb-2" id="setup-title">הגדרת סשן סינון</h2>
-            
-            <div class="w-full mb-4">
-                <label class="block text-sm font-semibold text-slate-700 mb-1" id="target-name-label">שם המשרה עבורה אתה מסנן</label>
-                <input type="text" id="target-name-input" placeholder="לדוגמה: מפתח פולסטאק בכיר" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50">
+        {/* ---------------- JOBS ---------------- */}
+        <section id="jobs">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="eyebrow">Open positions</span>
+              <h2>Find the job that changes everything</h2>
+              <p>Browse hundreds of verified relocation jobs. Anyone can view the listings — a Mobile Money subscription unlocks the ability to apply and send your profile.</p>
             </div>
 
-            <div class="w-full mb-6">
-                <label class="block text-sm font-semibold text-slate-700 mb-1">קטגוריה במאגר</label>
-                <select id="user-category-input" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50 max-h-48 overflow-y-auto font-medium">
-                    <!-- Options populated by JS -->
+            {/* category chips */}
+            <div className="cats" style={{marginBottom:22}}>
+              <button className={"chip"+(cat==="all"?" on":"")} onClick={()=>setCat("all")}><span className="em">🌍</span>All jobs</button>
+              {CATS.map(c=>(
+                <button key={c.id} className={"chip"+(cat===c.id?" on":"")} onClick={()=>setCat(c.id)}>
+                  <span className="em">{c.icon}</span>{c.name}
+                </button>
+              ))}
+            </div>
+
+            {/* filter bar */}
+            <div className="filters">
+              <div className="search-wrap">
+                <span className="mag">🔍</span>
+                <input className="inp" placeholder="Search job, employer or country…" value={q} onChange={e=>setQ(e.target.value)} />
+              </div>
+              <div className="field">
+                <label>Destination</label>
+                <select className="inp" value={country} onChange={e=>setCountry(e.target.value)}>
+                  <option value="all">All countries</option>
+                  {DEST.map(d=><option key={d.c} value={d.c}>{d.flag} {d.c}</option>)}
                 </select>
+              </div>
+              <div className="field">
+                <label>For</label>
+                <select className="inp" value={ftype} onChange={e=>setFtype(e.target.value)}>
+                  <option value="all">Everyone</option>
+                  <option value="individual">Individuals</option>
+                  <option value="couple">Couples</option>
+                  <option value="single">Single mothers welcome</option>
+                </select>
+              </div>
+              <div className="field" style={{flex:1}}>
+                <label>Benefits</label>
+                <div className="toggle-row">
+                  <button className={"tgl"+(tFlight?" on":"")} onClick={()=>setTFlight(v=>!v)}>✈️ Flight + visa</button>
+                  <button className={"tgl"+(tHouse?" on":"")} onClick={()=>setTHouse(v=>!v)}>🏠 Housing</button>
+                  <button className={"tgl"+(tVac?" on":"")} onClick={()=>setTVac(v=>!v)}>🌴 Yearly home leave</button>
+                </div>
+              </div>
             </div>
 
-            <button onclick="completeRegistration()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform transform active:scale-95 text-lg flex items-center justify-center gap-3">
-                <i class="fa-solid fa-play"></i>
-                התחל סריקת קורות חיים
+            <div className="result-count">{fmt(filtered.length)} job{filtered.length!==1?"s":""} found</div>
+
+            {filtered.length===0 ? (
+              <div className="empty"><div className="big">🔍</div><b>No jobs match these filters</b><p>Try clearing a filter or search term.</p></div>
+            ):(
+              <React.Fragment>
+                <div className="jobs-grid">
+                  {filtered.slice(0,visible).map(j=>(
+                    <JobCard key={j.id} job={j} subscribed={subscribed}
+                      onView={()=>setDetail(j)} onApply={()=>onApplyClick(j)} />
+                  ))}
+                </div>
+                {visible<filtered.length&&(
+                  <div className="load-more">
+                    <button className="btn btn-ghost btn-lg" onClick={()=>setVisible(v=>v+24)}>Load more jobs ({fmt(filtered.length-visible)} more)</button>
+                  </div>
+                )}
+              </React.Fragment>
+            )}
+          </div>
+        </section>
+
+        {/* ---------------- COUPLES ---------------- */}
+        <section id="couples" className="alt">
+          <div className="wrap prog">
+            <div className="prog-media">
+              <SmartImg src={IMG("photo-1521572163474-6864f9cf17ab")} fb="👨‍👩‍👧" />
+            </div>
+            <div className="prog-card">
+              <span className="eyebrow">Couples &amp; families</span>
+              <h2 style={{marginTop:10}}>Travel together. Work together. Build together.</h2>
+              <p style={{color:"var(--ink-2)",marginTop:12}}>About 3 in 10 of our employers welcome couples who relocate together. You both get a job at the same place — and your family comes too.</p>
+              <div className="benefit"><span className="bic">🏠</span><div><b>Housing included for the family</b><span>Couple positions always come with accommodation.</span></div></div>
+              <div className="benefit"><span className="bic">👧</span><div><b>Children are welcome</b><span>Bring your kids with you — family life abroad, together.</span></div></div>
+              <div className="benefit"><span className="bic">🎓</span><div><b>Education allowance</b><span>Extra support for education costs of children up to age 12.</span></div></div>
+              <div className="benefit"><span className="bic">📝</span><div><b>One simple application for both partners</b><span>When you apply to a couple position we collect details for both of you.</span></div></div>
+              <button className="btn btn-primary btn-lg" style={{marginTop:24}} onClick={()=>{setFtype("couple");scrollTo("jobs");}}>See couple positions →</button>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- SINGLE MOTHERS ---------------- */}
+        <section id="single-mothers">
+          <div className="wrap prog">
+            <div className="prog-card" style={{order:1}}>
+              <span className="eyebrow">A program built for you</span>
+              <h2 style={{marginTop:10}}>Single mothers — you are not alone in this.</h2>
+              <p style={{color:"var(--ink-2)",marginTop:12}}>We know how much you carry. Our single-mother program treats you as an individual applicant, but gives you the <b>same family benefits couples receive</b> — so you can build a future for you and your children.</p>
+              <div className="benefit"><span className="bic">🏠</span><div><b>Housing for you and your children</b><span>Accommodation support so your family stays together.</span></div></div>
+              <div className="benefit"><span className="bic">🎓</span><div><b>Education allowance</b><span>Extra support for children up to age 12.</span></div></div>
+              <div className="benefit"><span className="bic">🌴</span><div><b>Yearly home leave options</b><span>Selected employers cover a yearly trip home, flights included.</span></div></div>
+              <div className="benefit"><span className="bic">💛</span><div><b>Priority guidance</b><span>Extra help through every step of your relocation.</span></div></div>
+              <button className="btn btn-accent btn-lg" style={{marginTop:24}} onClick={()=>{setFtype("single");scrollTo("jobs");}}>See jobs that welcome single mothers →</button>
+            </div>
+            <div className="prog-media" style={{order:2}}>
+              <SmartImg src={IMG("photo-1594744803329-e58b31de8bf5")} fb="👩🏾‍👧🏾" />
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- HOW ---------------- */}
+        <section id="how" className="alt">
+          <div className="wrap">
+            <div className="sec-head" style={{marginInline:"auto",textAlign:"center"}}>
+              <span className="eyebrow">Simple &amp; safe</span>
+              <h2>How GOOJOB works</h2>
+              <p>Four steps from where you are today to a job that changes your family's future.</p>
+            </div>
+            <div className="steps">
+              <div className="step"><div className="num">1</div><h3>Subscribe with Mobile Money</h3><p>Activate your membership in seconds using MTN, Airtel, Zamtel, OPay and more.</p></div>
+              <div className="step"><div className="num">2</div><h3>Browse verified jobs</h3><p>Explore 500+ relocation positions with clear salary, housing and travel details.</p></div>
+              <div className="step"><div className="num">3</div><h3>Send your profile</h3><p>Share your details, a photo and a short questionnaire — no CV needed.</p></div>
+              <div className="step"><div className="num">4</div><h3>Get contacted</h3><p>The employer reviews your profile and reaches out to arrange the next steps.</p></div>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- TESTIMONIALS ---------------- */}
+        <section>
+          <div className="wrap">
+            <div className="sec-head" style={{marginInline:"auto",textAlign:"center"}}>
+              <span className="eyebrow">Real journeys</span>
+              <h2>Hope, packed and delivered</h2>
+              <p>People just like you who took the step — and never looked back.</p>
+            </div>
+            <div className="tgrid">
+              {TESTI.map((t,i)=>(
+                <div className="tcard" key={i}>
+                  <div className="stars">{"★".repeat(t.r)}</div>
+                  <p className="quote">“{t.q}”</p>
+                  <div className="who">
+                    <SmartImg src={IMG(t.img)} fb="🙂" />
+                    <div><b>{t.name}</b><span>{t.role}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- FAQ ---------------- */}
+        <section id="faq" className="alt">
+          <div className="wrap">
+            <div className="sec-head" style={{marginInline:"auto",textAlign:"center"}}>
+              <span className="eyebrow">Good to know</span>
+              <h2>Questions &amp; answers</h2>
+            </div>
+            <div className="faq">
+              <Faq q="Who can use GOOJOB?">Right now we are running a pilot for applicants in Zambia 🇿🇲 and Nigeria 🇳🇬. Anyone can browse the jobs for free.</Faq>
+              <Faq q="Why do I need a subscription?">Browsing is free. A small Mobile Money subscription lets you apply to jobs and send your profile directly to employers. It keeps the platform serious and full of real opportunities.</Faq>
+              <Faq q="How do I pay?">With Mobile Money — MTN MoMo, Airtel Money, Zamtel Kwacha in Zambia, and MTN, Airtel, OPay, PalmPay and Paga in Nigeria.</Faq>
+              <Faq q="Do I need a CV?">No. Instead of a CV we ask for your personal details, a photo and a short work questionnaire. Simple and fast.</Faq>
+              <Faq q="What about salary and housing?">Salaries start at 26,000 ZMW/month when housing is included, and from 46,000 ZMW/month when it is not (clearly marked on each job). Amounts vary by employer and role.</Faq>
+              <Faq q="Can my partner and children come with me?">Yes. Around 30% of jobs welcome couples, with housing and children included, plus an education allowance for kids up to age 12. Single mothers receive these same family benefits.</Faq>
+              <Faq q="Are flights and visa covered?">For about 75% of jobs the employer arranges the flight and visa, and 60% also offer a yearly paid trip home. Each job page shows exactly what's included.</Faq>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- CTA ---------------- */}
+        <section style={{paddingTop:0}}>
+          <div className="wrap">
+            <div className="cta-band">
+              <h2>Your future is one application away.</h2>
+              <p>Subscribe with Mobile Money and unlock 500+ relocation jobs today.</p>
+              <div style={{marginTop:26,position:"relative"}}>
+                {subscribed
+                  ? <button className="btn btn-accent btn-lg" onClick={()=>scrollTo("jobs")}>Browse jobs →</button>
+                  : <button className="btn btn-accent btn-lg" onClick={()=>setSubOpen({intent:"cta"})}>Subscribe with Mobile Money →</button>}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ---------------- FOOTER ---------------- */}
+      <footer>
+        <div className="wrap">
+          <div className="fgrid">
+            <div>
+              <div className="logo" style={{fontSize:24}}><span className="mark">✈</span> GOO<span style={{color:"#f6a623"}}>JOB</span></div>
+              <p style={{marginTop:14,maxWidth:"38ch",fontSize:14,color:"#a9a293"}}>Connecting hard-working people in Africa with verified relocation jobs around the world. Flights, visa and housing arranged.</p>
+              <div style={{marginTop:16,fontSize:22}}>🇿🇲 🇳🇬</div>
+            </div>
+            <div>
+              <h4>Explore</h4>
+              <a onClick={()=>scrollTo("jobs")}>Browse jobs</a>
+              <a onClick={()=>scrollTo("couples")}>Couples &amp; families</a>
+              <a onClick={()=>scrollTo("single-mothers")}>Single mothers</a>
+              <a onClick={()=>scrollTo("how")}>How it works</a>
+            </div>
+            <div>
+              <h4>Support</h4>
+              <a onClick={()=>scrollTo("faq")}>FAQ</a>
+              <a onClick={()=>setSubOpen({intent:"footer"})}>Subscribe</a>
+              <a onClick={()=>scrollTo("jobs")}>Find a job</a>
+            </div>
+          </div>
+          <div className="disc">
+            © 2026 GOOJOB. Pilot program for Zambia &amp; Nigeria. GOOJOB is a listing and matching platform; employment terms are agreed directly with each employer. Salary figures are indicative and vary by employer, role and location. Always verify offer details before travelling.
+          </div>
+        </div>
+      </footer>
+
+      {/* ---------------- MODALS ---------------- */}
+      {detail && <JobDetail job={detail} subscribed={subscribed} onClose={()=>setDetail(null)} onApply={()=>onApplyClick(detail)} />}
+      {subOpen && <SubscribeModal ctx={subOpen} onClose={()=>setSubOpen(false)} onSuccess={handleSubscribed} />}
+      {applyJob && <ApplyModal job={applyJob} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Application sent! 🎉",msg:"Your profile has been delivered to the employer. If you're a good match, they will contact you directly using the details you provided. Good luck!"});}} />}
+      {success && <SuccessModal data={success} onClose={()=>setSuccess(null)} />}
+    </React.Fragment>
+  );
+}
+
+/* ---------------- Job Card ---------------- */
+function JobCard({job,subscribed,onView,onApply}){
+  return (
+    <div className="jcard">
+      <div className="jcard-top">
+        <span className="jcat">{job.icon} {job.catName}</span>
+        <span className="jflag">{job.flag} {job.country}</span>
+      </div>
+      <h3 style={{cursor:"pointer"}} onClick={onView}>{job.title}</h3>
+      <div className="jemp">{job.employer} · {job.city}</div>
+
+      <div className={"jsalary"+(job.housing?"":" nohouse")}>
+        <span className="amt">{fmt(job.salary)} ZMW</span>
+        <span className="per">/ month{job.housing?"":" · no housing"}</span>
+      </div>
+
+      <div className="jtags">
+        {job.housing
+          ? <span className="jtag house">🏠 Housing incl.</span>
+          : <span className="jtag nohouse">💰 Higher pay · no housing</span>}
+        {job.flightVisa && <span className="jtag flight">✈️ Flight + visa</span>}
+        {job.vacation && <span className="jtag vac">🌴 Yearly home leave</span>}
+        {job.type==="couple" && <span className="jtag couple">👨‍👩‍👧 Couples</span>}
+        {job.childrenAllowed && <span className="jtag kids">🎓 Kids welcome</span>}
+      </div>
+
+      <div className="jcard-foot">
+        <span className="posted">{job.posted}d ago · {job.slots} spots</span>
+        <button className={"apply-mini"+(subscribed?"":" locked")} onClick={onApply}>
+          {subscribed? "Apply →" : "🔒 Apply"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Job Detail ---------------- */
+function JobDetail({job,subscribed,onClose,onApply}){
+  const img=IMG(CAT_IMG[job.cat]||CAT_IMG.default);
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal wide" onClick={e=>e.stopPropagation()}>
+        <div className="modal-head">
+          <button className="x" onClick={onClose} aria-label="Close">✕</button>
+          <div className="jd-hero">
+            <SmartImg src={img} fb={job.icon} /><div className="ov"></div>
+            <div className="cat">{job.icon} {job.catName} · {job.flag} {job.city}, {job.country}</div>
+          </div>
+          <h3 className="mtitle" style={{marginTop:14}}>{job.title}</h3>
+          <div className="msub">{job.employer} · {job.slots} positions open · posted {job.posted} days ago</div>
+        </div>
+        <div className="modal-body" style={{paddingTop:6}}>
+          <div className="jd-sal">
+            <div className={"box "+(job.housing?"pay":"nohouse")}>
+              <b>{fmt(job.salary)} ZMW</b>
+              <span>per month{job.housing?" · housing included 🏠":" · housing NOT included 💰"}</span>
+            </div>
+            <div className="box">
+              <b>{job.type==="couple"?"Couple 👨‍👩‍👧":"Individual"}</b>
+              <span>{job.type==="couple"?"Apply together as a couple":"Single applicant position"}</span>
+            </div>
+          </div>
+
+          <h4 style={{fontSize:15,marginBottom:4}}>What's included</h4>
+          <ul className="jd-list">
+            <li><span className="ic">✔</span> {job.housing? "Accommodation / housing is included" : "Higher salary — housing not included (arrange your own)"}</li>
+            {job.flightVisa && <li><span className="ic">✔</span> Flight ticket and full visa arrangement covered by employer</li>}
+            {job.vacation && <li><span className="ic">✔</span> One paid trip home every year, flights &amp; expenses included</li>}
+            {job.type==="couple" && <li><span className="ic">✔</span> Couple-friendly: both partners employed, family housing, children welcome</li>}
+            {job.childrenAllowed && <li><span className="ic">✔</span> Education allowance for children up to age 12</li>}
+            {job.singleMotherWelcome && <li><span className="ic">✔</span> Single mothers welcome — family benefits included</li>}
+            <li><span className="ic">✔</span> Legal contract arranged directly with the employer</li>
+          </ul>
+
+          <h4 style={{fontSize:15,margin:"18px 0 4px"}}>Requirements</h4>
+          <ul className="jd-list">
+            <li><span className="ic">✔</span> Valid passport (or application in process)</li>
+            <li><span className="ic">✔</span> Basic English communication</li>
+            <li><span className="ic">✔</span> Willing and ready to relocate to {job.country}</li>
+            <li><span className="ic">✔</span> A positive attitude and strong work ethic</li>
+          </ul>
+
+          {!subscribed && (
+            <div className="locked-note">🔒 A Mobile Money subscription is required to apply and send your profile to this employer.</div>
+          )}
+
+          <button className="btn btn-primary btn-block btn-lg" style={{marginTop:18}} onClick={onApply}>
+            {subscribed? "Apply for this job →" : "🔒 Subscribe to apply →"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Subscribe Modal ---------------- */
+function SubscribeModal({ctx,onClose,onSuccess}){
+  const [country,setCountry]=useState("zambia");
+  const [prov,setProv]=useState(PROVIDERS.zambia[0].id);
+  const [phone,setPhone]=useState("");
+  const [stage,setStage]=useState("form"); // form|pending
+  const plan=PLAN[country];
+  const formRef=useRef(null);
+
+  function submit(e){
+    e.preventDefault();
+    if(!phone.trim()||phone.replace(/\D/g,"").length<7) return;
+    // deliver the subscription lead to the single inbox (fire & forget)
+    try{ formRef.current && formRef.current.submit(); }catch(_){}
+    setStage("pending");
+    // simulate the Mobile Money push-confirmation window
+    setTimeout(()=>{ onSuccess(); },2600);
+  }
+
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div className="modal-head">
+          <button className="x" onClick={onClose} aria-label="Close">✕</button>
+          <h3 className="mtitle">Activate your membership</h3>
+          <p className="msub">{ctx&&ctx.intent==="apply"?"One quick step and you can apply to this job.":"Unlock applications to all 500+ jobs."}</p>
+        </div>
+        <div className="modal-body">
+          {stage==="form" ? (
+            <form onSubmit={submit}>
+              {/* hidden delivery form */}
+              <div className="country-tabs">
+                <button type="button" className={"ctab"+(country==="zambia"?" on":"")} onClick={()=>{setCountry("zambia");setProv(PROVIDERS.zambia[0].id);}}>🇿🇲 Zambia</button>
+                <button type="button" className={"ctab"+(country==="nigeria"?" on":"")} onClick={()=>{setCountry("nigeria");setProv(PROVIDERS.nigeria[0].id);}}>🇳🇬 Nigeria</button>
+              </div>
+
+              <div className="plan-row">
+                <div className="plan on">
+                  <div className="price">{plan.label}</div>
+                  <div className="cur">{plan.cur} / month · full access</div>
+                </div>
+              </div>
+
+              <label style={{fontSize:13,fontWeight:700,color:"var(--ink-2)",display:"block",margin:"16px 0 8px"}}>Choose your Mobile Money provider</label>
+              <div className="prov-grid">
+                {PROVIDERS[country].map(p=>(
+                  <button type="button" key={p.id} className={"prov"+(prov===p.id?" on":"")} onClick={()=>setProv(p.id)}>
+                    <span className="lg">{p.lg}</span>{p.name}
+                  </button>
+                ))}
+              </div>
+
+              <div className="fld" style={{marginTop:16}}>
+                <label>Mobile Money phone number</label>
+                <input type="tel" inputMode="tel" placeholder={country==="zambia"?"e.g. 097 123 4567":"e.g. 0803 123 4567"} value={phone} onChange={e=>setPhone(e.target.value)} required />
+              </div>
+
+              <button className="btn btn-primary btn-block btn-lg" style={{marginTop:18}} type="submit">
+                Send payment request · {plan.label}/mo
+              </button>
+              <div className="secure">🔒 Secured with Mobile Money — no card needed</div>
+              <p className="pay-note">You'll receive a prompt on your phone to approve the {plan.label} {plan.cur} payment with your Mobile Money PIN.</p>
+
+              {/* hidden lead-delivery form (routes to single inbox) */}
+              <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" style={{display:"none"}}>
+                <input type="hidden" name="_subject" value="🔔 New GOOJOB subscription request" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="Type" value="Subscription" />
+                <input type="hidden" name="Country" value={plan.name} />
+                <input type="hidden" name="Provider" value={prov} />
+                <input type="hidden" name="Plan" value={plan.label+" "+plan.cur+"/month"} />
+                <input type="hidden" name="Phone" value={phone} />
+              </form>
+            </form>
+          ):(
+            <div className="success-wrap">
+              <div className="ring" style={{background:"#eef2fd",color:"var(--brand-2)"}}>
+                <span className="spin">📲</span>
+              </div>
+              <h3>Check your phone</h3>
+              <p>We sent a payment prompt to <b dir="ltr">{phone}</b>. Approve the {plan.label} {plan.cur} payment with your Mobile Money PIN to activate your membership…</p>
+              <div style={{marginTop:18,color:"var(--muted)",fontSize:13,fontWeight:600}}>Waiting for confirmation…</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Apply Modal ---------------- */
+function ApplyModal({job,onClose,onSuccess}){
+  const isCouple=job.type==="couple";
+  const [photo,setPhoto]=useState(null);
+  const [photoUrl,setPhotoUrl]=useState(null);
+  const [sending,setSending]=useState(false);
+  const formRef=useRef(null);
+
+  function onPhoto(e){
+    const f=e.target.files&&e.target.files[0];
+    if(!f) return;
+    setPhoto(f); setPhotoUrl(URL.createObjectURL(f));
+  }
+  function submit(e){
+    e.preventDefault();
+    setSending(true);
+    try{ formRef.current.submit(); }catch(_){}
+    // give the multipart POST a moment, then confirm
+    setTimeout(()=>{ onSuccess(); },1400);
+  }
+
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal wide" onClick={e=>e.stopPropagation()}>
+        <div className="modal-head">
+          <button className="x" onClick={onClose} aria-label="Close">✕</button>
+          <h3 className="mtitle">Apply — {job.title}</h3>
+          <p className="msub">{job.employer} · {job.flag} {job.city}, {job.country}{isCouple?" · Couple position 👨‍👩‍👧":""}</p>
+        </div>
+        <div className="modal-body">
+          <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" encType="multipart/form-data" onSubmit={submit}>
+            <input type="hidden" name="_subject" value={"📄 New application · "+job.title+" · "+job.country} />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="Job" value={job.title} />
+            <input type="hidden" name="Employer" value={job.employer} />
+            <input type="hidden" name="Destination" value={job.city+", "+job.country} />
+            <input type="hidden" name="Salary" value={fmt(job.salary)+" ZMW/month"+(job.housing?" (housing incl.)":" (no housing)")} />
+            <input type="hidden" name="Position type" value={isCouple?"Couple":"Individual"} />
+
+            <div className="form-grid">
+              {isCouple && <div className="part-head"><span className="pn">1</span> Your details</div>}
+              <div className="fld"><label>Full name</label><input name="Full name" required placeholder="Your full name" /></div>
+              <div className="fld"><label>Age</label><input name="Age" type="number" min="18" max="70" required placeholder="e.g. 29" /></div>
+              <div className="fld"><label>Gender</label>
+                <select name="Gender" required defaultValue=""><option value="" disabled>Select…</option><option>Female</option><option>Male</option></select>
+              </div>
+              <div className="fld"><label>WhatsApp / phone</label><input name="Phone" type="tel" required placeholder="e.g. 097 123 4567" /></div>
+              <div className="fld"><label>Country</label>
+                <select name="Applicant country" required defaultValue="Zambia"><option>Zambia</option><option>Nigeria</option></select>
+              </div>
+              <div className="fld"><label>City / town</label><input name="City" required placeholder="Where you live" /></div>
+              <div className="fld"><label>Marital status</label>
+                <select name="Marital status" required defaultValue=""><option value="" disabled>Select…</option><option>Single</option><option>Married / partnered</option><option>Single mother</option></select>
+              </div>
+              <div className="fld"><label>Children (under 12)</label><input name="Children under 12" type="number" min="0" max="12" defaultValue="0" /></div>
+
+              {isCouple && (
+                <React.Fragment>
+                  <div className="part-head"><span className="pn">2</span> Your partner's details</div>
+                  <div className="fld"><label>Partner full name</label><input name="Partner full name" required placeholder="Partner's full name" /></div>
+                  <div className="fld"><label>Partner age</label><input name="Partner age" type="number" min="18" max="70" required placeholder="e.g. 30" /></div>
+                  <div className="fld"><label>Partner gender</label>
+                    <select name="Partner gender" required defaultValue=""><option value="" disabled>Select…</option><option>Female</option><option>Male</option></select>
+                  </div>
+                  <div className="fld"><label>Partner phone</label><input name="Partner phone" type="tel" placeholder="Optional" /></div>
+                </React.Fragment>
+              )}
+
+              <div className="part-head"><span className="pn">✓</span> Work questionnaire</div>
+              <div className="fld"><label>Main experience</label>
+                <input name="Experience field" required placeholder={"e.g. "+job.catName} defaultValue={job.catName} />
+              </div>
+              <div className="fld"><label>Years of experience</label>
+                <select name="Years of experience" required defaultValue=""><option value="" disabled>Select…</option><option>No experience</option><option>Less than 1 year</option><option>1–3 years</option><option>3–5 years</option><option>5+ years</option></select>
+              </div>
+              <div className="fld"><label>English level</label>
+                <select name="English level" required defaultValue=""><option value="" disabled>Select…</option><option>Basic</option><option>Good</option><option>Fluent</option></select>
+              </div>
+              <div className="fld"><label>Do you have a passport?</label>
+                <select name="Passport" required defaultValue=""><option value="" disabled>Select…</option><option>Yes, valid</option><option>Applied / in process</option><option>Not yet</option></select>
+              </div>
+              <div className="fld"><label>Available from</label><input name="Available from" type="month" /></div>
+              <div className="fld"><label>Ready to relocate?</label>
+                <select name="Ready to relocate" required defaultValue="Yes"><option>Yes</option><option>Within 3 months</option><option>Need more info</option></select>
+              </div>
+              <div className="fld full"><label>Why do you want this job?</label>
+                <textarea name="Motivation" required placeholder="Tell the employer a little about yourself and why you'd be a great fit…"></textarea>
+              </div>
+
+              {/* photo (not a CV) */}
+              <label className="photo-drop full">
+                {photoUrl? <img className="prev" src={photoUrl} alt="Your photo" /> : <span className="prev">📷</span>}
+                <div className="t">
+                  <b>{photo? "Photo added ✓" : "Upload your photo"}</b>
+                  <span>{photo? photo.name : "A clear photo of yourself (not a CV). JPG or PNG."}</span>
+                </div>
+                <input type="file" name="Applicant photo" accept="image/*" onChange={onPhoto} required style={{display:"none"}} />
+              </label>
+            </div>
+
+            <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={sending} style={{marginTop:20}}>
+              {sending? "Sending your profile…" : "Send my profile to the employer →"}
             </button>
-            <button onclick="goBackToRoles()" class="mt-4 text-slate-500 hover:text-slate-700 text-sm w-full text-center font-medium">חזרה לאחור</button>
+            <div className="secure">🔒 Your details are sent securely to the employer</div>
+          </form>
         </div>
+      </div>
     </div>
+  );
+}
 
-    <!-- מסך ראשי - זירת ההחלקה למגייס -->
-    <div id="main-screen" class="hidden flex-col h-full w-full">
-        <!-- Header -->
-        <div class="flex justify-between items-center p-4 border-b border-slate-200 shadow-sm z-10 bg-white">
-            <div class="flex gap-4">
-                <button onclick="resetApp()" class="text-slate-400 hover:text-slate-600 transition-colors" title="סיום סשן">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </button>
-                <button onclick="openArchive()" class="text-emerald-600 hover:text-emerald-700 transition-colors relative" title="ארכיון ראיונות">
-                    <i class="fa-solid fa-folder-open text-xl"></i>
-                    <span id="archive-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold hidden">0</span>
-                </button>
-            </div>
-
-            <div class="flex flex-col items-center">
-                <h1 class="text-lg font-black text-slate-800 flex items-center gap-1 tracking-tight">
-                    GOOJOB
-                </h1>
-            </div>
-
-            <div class="text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-full shadow-sm border border-emerald-100 flex items-center gap-2">
-                <span id="match-count">0</span> <i class="fa-solid fa-user-check"></i>
-            </div>
+/* ---------------- Success ---------------- */
+function SuccessModal({data,onClose}){
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div className="modal-head"><button className="x" onClick={onClose} aria-label="Close">✕</button></div>
+        <div className="modal-body">
+          <div className="success-wrap">
+            <div className="ring">✓</div>
+            <h3>{data.title}</h3>
+            <p>{data.msg}</p>
+            <button className="btn btn-primary btn-lg" style={{marginTop:22}} onClick={onClose}>Continue</button>
+          </div>
         </div>
-
-        <div class="bg-slate-800 text-white text-xs px-4 py-2 flex justify-between items-center">
-            <span class="font-medium opacity-70">מסנן עבור:</span>
-            <span id="session-target-name" class="font-bold truncate max-w-[200px]">...</span>
-        </div>
-
-        <!-- Cards Area -->
-        <div class="cards-container" id="cards-container">
-            <div id="no-more-cards" class="hidden text-center text-slate-500 w-full">
-                <div class="w-20 h-20 bg-white shadow-sm rounded-full flex justify-center items-center mx-auto mb-4 border border-slate-200">
-                    <i class="fa-solid fa-inbox text-3xl text-slate-400"></i>
-                </div>
-                <h2 class="text-xl font-bold mb-2 text-slate-700">המאגר ריק כרגע</h2>
-                <p class="text-sm">סיימת לסרוק את כל הרשומות בקטגוריה זו.</p>
-                <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-slate-800 text-white rounded-full font-bold">רענן נתונים</button>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex justify-center items-center gap-6 p-4 pb-6 bg-white z-10 border-t border-slate-200">
-            <button onclick="rewindCard()" class="w-12 h-12 bg-white rounded-full shadow border border-slate-200 flex justify-center items-center text-slate-400 text-xl hover:bg-slate-50 transition-all">
-                <i class="fa-solid fa-rotate-left"></i>
-            </button>
-            <button onclick="handleButtonAction('left')" class="w-16 h-16 bg-white rounded-full shadow-md border border-slate-100 flex justify-center items-center text-red-500 text-2xl hover:bg-red-50 transition-all active:scale-95">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <button onclick="handleButtonAction('right')" class="w-16 h-16 bg-emerald-600 rounded-full shadow-md flex justify-center items-center text-white text-2xl hover:bg-emerald-700 transition-all active:scale-95">
-                <i class="fa-solid fa-check"></i>
-            </button>
-        </div>
+      </div>
     </div>
+  );
+}
 
-    <!-- מסך ראיון / תיק מועמד (נפתח ישירות אחרי החלקה ימינה) -->
-    <div id="interview-modal" class="hidden absolute inset-0 z-[110] flex-col items-center justify-center p-4">
-        <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl flex flex-col modal-scrollable-content print-container relative animate-[fly-up_0.2s_ease-out_forwards]">
-            
-            <!-- Header פעולה מיידית -->
-            <div class="bg-slate-800 text-white p-6 rounded-t-xl text-center relative">
-                <button onclick="closeInterviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl no-print"><i class="fa-solid fa-xmark"></i></button>
-                
-                <h2 id="interview-name" class="text-2xl font-bold cv-name mb-1">שם המועמד</h2>
-                <p id="interview-title" class="text-emerald-400 text-sm font-medium mb-4">תפקיד נוכחי</p>
-                
-                <!-- מספר טלפון ענק לראיון מיידי -->
-                <div class="bg-white/10 rounded-lg p-3 inline-block w-full max-w-xs mx-auto border border-white/20 mb-4">
-                    <div class="text-xs text-slate-300 mb-1 uppercase tracking-widest font-bold">התקשר עכשיו</div>
-                    <div id="interview-phone" class="text-4xl font-black text-white tracking-wider dir-ltr inline-block">050-0000000</div>
-                </div>
-
-                <div class="flex justify-center gap-3 no-print">
-                    <button class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2" onclick="showToast('מחייג...', 'success')">
-                        <i class="fa-solid fa-phone"></i> חיוג
-                    </button>
-                    <button class="bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2" onclick="showToast('פותח וואטסאפ...', 'success')">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> הודעה
-                    </button>
-                </div>
-            </div>
-
-            <!-- תוכן התיק (קו"ח + שאלות) -->
-            <div class="p-6 text-right" dir="rtl">
-                
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs font-bold"><i class="fa-solid fa-robot"></i> AI התאמה: <span id="interview-score">90</span>%</span>
-                    <span class="text-xs text-slate-500">עבור: <span id="interview-target-name" class="font-bold">משרה</span></span>
-                </div>
-
-                <!-- תקציר קו"ח -->
-                <div class="mb-6">
-                    <h3 class="font-bold text-slate-800 border-b-2 border-slate-200 pb-1 mb-3 text-sm uppercase">תקציר קורות חיים</h3>
-                    <div class="space-y-3 text-sm text-slate-600">
-                        <div class="flex gap-2 items-start"><i class="fa-solid fa-briefcase text-slate-400 mt-1"></i> <span id="interview-experience">ניסיון</span></div>
-                        <div class="flex gap-2 items-start"><i class="fa-solid fa-graduation-cap text-slate-400 mt-1"></i> <span id="interview-education">השכלה</span></div>
-                        <div class="flex gap-2 items-start"><i class="fa-solid fa-money-bill-wave text-slate-400 mt-1"></i> <span id="interview-salary">שכר</span></div>
-                        <div class="mt-2 text-slate-700 bg-slate-50 p-3 rounded border border-slate-100" id="interview-about"></div>
-                        <div class="mt-2" id="interview-skills"></div>
-                    </div>
-                </div>
-
-                <!-- שאלות מומלצות לראיון -->
-                <div class="mb-2">
-                    <h3 class="font-bold text-emerald-700 border-b-2 border-emerald-100 pb-1 mb-3 text-sm uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-question"></i> מדריך לראיון הטלפוני
-                    </h3>
-                    <ul class="list-none space-y-3 text-sm text-slate-700" id="interview-questions">
-                        <!-- Questions injected here -->
-                    </ul>
-                </div>
-
-                <!-- פעולות -->
-                <div class="border-t border-slate-200 pt-4 mt-6 no-print flex flex-col gap-2">
-                    <button onclick="saveAndCloseInterview()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-lg text-sm font-bold border border-slate-300 flex justify-center items-center gap-2 transition-colors">
-                        <i class="fa-solid fa-folder-plus text-emerald-600"></i> שמור לארכיון והמשך לסרוק
-                    </button>
-                    <button onclick="window.print()" class="w-full text-slate-500 hover:text-slate-800 py-2 text-sm font-medium underline">
-                        הדפס תיק מועמד
-                    </button>
-                </div>
-            </div>
-        </div>
+/* ---------------- FAQ item ---------------- */
+function Faq({q,children}){
+  const [open,setOpen]=useState(false);
+  return (
+    <div className={"qa"+(open?" open":"")}>
+      <button onClick={()=>setOpen(o=>!o)} aria-expanded={open}>{q}<span className="pm">+</span></button>
+      <div className="ans"><p style={{padding:"2px 0"}}>{children}</p></div>
     </div>
+  );
+}
 
-    <!-- מודאל ארכיון -->
-    <div id="archive-modal" class="hidden absolute inset-0 z-[120] bg-slate-100 flex-col overflow-y-auto">
-        <div class="p-4 bg-white shadow-sm flex justify-between items-center sticky top-0 z-10">
-            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-folder-open text-emerald-600"></i> ארכיון התאמות
-            </h2>
-            <button onclick="closeArchive()" class="text-slate-400 hover:text-slate-600 text-2xl"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="p-4 space-y-3" id="archive-list"></div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-[-100px] left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 z-[130] flex items-center gap-3 w-11/12 max-w-sm">
-        <i class="fa-solid fa-circle-info text-blue-400"></i>
-        <span id="toast-msg" class="text-sm font-medium">הודעה</span>
-    </div>
-
-</div>
-
-<script>
-    // --- נתונים גנריים ---
-    const categoriesData = {
-        'tech': { title: 'הייטק ופיתוח תוכנה', jobs: ['מפתח/ת Full Stack', 'מדען/ית נתונים', 'איש/אשת DevOps', 'מעצב/ת UX/UI'], skills: ['React', 'Node.js', 'Python', 'AWS', 'SQL', 'Docker'] },
-        'logistics': { title: 'לוגיסטיקה ורכש', jobs: ['מנהל/ת מחסן', 'מנהל/ת תפעול', 'קניין/ית רכש', 'מנהל/ת שרשרת אספקה'], skills: ['ניהול מלאי', 'ERP', 'סחר בינלאומי', 'תכנון רכש', 'Priority'] },
-        'marketing': { title: 'שיווק ודיגיטל', jobs: ['מנהל/ת קמפיינים', 'מומחה/ית SEO', 'מנהל/ת סושיאל', 'קופירייטר/ית'], skills: ['PPC', 'Google Analytics', 'ניהול תקציב', 'Meta Ads', 'HubSpot'] },
-        'finance': { title: 'כספים וראיית חשבון', jobs: ['רואה/ת חשבון', 'כלכלן/ית', 'חשב/ת שכר', 'מנהל/ת כספים'], skills: ['אקסל מתקדם', 'הנהלת חשבונות', 'חשבות', 'ניתוח דוחות'] },
-        'sales': { title: 'מכירות', jobs: ['מנהל/ת מכירות', 'איש/אשת מכירות שטח', 'SDR', 'מנהל/ת תיקי לקוחות'], skills: ['B2B', 'ניהול משא ומתן', 'Salesforce', 'שימור לקוחות'] },
-        'admin': { title: 'אדמיניסטרציה', jobs: ['מזכיר/ה', 'מנהל/ת משרד', 'עוזר/ת אישי/ת (PA)'], skills: ['ארגון וסדר', 'אופיס', 'ניהול יומנים', 'אנגלית ברמה גבוהה'] }
-    };
-
-    const selectEl = document.getElementById('user-category-input');
-    Object.entries(categoriesData).forEach(([key, val]) => {
-        const opt = document.createElement('option');
-        opt.value = key; opt.innerText = val.title; selectEl.appendChild(opt);
-    });
-
-    const firstNames = ['רועי', 'נועה', 'דוד', 'שרה', 'עומר', 'יעל', 'אבי', 'מיכל', 'תומר', 'רוני'];
-    const lastNames = ['כהן', 'לוי', 'מזרחי', 'פרץ', 'ביטון', 'דגן', 'שפירא', 'אברהם'];
-    const companies = ['TechHub', 'DataCore', 'GlobalLogistics', 'FastDeliver', 'AdMasters', 'StartUp IL'];
-    
-    function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-    function generatePhone() { return `05${Math.floor(Math.random() * 5 + 0)}-${Math.floor(Math.random() * 9000000 + 1000000)}`; }
-
-    let mockCandidates = [];
-    let mockJobs = [];
-
-    Object.keys(categoriesData).forEach(cat => {
-        const data = categoriesData[cat];
-        for(let i=0; i<15; i++) {
-            const sharedSkills = [...data.skills].sort(() => 0.5 - Math.random()).slice(0, 3);
-            
-            mockJobs.push({
-                id: `j_${cat}_${i}`, type: 'job', category: cat,
-                company: getRandomItem(companies),
-                title: getRandomItem(data.jobs),
-                location: getRandomItem(['תל אביב', 'הרצליה', 'רמת גן', 'חיפה', 'היברידי', 'מרחוק']),
-                salary: `${Math.floor(Math.random() * 15 + 10)},000 ₪`,
-                availability: getRandomItem(['משרה מלאה', 'חצי משרה', 'משמרות']),
-                skills: sharedSkills,
-                about: `חברה בצמיחה מחפשת ${getRandomItem(data.jobs)} מקצועי/ת להשתלבות בצוות. סביבת עבודה טכנולוגית, נדרשת יכולת עבודה עצמאית.`,
-                culturalFit: Math.floor(Math.random() * 20 + 80),
-                phone: generatePhone()
-            });
-
-            mockCandidates.push({
-                id: `c_${cat}_${i}`, type: 'candidate', category: cat,
-                name: `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`,
-                title: getRandomItem(data.jobs),
-                experience: `${Math.floor(Math.random() * 8) + 1} שנות ניסיון`,
-                salary: `ציפיות: ${Math.floor(Math.random() * 15 + 10)},000 ₪`,
-                degree: getRandomItem(['תואר ראשון', 'הנדסאי', 'הכשרה מקצועית']),
-                skills: sharedSkills,
-                about: `מחפש/ת אתגר מקצועי בתחום ה${data.title}. בעל/ת מוסר עבודה גבוה, יחסי אנוש מעולים ויכולת למידה מהירה.`,
-                culturalFit: Math.floor(Math.random() * 20 + 80),
-                phone: generatePhone()
-            });
-        }
-    });
-
-    // --- State ---
-    let currentUserRole = null;
-    let currentTargetName = '';
-    let currentUserCategory = 'tech';
-    let currentDeck = [];
-    let topCardIndex = 0;
-    let matchCount = 0;
-    let lastSwipedCard = null;
-    let currentMatchedItem = null;
-    let savedNotes = [];
-
-    // --- פונקציות מסכים ---
-    function showRegistration(role) {
-        currentUserRole = role;
-        document.getElementById('role-selection').classList.add('hidden');
-        document.getElementById('registration-form').classList.remove('hidden');
-        document.getElementById('registration-form').classList.add('flex');
-        
-        document.getElementById('target-name-label').innerText = role === 'employer' ? 'עבור איזו משרה אתה מסנן?' : 'עבור מי אתה מחפש משרה?';
-        document.getElementById('target-name-input').placeholder = role === 'employer' ? 'לדוגמה: מפתח ג\'אווה' : 'לדוגמה: דניאל (מועמד)';
-    }
-
-    function goBackToRoles() {
-        document.getElementById('registration-form').classList.add('hidden');
-        document.getElementById('registration-form').classList.remove('flex');
-        document.getElementById('role-selection').classList.remove('hidden');
-    }
-
-    function completeRegistration() {
-        currentTargetName = document.getElementById('target-name-input').value || (currentUserRole === 'employer' ? 'משרה פתוחה' : 'מועמד בטיפול');
-        currentUserCategory = document.getElementById('user-category-input').value;
-        
-        document.getElementById('welcome-screen').classList.add('hidden');
-        document.getElementById('main-screen').classList.replace('hidden', 'flex');
-        document.getElementById('session-target-name').innerText = currentTargetName;
-
-        currentDeck = (currentUserRole === 'employer' ? mockCandidates : mockJobs)
-                        .filter(x => x.category === currentUserCategory)
-                        .sort(() => 0.5 - Math.random());
-        
-        renderCards();
-    }
-
-    function resetApp() {
-        document.getElementById('main-screen').classList.replace('flex', 'hidden');
-        document.getElementById('welcome-screen').classList.remove('hidden');
-        goBackToRoles();
-        document.getElementById('target-name-input').value = '';
-        matchCount = 0; document.getElementById('match-count').innerText = matchCount;
-        topCardIndex = 0;
-        document.getElementById('cards-container').innerHTML = `<div id="no-more-cards" class="hidden text-center text-slate-500 w-full"><div class="w-20 h-20 bg-white shadow-sm rounded-full flex justify-center items-center mx-auto mb-4 border border-slate-200"><i class="fa-solid fa-inbox text-3xl text-slate-400"></i></div><h2 class="text-xl font-bold mb-2 text-slate-700">המאגר ריק כרגע</h2><button onclick="location.reload()" class="mt-4 px-6 py-2 bg-slate-800 text-white rounded-full font-bold">רענן נתונים</button></div>`;
-    }
-
-    // --- רינדור קורות החיים (הכרטיסיות החדשות) ---
-    function renderCards() {
-        for (let i = topCardIndex; i < Math.min(topCardIndex + 3, currentDeck.length); i++) {
-            if(document.getElementById(`card-${i}`)) continue;
-            
-            const item = currentDeck[i];
-            const cardEl = document.createElement('div');
-            cardEl.className = 'swipe-card';
-            cardEl.id = `card-${i}`;
-            cardEl.style.zIndex = currentDeck.length - i;
-            
-            const isTopCard = i === topCardIndex;
-            const stampNope = `<div class="stamp stamp-nope" id="stamp-nope-${i}">פסול</div>`;
-            const stampLike = `<div class="stamp stamp-like" id="stamp-like-${i}">אישור</div>`;
-
-            if (item.type === 'job') {
-                // מראה של תיאור משרה רשמי (JD)
-                cardEl.innerHTML = `
-                    ${stampNope} ${stampLike}
-                    <div class="card-content">
-                        <div class="border-b-2 border-slate-800 pb-4 mb-4">
-                            <h2 class="text-3xl font-bold cv-name text-slate-900 mb-1 leading-tight">${item.company}</h2>
-                            <h3 class="text-lg text-slate-600 font-medium bg-slate-100 inline-block px-2 py-1 rounded">דרוש/ה: ${item.title}</h3>
-                        </div>
-                        <div class="flex-grow space-y-4">
-                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">פרטי משרה</h4><p class="text-sm text-slate-600"><i class="fa-solid fa-location-dot w-4"></i> ${item.location}<br><i class="fa-solid fa-money-bill-wave w-4"></i> תקציב: ${item.salary}<br><i class="fa-regular fa-clock w-4"></i> ${item.availability}</p></div>
-                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">על התפקיד</h4><p class="text-sm text-slate-600 leading-relaxed">${item.about}</p></div>
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-2 uppercase tracking-wider">דרישות חובה</h4>
-                                <div>${item.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-200">
-                            <span class="ai-badge"><i class="fa-solid fa-crosshairs"></i> ${item.culturalFit}% התאמה לתנאי המועמד שלך</span>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // מראה של קורות חיים (CV) נקי
-                cardEl.innerHTML = `
-                    ${stampNope} ${stampLike}
-                    <div class="card-content">
-                        <div class="border-b-2 border-slate-800 pb-4 mb-4">
-                            <h2 class="text-3xl font-bold cv-name text-slate-900 mb-1">${item.name}</h2>
-                            <h3 class="text-lg text-slate-600">${item.title}</h3>
-                        </div>
-                        <div class="flex-grow space-y-4">
-                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">תמצית מנהלים</h4><p class="text-sm text-slate-600 leading-relaxed">${item.about}</p></div>
-                            <div><h4 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">ניסיון והשכלה</h4><p class="text-sm text-slate-600"><i class="fa-solid fa-briefcase w-4"></i> ${item.experience}<br><i class="fa-solid fa-graduation-cap w-4"></i> ${item.degree}<br><i class="fa-solid fa-money-bill-wave w-4"></i> ${item.salary}</p></div>
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-sm mb-2 uppercase tracking-wider">כישורים טכניים</h4>
-                                <div>${item.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-200">
-                            <span class="ai-badge"><i class="fa-solid fa-crosshairs"></i> ${item.culturalFit}% התאמה לדרישות המשרה</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            document.getElementById('cards-container').insertBefore(cardEl, document.getElementById('no-more-cards'));
-            if (isTopCard) initDragLogic(cardEl, i);
-        }
-        updateCardPositions();
-    }
-
-    function updateCardPositions() {
-        const cards = Array.from(document.getElementById('cards-container').querySelectorAll('.swipe-card:not(.swiped)'));
-        cards.forEach((card, index) => {
-            if (index === 0) card.style.transform = 'scale(1) translateY(0)';
-            else if (index === 1) card.style.transform = 'scale(0.95) translateY(10px)';
-            else if (index === 2) card.style.transform = 'scale(0.90) translateY(20px)';
-            else card.style.display = 'none';
-        });
-        if(cards.length === 0) document.getElementById('no-more-cards').classList.remove('hidden');
-    }
-
-    // --- Drag & Swipe Logic ---
-    function initDragLogic(card, index) {
-        let isDragging = false, startX = 0, startY = 0, currentX = 0, currentY = 0;
-        const stampNope = document.getElementById(`stamp-nope-${index}`);
-        const stampLike = document.getElementById(`stamp-like-${index}`);
-
-        const handleStart = (e) => {
-            isDragging = true; card.classList.add('dragging');
-            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-        };
-
-        const handleMove = (e) => {
-            if (!isDragging) return;
-            currentX = (e.type.includes('mouse') ? e.clientX : e.touches[0].clientX) - startX;
-            currentY = (e.type.includes('mouse') ? e.clientY : e.touches[0].clientY) - startY;
-            card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${currentX * 0.03}deg)`;
-
-            if (currentX > 50) { stampLike.style.opacity = Math.min(currentX/100, 1); stampNope.style.opacity = 0; } 
-            else if (currentX < -50) { stampNope.style.opacity = Math.min(Math.abs(currentX)/100, 1); stampLike.style.opacity = 0; } 
-            else { stampLike.style.opacity = 0; stampNope.style.opacity = 0; }
-        };
-
-        const handleEnd = () => {
-            if (!isDragging) return;
-            isDragging = false; card.classList.remove('dragging');
-            const threshold = window.innerWidth * 0.25;
-
-            if (currentX > threshold) processSwipe('right', card, index);
-            else if (currentX < -threshold) processSwipe('left', card, index);
-            else { card.style.transform = 'scale(1) translateY(0)'; stampLike.style.opacity = 0; stampNope.style.opacity = 0; }
-            currentX = 0; currentY = 0;
-        };
-
-        card.addEventListener('mousedown', handleStart); card.addEventListener('touchstart', handleStart, {passive: true});
-        document.addEventListener('mousemove', handleMove); document.addEventListener('touchmove', handleMove, {passive: true});
-        document.addEventListener('mouseup', handleEnd); document.addEventListener('touchend', handleEnd);
-        card._dragListeners = { handleMove, handleEnd };
-    }
-
-    function processSwipe(direction, cardEl, index) {
-        cardEl.classList.add('swiped');
-        lastSwipedCard = { direction, index, item: currentDeck[index] };
-        
-        if(cardEl._dragListeners) {
-            document.removeEventListener('mousemove', cardEl._dragListeners.handleMove);
-            document.removeEventListener('touchmove', cardEl._dragListeners.handleMove);
-            document.removeEventListener('mouseup', cardEl._dragListeners.handleEnd);
-            document.removeEventListener('touchend', cardEl._dragListeners.handleEnd);
-        }
-
-        if (direction === 'right') {
-            cardEl.classList.add('swipe-right-anim');
-            document.getElementById(`stamp-like-${index}`).style.opacity = 1;
-            
-            // שינוי מהותי: פותחים ישירות את תיק המועמד ללא מסך מקשר!
-            currentMatchedItem = currentDeck[index];
-            matchCount++; document.getElementById('match-count').innerText = matchCount;
-            
-            setTimeout(() => openInterviewModal(), 300);
-
-        } else {
-            cardEl.classList.add('swipe-left-anim');
-            document.getElementById(`stamp-nope-${index}`).style.opacity = 1;
-        }
-
-        setTimeout(() => {
-            cardEl.remove(); topCardIndex++; renderCards();
-            const nextCard = document.getElementById(`card-${topCardIndex}`);
-            if (nextCard) initDragLogic(nextCard, topCardIndex);
-        }, 300);
-    }
-
-    function handleButtonAction(dir) {
-        const topCard = document.getElementById(`card-${topCardIndex}`);
-        if(topCard) processSwipe(dir, topCard, topCardIndex);
-    }
-
-    // --- תיק מועמד והכנה לראיון (מחליף את הפתקית) ---
-    function openInterviewModal(item = currentMatchedItem, targetName = currentTargetName) {
-        currentMatchedItem = item;
-        currentTargetName = targetName;
-        
-        // הגדרת תוכן התיק
-        document.getElementById('interview-phone').innerText = currentMatchedItem.phone;
-        document.getElementById('interview-target-name').innerText = currentTargetName;
-        document.getElementById('interview-score').innerText = currentMatchedItem.culturalFit;
-        
-        document.getElementById('interview-skills').innerHTML = currentMatchedItem.skills.map(s => `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs ml-1 inline-block border border-slate-200">${s}</span>`).join('');
-
-        const questionsUl = document.getElementById('interview-questions');
-
-        if(currentUserRole === 'employer') {
-            // התיק מציג קורות חיים של מועמד
-            document.getElementById('interview-name').innerText = currentMatchedItem.name;
-            document.getElementById('interview-title').innerText = currentMatchedItem.title;
-            document.getElementById('interview-experience').innerText = currentMatchedItem.experience;
-            document.getElementById('interview-education').innerText = currentMatchedItem.degree;
-            document.getElementById('interview-salary').innerText = currentMatchedItem.salary;
-            document.getElementById('interview-about').innerText = currentMatchedItem.about;
-            
-            questionsUl.innerHTML = `
-                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">1</div> <div>"שמתי לב לניסיון שלך ב-${currentMatchedItem.skills[0]}, תוכל/י לפרט על פרויקט מרכזי שעשית בתחום?"</div></li>
-                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">2</div> <div>"מה הזמינות שלך לתחילת עבודה במשרה של ${currentTargetName}?"</div></li>
-                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">3</div> <div>"אילו אתגרים מקצועיים אתה/את מחפש/ת בתפקיד הבא?"</div></li>
-            `;
-        } else {
-            // התיק מציג פרטי משרה (החברה היא ה"מועמד" לאישור)
-            document.getElementById('interview-name').innerText = currentMatchedItem.company;
-            document.getElementById('interview-title').innerText = `דרוש/ה: ${currentMatchedItem.title}`;
-            document.getElementById('interview-experience').innerText = `מיקום: ${currentMatchedItem.location}`;
-            document.getElementById('interview-education').innerText = currentMatchedItem.availability;
-            document.getElementById('interview-salary').innerText = `תקציב: ${currentMatchedItem.salary}`;
-            document.getElementById('interview-about').innerText = currentMatchedItem.about;
-            
-            questionsUl.innerHTML = `
-                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">1</div> <div>"היי, אני מתקשר בקשר למועמד/ת שלי (${currentTargetName}). האם המשרה ב-${currentMatchedItem.location} עדיין רלוונטית?"</div></li>
-                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">2</div> <div>"האם המודל (${currentMatchedItem.availability}) גמיש במידת הצורך?"</div></li>
-                <li class="flex items-start gap-2"><div class="bg-emerald-100 text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5 flex-shrink-0">3</div> <div>"המועמד חזק מאוד ב-${currentMatchedItem.skills[0]}, האם זה פקטור משמעותי עבורכם?"</div></li>
-            `;
-        }
-
-        document.getElementById('interview-modal').classList.replace('hidden', 'flex');
-    }
-
-    function closeInterviewModal() {
-        document.getElementById('interview-modal').classList.replace('flex', 'hidden');
-    }
-
-    function saveAndCloseInterview() {
-        const exists = savedNotes.find(note => note.item.id === currentMatchedItem.id);
-        if (!exists) {
-            savedNotes.push({
-                item: currentMatchedItem, targetName: currentTargetName, role: currentUserRole,
-                timestamp: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
-            });
-            const badge = document.getElementById('archive-badge');
-            badge.innerText = savedNotes.length; badge.classList.remove('hidden');
-            showToast('התיק נשמר בארכיון', 'success');
-        }
-        closeInterviewModal();
-    }
-
-    function openArchive() { renderArchive(); document.getElementById('archive-modal').classList.replace('hidden', 'flex'); }
-    function closeArchive() { document.getElementById('archive-modal').classList.replace('flex', 'hidden'); }
-
-    function renderArchive() {
-        const listEl = document.getElementById('archive-list');
-        if (savedNotes.length === 0) {
-            listEl.innerHTML = `<div class="text-center text-slate-400 mt-16"><i class="fa-solid fa-folder-open text-6xl mb-4 text-slate-300"></i><h3 class="text-lg font-bold text-slate-600">הארכיון ריק</h3></div>`;
-            return;
-        }
-        listEl.innerHTML = savedNotes.map((note, index) => {
-            const isEmployer = note.role === 'employer';
-            const subject = isEmployer ? note.item.name : note.item.company;
-            return `
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center hover:border-emerald-300 transition-all cursor-pointer" onclick="viewArchivedNote(${index})">
-                    <div>
-                        <h4 class="font-bold text-slate-800 cv-name text-lg">${subject}</h4>
-                        <p class="text-xs text-slate-500 mt-1">עבור: ${note.targetName}</p>
-                    </div>
-                    <div class="text-slate-400"><i class="fa-solid fa-chevron-left"></i></div>
-                </div>
-            `;
-        }).reverse().join('');
-    }
-
-    function viewArchivedNote(index) {
-        const note = savedNotes[index];
-        const originalRole = currentUserRole;
-        currentUserRole = note.role;
-        openInterviewModal(note.item, note.targetName);
-        currentUserRole = originalRole;
-    }
-
-    function rewindCard() {
-        if (!lastSwipedCard) return showToast('אין פעולה לבטל', 'info');
-        if (lastSwipedCard.direction === 'right') {
-            matchCount = Math.max(0, matchCount - 1); document.getElementById('match-count').innerText = matchCount;
-        }
-        topCardIndex--; lastSwipedCard = null;
-        document.getElementById('cards-container').querySelectorAll('.swipe-card').forEach(c => c.remove());
-        renderCards(); showToast('הכרטיס הוחזר', 'success');
-    }
-
-    function showToast(msg, type = 'info') {
-        const toast = document.getElementById('toast');
-        toast.querySelector('span').innerHTML = msg;
-        toast.querySelector('i').className = type === 'error' ? 'fa-solid fa-triangle-exclamation text-red-400' : type === 'success' ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-circle-info text-blue-400';
-        toast.style.bottom = '30px'; setTimeout(() => { toast.style.bottom = '-100px'; }, 3000);
-    }
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
