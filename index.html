@@ -170,7 +170,11 @@
   .jtag.vac{background:#fbe9f4;color:#b23a86}
   .jtag.couple{background:#efe6fb;color:#7b3fd1}
   .jtag.kids{background:#e6f2fb;color:#2b7cc4}
-  .jcard-foot{margin-top:auto;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);margin-top:16px}
+  .jcard-foot{margin-top:auto;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line)}
+  .jtags{min-height:30px}
+  .photo-drop.err{border-color:var(--accent-2);background:#fdeede}
+  .spin{display:inline-block;animation:pulse 1.3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.15);opacity:1}}
   .jcard-foot .posted{font-size:12px;color:var(--muted);font-weight:600}
   .apply-mini{font-size:13.5px;font-weight:700;color:#fff;background:var(--brand);padding:9px 16px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;transition:filter .15s,transform .15s}
   .apply-mini:hover{filter:brightness(1.1);transform:translateY(-1px)}
@@ -920,12 +924,13 @@ function SubscribeModal({ctx,onClose,onSuccess}){
   const [prov,setProv]=useState(PROVIDERS.zambia[0].id);
   const [phone,setPhone]=useState("");
   const [stage,setStage]=useState("form"); // form|pending
+  const [phoneErr,setPhoneErr]=useState(false);
   const plan=PLAN[country];
   const formRef=useRef(null);
 
   function submit(e){
     e.preventDefault();
-    if(!phone.trim()||phone.replace(/\D/g,"").length<7) return;
+    if(!phone.trim()||phone.replace(/\D/g,"").length<7){ setPhoneErr(true); return; }
     // deliver the subscription lead to the single inbox (fire & forget)
     try{ formRef.current && formRef.current.submit(); }catch(_){}
     setStage("pending");
@@ -943,8 +948,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
         </div>
         <div className="modal-body">
           {stage==="form" ? (
-            <form onSubmit={submit}>
-              {/* hidden delivery form */}
+            <div>
               <div className="country-tabs">
                 <button type="button" className={"ctab"+(country==="zambia"?" on":"")} onClick={()=>{setCountry("zambia");setProv(PROVIDERS.zambia[0].id);}}>🇿🇲 Zambia</button>
                 <button type="button" className={"ctab"+(country==="nigeria"?" on":"")} onClick={()=>{setCountry("nigeria");setProv(PROVIDERS.nigeria[0].id);}}>🇳🇬 Nigeria</button>
@@ -968,10 +972,14 @@ function SubscribeModal({ctx,onClose,onSuccess}){
 
               <div className="fld" style={{marginTop:16}}>
                 <label>Mobile Money phone number</label>
-                <input type="tel" inputMode="tel" placeholder={country==="zambia"?"e.g. 097 123 4567":"e.g. 0803 123 4567"} value={phone} onChange={e=>setPhone(e.target.value)} required />
+                <input type="tel" inputMode="tel" style={phoneErr?{borderColor:"var(--accent-2)",boxShadow:"0 0 0 3px rgba(255,122,69,.15)"}:null}
+                  placeholder={country==="zambia"?"e.g. 097 123 4567":"e.g. 0803 123 4567"} value={phone}
+                  onChange={e=>{setPhone(e.target.value);setPhoneErr(false);}}
+                  onKeyDown={e=>{if(e.key==="Enter")submit(e);}} required />
+                {phoneErr && <span style={{fontSize:12.5,color:"var(--accent-2)",fontWeight:600}}>Please enter a valid Mobile Money number.</span>}
               </div>
 
-              <button className="btn btn-primary btn-block btn-lg" style={{marginTop:18}} type="submit">
+              <button className="btn btn-primary btn-block btn-lg" style={{marginTop:18}} type="button" onClick={submit}>
                 Send payment request · {plan.label}/mo
               </button>
               <div className="secure">🔒 Secured with Mobile Money — no card needed</div>
@@ -988,7 +996,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
                 <input type="hidden" name="Plan" value={plan.label+" "+plan.cur+"/month"} />
                 <input type="hidden" name="Phone" value={phone} />
               </form>
-            </form>
+            </div>
           ):(
             <div className="success-wrap">
               <div className="ring" style={{background:"#eef2fd",color:"var(--brand-2)"}}>
@@ -1010,16 +1018,18 @@ function ApplyModal({job,onClose,onSuccess}){
   const isCouple=job.type==="couple";
   const [photo,setPhoto]=useState(null);
   const [photoUrl,setPhotoUrl]=useState(null);
+  const [photoErr,setPhotoErr]=useState(false);
   const [sending,setSending]=useState(false);
   const formRef=useRef(null);
 
   function onPhoto(e){
     const f=e.target.files&&e.target.files[0];
     if(!f) return;
-    setPhoto(f); setPhotoUrl(URL.createObjectURL(f));
+    setPhoto(f); setPhotoErr(false); setPhotoUrl(URL.createObjectURL(f));
   }
   function submit(e){
     e.preventDefault();
+    if(!photo){ setPhotoErr(true); return; }   // validate in JS (hidden file input can't use native required)
     setSending(true);
     try{ formRef.current.submit(); }catch(_){}
     // give the multipart POST a moment, then confirm
@@ -1096,13 +1106,13 @@ function ApplyModal({job,onClose,onSuccess}){
               </div>
 
               {/* photo (not a CV) */}
-              <label className="photo-drop full">
+              <label className={"photo-drop full"+(photoErr?" err":"")}>
                 {photoUrl? <img className="prev" src={photoUrl} alt="Your photo" /> : <span className="prev">📷</span>}
                 <div className="t">
-                  <b>{photo? "Photo added ✓" : "Upload your photo"}</b>
+                  <b>{photo? "Photo added ✓" : (photoErr? "Please add a photo" : "Upload your photo")}</b>
                   <span>{photo? photo.name : "A clear photo of yourself (not a CV). JPG or PNG."}</span>
                 </div>
-                <input type="file" name="Applicant photo" accept="image/*" onChange={onPhoto} required style={{display:"none"}} />
+                <input type="file" name="Applicant photo" accept="image/*" onChange={onPhoto} style={{display:"none"}} />
               </label>
             </div>
 
