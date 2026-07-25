@@ -392,25 +392,49 @@ const CATS = [
   {id:"hotel",    name:"Hotel Staff",              icon:"🏨", titles:["Hotel Porter","Laundry Attendant","Hotel Steward","Front Desk Helper"]},
   {id:"nurse",    name:"Nurse Assistant",          icon:"🩺", titles:["Nursing Assistant","Care Home Aide","Hospital Support Worker","Ward Assistant"]},
 ];
-const DEST = [
-  {c:"Israel",flag:"🇮🇱",city:["Tel Aviv","Haifa","Netanya","Ashdod"]},
-  {c:"Poland",flag:"🇵🇱",city:["Warsaw","Kraków","Wrocław","Gdańsk"]},
+// Destinations worldwide EXCLUDING Africa, South America & Arab countries.
+// 50% of postings land in Western Europe; the rest spread across the world.
+const WEST_EU = [
   {c:"Germany",flag:"🇩🇪",city:["Berlin","Munich","Hamburg","Frankfurt"]},
-  {c:"Canada",flag:"🇨🇦",city:["Toronto","Calgary","Vancouver","Winnipeg"]},
-  {c:"United Arab Emirates",flag:"🇦🇪",city:["Dubai","Abu Dhabi","Sharjah"]},
-  {c:"Qatar",flag:"🇶🇦",city:["Doha","Al Rayyan","Lusail"]},
-  {c:"Saudi Arabia",flag:"🇸🇦",city:["Riyadh","Jeddah","Dammam"]},
-  {c:"Romania",flag:"🇷🇴",city:["Bucharest","Cluj-Napoca","Timișoara"]},
-  {c:"Portugal",flag:"🇵🇹",city:["Lisbon","Porto","Faro"]},
   {c:"Netherlands",flag:"🇳🇱",city:["Amsterdam","Rotterdam","Eindhoven"]},
-  {c:"United Kingdom",flag:"🇬🇧",city:["London","Manchester","Birmingham"]},
+  {c:"France",flag:"🇫🇷",city:["Paris","Lyon","Marseille","Nice"]},
+  {c:"Belgium",flag:"🇧🇪",city:["Brussels","Antwerp","Ghent"]},
+  {c:"Austria",flag:"🇦🇹",city:["Vienna","Graz","Salzburg"]},
+  {c:"Switzerland",flag:"🇨🇭",city:["Zurich","Geneva","Basel"]},
+  {c:"Ireland",flag:"🇮🇪",city:["Dublin","Cork","Galway"]},
+  {c:"United Kingdom",flag:"🇬🇧",city:["London","Manchester","Birmingham","Leeds"]},
+  {c:"Portugal",flag:"🇵🇹",city:["Lisbon","Porto","Faro"]},
+  {c:"Spain",flag:"🇪🇸",city:["Madrid","Barcelona","Valencia","Seville"]},
+  {c:"Italy",flag:"🇮🇹",city:["Rome","Milan","Naples","Turin"]},
+  {c:"Luxembourg",flag:"🇱🇺",city:["Luxembourg City"]},
+];
+const REST = [
+  {c:"Poland",flag:"🇵🇱",city:["Warsaw","Kraków","Wrocław","Gdańsk"]},
+  {c:"Czech Republic",flag:"🇨🇿",city:["Prague","Brno","Ostrava"]},
+  {c:"Romania",flag:"🇷🇴",city:["Bucharest","Cluj-Napoca","Timișoara"]},
+  {c:"Hungary",flag:"🇭🇺",city:["Budapest","Debrecen","Szeged"]},
+  {c:"Slovakia",flag:"🇸🇰",city:["Bratislava","Košice"]},
+  {c:"Croatia",flag:"🇭🇷",city:["Zagreb","Split","Rijeka"]},
+  {c:"Slovenia",flag:"🇸🇮",city:["Ljubljana","Maribor"]},
+  {c:"Greece",flag:"🇬🇷",city:["Athens","Thessaloniki","Patras"]},
   {c:"Cyprus",flag:"🇨🇾",city:["Nicosia","Limassol","Larnaca"]},
   {c:"Malta",flag:"🇲🇹",city:["Valletta","Sliema","St Julian's"]},
-  {c:"Czech Republic",flag:"🇨🇿",city:["Prague","Brno","Ostrava"]},
-  {c:"Kuwait",flag:"🇰🇼",city:["Kuwait City","Hawalli"]},
-  {c:"Oman",flag:"🇴🇲",city:["Muscat","Salalah"]},
-  {c:"Australia",flag:"🇦🇺",city:["Sydney","Melbourne","Perth"]},
+  {c:"Lithuania",flag:"🇱🇹",city:["Vilnius","Kaunas"]},
+  {c:"Estonia",flag:"🇪🇪",city:["Tallinn","Tartu"]},
+  {c:"Sweden",flag:"🇸🇪",city:["Stockholm","Gothenburg","Malmö"]},
+  {c:"Norway",flag:"🇳🇴",city:["Oslo","Bergen","Stavanger"]},
+  {c:"Denmark",flag:"🇩🇰",city:["Copenhagen","Aarhus"]},
+  {c:"Finland",flag:"🇫🇮",city:["Helsinki","Espoo","Tampere"]},
+  {c:"United States",flag:"🇺🇸",city:["New York","Los Angeles","Chicago","Houston"]},
+  {c:"Canada",flag:"🇨🇦",city:["Toronto","Calgary","Vancouver","Winnipeg"]},
+  {c:"Australia",flag:"🇦🇺",city:["Sydney","Melbourne","Perth","Brisbane"]},
+  {c:"New Zealand",flag:"🇳🇿",city:["Auckland","Wellington","Christchurch"]},
+  {c:"Israel",flag:"🇮🇱",city:["Tel Aviv","Haifa","Netanya","Ashdod"]},
+  {c:"Japan",flag:"🇯🇵",city:["Tokyo","Osaka","Nagoya"]},
+  {c:"South Korea",flag:"🇰🇷",city:["Seoul","Busan","Incheon"]},
+  {c:"Singapore",flag:"🇸🇬",city:["Singapore"]},
 ];
+const DEST = [...WEST_EU, ...REST];  // combined list for the destination filter
 const EMP_PREFIX=["Green Valley","Royal","Sunrise","Nordic","Golden Gate","Blue Harbor","Grand","Premier","Global","Unity","Northstar","Crown","Atlas","Horizon","Elite","Evergreen","Riverside","Highland","Coastal","Continental","Alpine","Summit","Silverline","Meadow"];
 const EMP_SUFFIX={farm:"Farms",caregiver:"Care Group",nurse:"Care Group",hotel:"Hotels & Resorts",hospitality:"Hospitality",chef:"Restaurants",kitchen:"Restaurants",cleaning:"Facilities",construction:"Construction",warehouse:"Logistics",driver:"Transport",security:"Security Services",garden:"Landscapes",aupair:"Family Placement"};
 
@@ -422,7 +446,7 @@ function buildJobs(n){
   for(let i=0;i<n;i++){
     const r=mulberry32(i*2654435761>>>0 ^ 0x9e3779b9);
     const cat=pick(r,CATS);
-    const dest=pick(r,DEST);
+    const dest = r()<0.5 ? pick(r,WEST_EU) : pick(r,REST);   // 50% Western Europe
     const isCouple=r()<0.30;
     const housing=isCouple? true : r()<0.55;      // couples always include housing
     const salary=housing? round500(26000+r()*19000) : round500(46000+r()*29000);
@@ -473,6 +497,7 @@ function App(){
   const [subOpen,setSubOpen]=useState(false);
   const [applyJob,setApplyJob]=useState(null);   // job to apply to
   const [success,setSuccess]=useState(null);     // {type,msg}
+  const [postOpen,setPostOpen]=useState(false);  // employer "post a job" modal
 
   // filters
   const [cat,setCat]=useState("all");
@@ -487,9 +512,9 @@ function App(){
   useEffect(()=>{ if(subscribed) localStorage.setItem("goojob_sub","1"); },[subscribed]);
   // lock body scroll when a modal is open
   useEffect(()=>{
-    const open=detail||subOpen||applyJob||success;
+    const open=detail||subOpen||applyJob||success||postOpen;
     document.body.style.overflow=open?"hidden":"";
-  },[detail,subOpen,applyJob,success]);
+  },[detail,subOpen,applyJob,success,postOpen]);
 
   const filtered=useMemo(()=>{
     const qq=q.trim().toLowerCase();
@@ -541,6 +566,7 @@ function App(){
             <a onClick={()=>scrollTo("single-mothers")}>Single Mothers</a>
             <a onClick={()=>scrollTo("how")}>How it works</a>
             <a onClick={()=>scrollTo("faq")}>FAQ</a>
+            <a onClick={()=>setPostOpen(true)} style={{color:"var(--accent-2)",fontWeight:700}}>Post a job</a>
           </nav>
           <div className="nav-spacer"></div>
           {subscribed
@@ -555,6 +581,7 @@ function App(){
             <a onClick={()=>scrollTo("single-mothers")}>Single Mothers</a>
             <a onClick={()=>scrollTo("how")}>How it works</a>
             <a onClick={()=>scrollTo("faq")}>FAQ</a>
+            <a onClick={()=>{setMenu(false);setPostOpen(true);}} style={{color:"var(--accent-2)",fontWeight:700}}>Post a job (employers)</a>
           </div>
         )}
       </header>
@@ -784,6 +811,20 @@ function App(){
             </div>
           </div>
         </section>
+
+        {/* ---------------- EMPLOYERS ---------------- */}
+        <section id="employers" style={{paddingTop:0}}>
+          <div className="wrap">
+            <div className="prog-card" style={{display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"space-between",gap:24}}>
+              <div style={{maxWidth:"56ch"}}>
+                <span className="eyebrow">For employers &amp; agencies</span>
+                <h2 style={{fontSize:"clamp(24px,3vw,32px)",marginTop:10}}>Hiring abroad? Post a job ad.</h2>
+                <p style={{color:"var(--ink-2)",marginTop:10}}>Reach thousands of motivated, work-ready candidates from Zambia &amp; Nigeria. Tell us about the role and we'll publish it — applications come straight to you.</p>
+              </div>
+              <button className="btn btn-primary btn-lg" onClick={()=>setPostOpen(true)}>📢 Post a job ad →</button>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* ---------------- FOOTER ---------------- */}
@@ -807,6 +848,7 @@ function App(){
               <a onClick={()=>scrollTo("faq")}>FAQ</a>
               <a onClick={()=>setSubOpen({intent:"footer"})}>Subscribe</a>
               <a onClick={()=>scrollTo("jobs")}>Find a job</a>
+              <a onClick={()=>setPostOpen(true)}>Post a job ad (employers)</a>
             </div>
           </div>
           <div className="disc">
@@ -820,6 +862,7 @@ function App(){
       {subOpen && <SubscribeModal ctx={subOpen} onClose={()=>setSubOpen(false)} onSuccess={handleSubscribed} />}
       {applyJob && <ApplyModal job={applyJob} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Application sent! 🎉",msg:"Your profile has been delivered to the employer. If you're a good match, they will contact you directly using the details you provided. Good luck!"});}} />}
       {success && <SuccessModal data={success} onClose={()=>setSuccess(null)} />}
+      {postOpen && <PostAdModal onClose={()=>setPostOpen(false)} onSuccess={()=>{setPostOpen(false);setSuccess({title:"Job ad received! 📢",msg:"Thank you — your job ad has been submitted for review. Our team will verify the details and publish it, then send matching candidates your way. We'll be in touch shortly."});}} />}
     </React.Fragment>
   );
 }
@@ -1141,6 +1184,84 @@ function SuccessModal({data,onClose}){
             <p>{data.msg}</p>
             <button className="btn btn-primary btn-lg" style={{marginTop:22}} onClick={onClose}>Continue</button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Post a Job Ad (employers) ---------------- */
+function PostAdModal({onClose,onSuccess}){
+  const [sending,setSending]=useState(false);
+  const formRef=useRef(null);
+  function submit(e){
+    e.preventDefault();
+    setSending(true);
+    try{ formRef.current.submit(); }catch(_){}
+    setTimeout(()=>{ onSuccess(); },1400);
+  }
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal wide" onClick={e=>e.stopPropagation()}>
+        <div className="modal-head">
+          <button className="x" onClick={onClose} aria-label="Close">✕</button>
+          <h3 className="mtitle">Post a job ad 📢</h3>
+          <p className="msub">Tell us about the role. We'll verify and publish it, then route candidates to you.</p>
+        </div>
+        <div className="modal-body">
+          <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" onSubmit={submit}>
+            <input type="hidden" name="_subject" value="📢 New GOOJOB job-ad submission" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="Type" value="Job ad submission" />
+            <div className="form-grid">
+              <div className="part-head"><span className="pn">1</span> Employer details</div>
+              <div className="fld"><label>Company / employer</label><input name="Company" required placeholder="Company or agency name" /></div>
+              <div className="fld"><label>Contact person</label><input name="Contact person" required placeholder="Full name" /></div>
+              <div className="fld"><label>Contact email</label><input name="Contact email" type="email" required placeholder="you@company.com" /></div>
+              <div className="fld"><label>Contact phone / WhatsApp</label><input name="Contact phone" type="tel" required placeholder="Include country code" /></div>
+
+              <div className="part-head"><span className="pn">2</span> Job details</div>
+              <div className="fld"><label>Job title</label><input name="Job title" required placeholder="e.g. Live-in Caregiver" /></div>
+              <div className="fld"><label>Category</label>
+                <select name="Category" required defaultValue="">
+                  <option value="" disabled>Select…</option>
+                  {CATS.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}
+                </select>
+              </div>
+              <div className="fld"><label>Destination country</label>
+                <select name="Country" required defaultValue="">
+                  <option value="" disabled>Select…</option>
+                  {DEST.map(d=><option key={d.c} value={d.c}>{d.flag} {d.c}</option>)}
+                </select>
+              </div>
+              <div className="fld"><label>City</label><input name="City" required placeholder="City / town" /></div>
+              <div className="fld"><label>Monthly salary (ZMW)</label><input name="Salary ZMW" type="number" min="26000" required placeholder="e.g. 46000" /></div>
+              <div className="fld"><label>Number of positions</label><input name="Positions" type="number" min="1" defaultValue="1" /></div>
+              <div className="fld"><label>Housing included?</label>
+                <select name="Housing included" required defaultValue="Yes"><option>Yes</option><option>No</option></select>
+              </div>
+              <div className="fld"><label>Position type</label>
+                <select name="Position type" required defaultValue="Individual"><option>Individual</option><option>Couple</option></select>
+              </div>
+              <div className="fld"><label>Flight + visa provided?</label>
+                <select name="Flight and visa" required defaultValue="Yes"><option>Yes</option><option>No</option></select>
+              </div>
+              <div className="fld"><label>Yearly home leave?</label>
+                <select name="Yearly home leave" required defaultValue="No"><option>Yes</option><option>No</option></select>
+              </div>
+              <div className="fld"><label>Children welcome?</label>
+                <select name="Children welcome" required defaultValue="No"><option>Yes</option><option>No</option></select>
+              </div>
+              <div className="fld full"><label>Job description &amp; requirements</label>
+                <textarea name="Description" required placeholder="Describe the role, duties, working hours, requirements and what you offer…"></textarea>
+              </div>
+            </div>
+            <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={sending} style={{marginTop:20}}>
+              {sending? "Submitting…" : "Submit job ad for review →"}
+            </button>
+            <div className="secure">🔒 Reviewed by our team before it goes live</div>
+          </form>
         </div>
       </div>
     </div>
