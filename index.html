@@ -11,6 +11,7 @@
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <style>
   :root{
     /* Neutrals — warm, tinted toward the brand */
@@ -82,6 +83,13 @@
   .nav-spacer{flex:1}
   .sub-pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--success);background:var(--success-bg);padding:8px 14px;border-radius:999px}
   .hamburger{display:none;font-size:26px;color:var(--ink);padding:6px}
+  .gbtn{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:14px;padding:9px 17px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink-2);box-shadow:var(--sh-1);transition:border .15s,transform .15s}
+  .gbtn:hover{border-color:var(--brand-2);transform:translateY(-1px)}
+  .user-pill{display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;background:var(--surface-2);padding:5px 14px 5px 5px;border-radius:999px}
+  .user-pill img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+  .user-pill .avm{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .user-pill .so{font-size:12px;color:var(--muted);font-weight:600}
+  .user-pill .so:hover{color:var(--brand-2)}
 
   /* ---------- Hero ---------- */
   .hero{position:relative;overflow:hidden;padding:64px 0 40px;
@@ -354,6 +362,20 @@ const { useState, useEffect, useMemo, useRef } = React;
 const INBOX = "aaci.yoni@gmail.com";
 const FORM_ENDPOINT = "https://formsubmit.co/" + INBOX;
 
+/* Google Sign-In: paste your OAuth 2.0 Client ID (Google Cloud Console →
+   Credentials → OAuth client → Web app) with authorized JavaScript origin
+   https://aaciyoni-bot.github.io — then the button below goes live. */
+const GOOGLE_CLIENT_ID = "";
+function decodeJwt(t){ try{ return JSON.parse(atob(t.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))); }catch(e){ return null; } }
+const GLOGO = (
+  <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+  </svg>
+);
+
 const PLAN = {
   zambia:  { price: 150,   cur: "ZMW", label: "K150", flag: "🇿🇲", name: "Zambia" },
   nigeria: { price: 5000,  cur: "NGN", label: "₦5,000", flag: "🇳🇬", name: "Nigeria" },
@@ -492,6 +514,8 @@ const fmt = n => n.toLocaleString("en-US");
 /* ============================================================ APP ============ */
 function App(){
   const [subscribed,setSubscribed]=useState(()=>localStorage.getItem("goojob_sub")==="1");
+  const [user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem("goojob_user")||"null");}catch(e){return null;}});
+  const googleBtnRef=useRef(null);
   const [menu,setMenu]=useState(false);
   const [detail,setDetail]=useState(null);      // job object
   const [subOpen,setSubOpen]=useState(false);
@@ -510,6 +534,34 @@ function App(){
   const [visible,setVisible]=useState(24);
 
   useEffect(()=>{ if(subscribed) localStorage.setItem("goojob_sub","1"); },[subscribed]);
+
+  // Google Identity Services — activates automatically once GOOGLE_CLIENT_ID is set
+  useEffect(()=>{
+    if(!GOOGLE_CLIENT_ID || user) return;
+    let tries=0;
+    const t=setInterval(()=>{
+      tries++;
+      const g=window.google&&window.google.accounts&&window.google.accounts.id;
+      if(g){
+        clearInterval(t);
+        window.google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:(resp)=>{
+          const p=decodeJwt(resp.credential);
+          if(p){const u={name:p.name,given:p.given_name,email:p.email,picture:p.picture};setUser(u);localStorage.setItem("goojob_user",JSON.stringify(u));}
+        }});
+        if(googleBtnRef.current){
+          googleBtnRef.current.innerHTML="";
+          window.google.accounts.id.renderButton(googleBtnRef.current,{theme:"outline",size:"large",shape:"pill",text:"signin_with"});
+        }
+      }
+      if(tries>40) clearInterval(t);
+    },300);
+    return ()=>clearInterval(t);
+  },[user]);
+
+  function signOut(){
+    setUser(null); localStorage.removeItem("goojob_user");
+    try{ window.google.accounts.id.disableAutoSelect(); }catch(e){}
+  }
   // lock body scroll when a modal is open
   useEffect(()=>{
     const open=detail||subOpen||applyJob||success||postOpen;
@@ -569,6 +621,15 @@ function App(){
             <a onClick={()=>setPostOpen(true)} style={{color:"var(--accent-2)",fontWeight:700}}>Post a job</a>
           </nav>
           <div className="nav-spacer"></div>
+          {user
+            ? <span className="user-pill">
+                {user.picture ? <img src={user.picture} alt="" referrerPolicy="no-referrer" /> : <span className="avm">{(user.given||user.name||"?").charAt(0)}</span>}
+                {user.given||user.name}
+                <button className="so" onClick={signOut}>Sign out</button>
+              </span>
+            : (GOOGLE_CLIENT_ID
+                ? <div ref={googleBtnRef}></div>
+                : <button className="gbtn" onClick={()=>setSuccess({title:"Sign in with Google",msg:"Google sign-in for GOOJOB is being activated and will appear here shortly. In the meantime you can browse every job and subscribe with Mobile Money as normal — no account needed."})}>{GLOGO} Sign in with Google</button>)}
           {subscribed
             ? <span className="sub-pill">✓ Subscribed</span>
             : <button className="btn btn-primary" onClick={()=>setSubOpen({intent:"nav"})} style={{padding:"11px 22px"}}>Subscribe</button>}
@@ -860,7 +921,7 @@ function App(){
       {/* ---------------- MODALS ---------------- */}
       {detail && <JobDetail job={detail} subscribed={subscribed} onClose={()=>setDetail(null)} onApply={()=>onApplyClick(detail)} />}
       {subOpen && <SubscribeModal ctx={subOpen} onClose={()=>setSubOpen(false)} onSuccess={handleSubscribed} />}
-      {applyJob && <ApplyModal job={applyJob} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Application sent! 🎉",msg:"Your profile has been delivered to the employer. If you're a good match, they will contact you directly using the details you provided. Good luck!"});}} />}
+      {applyJob && <ApplyModal job={applyJob} user={user} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Application sent! 🎉",msg:"Your profile has been delivered to the employer. If you're a good match, they will contact you directly using the details you provided. Good luck!"});}} />}
       {success && <SuccessModal data={success} onClose={()=>setSuccess(null)} />}
       {postOpen && <PostAdModal onClose={()=>setPostOpen(false)} onSuccess={()=>{setPostOpen(false);setSuccess({title:"Job ad received! 📢",msg:"Thank you — your job ad has been submitted for review. Our team will verify the details and publish it, then send matching candidates your way. We'll be in touch shortly."});}} />}
     </React.Fragment>
@@ -1058,7 +1119,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
 }
 
 /* ---------------- Apply Modal ---------------- */
-function ApplyModal({job,onClose,onSuccess}){
+function ApplyModal({job,user,onClose,onSuccess}){
   const isCouple=job.type==="couple";
   const [photo,setPhoto]=useState(null);
   const [photoUrl,setPhotoUrl]=useState(null);
@@ -1101,7 +1162,8 @@ function ApplyModal({job,onClose,onSuccess}){
 
             <div className="form-grid">
               {isCouple && <div className="part-head"><span className="pn">1</span> Your details</div>}
-              <div className="fld"><label>Full name</label><input name="Full name" required placeholder="Your full name" /></div>
+              {user&&user.email && <input type="hidden" name="Google account email" value={user.email} />}
+              <div className="fld"><label>Full name</label><input name="Full name" required placeholder="Your full name" defaultValue={user?user.name:""} /></div>
               <div className="fld"><label>Age</label><input name="Age" type="number" min="18" max="70" required placeholder="e.g. 29" /></div>
               <div className="fld"><label>Gender</label>
                 <select name="Gender" required defaultValue=""><option value="" disabled>Select…</option><option>Female</option><option>Male</option></select>
