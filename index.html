@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <style>
   :root{
     /* Neutrals — warm, tinted toward the brand */
@@ -342,6 +342,7 @@
 <iframe name="goojob_sink" style="display:none" title="sink"></iframe>
 
 <script type="text/babel" data-presets="react">
+/* @jsxRuntime classic */
 const { useState, useEffect, useMemo, useRef } = React;
 
 /* ============================================================
