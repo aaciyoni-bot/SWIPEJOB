@@ -12,6 +12,9 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root{
     /* Neutrals — warm, tinted toward the brand */
@@ -362,10 +365,85 @@ const { useState, useEffect, useMemo, useRef } = React;
 const INBOX = "aaci.yoni@gmail.com";
 const FORM_ENDPOINT = "https://formsubmit.co/" + INBOX;
 
-/* Google Sign-In: paste your OAuth 2.0 Client ID (Google Cloud Console →
-   Credentials → OAuth client → Web app) with authorized JavaScript origin
-   https://aaciyoni-bot.github.io — then the button below goes live. */
-const GOOGLE_CLIENT_ID = "";
+/* Payments backend (pawaPay Mobile Money). With this set, Zambian members get
+   a real MoMo PIN prompt and are actually charged. Empty ('') or unreachable
+   => the old lead-only behaviour, with no fake "payment successful" claim. */
+const API_BASE_URL = "https://goojob-backend.vercel.app";
+
+/* Google Sign-In now runs through Firebase Auth on the SHARED "Zed Zambia"
+   project (zedmall-4301c) — the same account works across every ORIZIS
+   Zambia site, and no separate OAuth Client ID is needed. Signing in also
+   lets a membership follow the member to a new phone. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAqkEfNwKZzofId0XCGcs17sVFh5NYryrM",
+  authDomain: "zedmall-4301c.firebaseapp.com",
+  projectId: "zedmall-4301c",
+  storageBucket: "zedmall-4301c.firebasestorage.app",
+  messagingSenderId: "24400915808",
+  appId: "1:24400915808:web:cd5675e846250c4e808205"
+};
+const GOOGLE_CLIENT_ID = ""; // legacy GIS path — superseded by Firebase Auth
+
+/* ---------- shared Firebase (optional, never fatal) ---------- */
+var fbAuth=null, fbDb=null;
+try{
+  if(window.firebase && FIREBASE_CONFIG.apiKey){
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    fbAuth=firebase.auth(); fbDb=firebase.firestore();
+  }
+}catch(e){ console.warn("Firebase unavailable — running standalone:",e); }
+
+const apiBase=()=>(API_BASE_URL||"").replace(/\/$/,"");
+const newDepositId=()=>(window.crypto&&crypto.randomUUID)?crypto.randomUUID()
+  :"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(c){
+      var r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); });
+
+/* Charges the member's mobile money and waits for the PIN approval.
+   Returns "paid" | "failed" | null (null = automatic collection unavailable,
+   so the caller falls back to the lead-only flow instead of faking success). */
+async function collectMembership(opts){
+  const base=apiBase(); if(!base) return null;
+  try{
+    const res=await fetch(base+"/api/pay",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({depositId:opts.depositId,phone:opts.phone,provider:opts.provider,
+        amount:opts.amount,country:opts.country})});
+    const data=await res.json();
+    if(!res.ok||data.simulated||data.unsupportedCountry||!data.tx_ref) return null;
+    for(let i=0;i<24;i++){
+      await new Promise(r=>setTimeout(r,5000));
+      try{
+        const s=await fetch(base+"/api/pay/status?tx_ref="+encodeURIComponent(data.tx_ref)).then(r=>r.json());
+        if(s.status==="successful") return "paid";
+        if(s.status==="failed"||s.status==="cancelled") return "failed";
+      }catch(e){ /* transient — keep waiting */ }
+    }
+    return "failed";
+  }catch(e){ console.warn("Automatic collection unavailable:",e); return null; }
+}
+
+/* Membership is only granted after the SERVER re-checks the payment. */
+async function activateMembership(txRef){
+  const base=apiBase(); if(!base) return null;
+  try{
+    const r=await fetch(base+"/api/activate-membership",{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({tx_ref:txRef})});
+    return r.ok ? await r.json() : null;
+  }catch(e){ return null; }
+}
+
+/* Records the membership against the signed-in account so it follows the
+   member to a new phone. Silently skipped when not signed in. */
+async function saveMembership(rec){
+  if(!fbDb||!fbAuth||!fbAuth.currentUser) return;
+  try{
+    await fbDb.collection("goojob_members").doc(fbAuth.currentUser.uid).set({
+      uid:fbAuth.currentUser.uid, email:fbAuth.currentUser.email||null,
+      membershipId:rec.membershipId||null, token:rec.token||null,
+      country:rec.country||null, plan:rec.plan||null,
+      active:true, activatedAt:Date.now()
+    },{merge:true});
+  }catch(e){ console.warn("Could not save membership:",e); }
+}
 function decodeJwt(t){ try{ return JSON.parse(atob(t.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))); }catch(e){ return null; } }
 const GLOGO = (
   <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
@@ -558,8 +636,34 @@ function App(){
     return ()=>clearInterval(t);
   },[user]);
 
+  // Firebase Auth (shared Zed Zambia project). One account across every ORIZIS
+  // Zambia site, and a membership bought on one phone is restored on the next.
+  useEffect(()=>{
+    if(!fbAuth) return;
+    return fbAuth.onAuthStateChanged(async u=>{
+      if(!u){ return; }
+      const info={name:u.displayName||(u.email||"").split("@")[0],given:(u.displayName||"").split(" ")[0],
+        email:u.email,picture:u.photoURL};
+      setUser(info); localStorage.setItem("goojob_user",JSON.stringify(info));
+      if(!fbDb) return;
+      try{
+        const snap=await fbDb.collection("goojob_members").doc(u.uid).get();
+        if(snap.exists && snap.data().active) setSubscribed(true);
+      }catch(e){ /* not fatal — they can still subscribe */ }
+    });
+  },[]);
+
+  function signInGoogle(){
+    if(!fbAuth) return;
+    const p=new firebase.auth.GoogleAuthProvider();
+    fbAuth.signInWithPopup(p).catch(e=>{
+      setSuccess({title:"Could not sign in",msg:(e&&e.message)||"Please try again."});
+    });
+  }
+
   function signOut(){
     setUser(null); localStorage.removeItem("goojob_user");
+    try{ if(fbAuth) fbAuth.signOut(); }catch(e){}
     try{ window.google.accounts.id.disableAutoSelect(); }catch(e){}
   }
   // lock body scroll when a modal is open
@@ -594,12 +698,16 @@ function App(){
     if(subscribed) setApplyJob(job);
     else setSubOpen({intent:"apply",job});
   }
-  function handleSubscribed(){
+  function handleSubscribed(info){
+    // `manual` means no money was actually collected (Nigeria, or the payments
+    // backend was unreachable) — the team follows up. Never claim otherwise.
+    const manual=!!(info&&info.manual);
     setSubscribed(true);
     const pending=subOpen&&subOpen.job;
     setSubOpen(false);
     if(pending) setTimeout(()=>setApplyJob(pending),120);
-    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money subscription is active. You can now apply to any job on GOOJOB. Browse and send your profile — employers will contact you directly."});
+    else if(manual) setSuccess({title:"Request received ✅",msg:"We have your membership request. Our team will contact you on WhatsApp to complete the Mobile Money payment and activate your account. Meanwhile you can browse and prepare your profile."});
+    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your membership is active. You can now apply to any job on GOOJOB. Browse and send your profile — employers will contact you directly."});
   }
 
   const scrollTo=(id)=>{setMenu(false);const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});};
@@ -627,9 +735,11 @@ function App(){
                 {user.given||user.name}
                 <button className="so" onClick={signOut}>Sign out</button>
               </span>
-            : (GOOGLE_CLIENT_ID
-                ? <div ref={googleBtnRef}></div>
-                : <button className="gbtn" onClick={()=>setSuccess({title:"Sign in with Google",msg:"Google sign-in for GOOJOB is being activated and will appear here shortly. In the meantime you can browse every job and subscribe with Mobile Money as normal — no account needed."})}>{GLOGO} Sign in with Google</button>)}
+            : (fbAuth
+                ? <button className="gbtn" onClick={signInGoogle}>{GLOGO} Sign in with Google</button>
+                : (GOOGLE_CLIENT_ID
+                    ? <div ref={googleBtnRef}></div>
+                    : <button className="gbtn" onClick={()=>setSuccess({title:"Sign in with Google",msg:"Google sign-in for GOOJOB is being activated and will appear here shortly. In the meantime you can browse every job and subscribe with Mobile Money as normal — no account needed."})}>{GLOGO} Sign in with Google</button>))}
           {subscribed
             ? <span className="sub-pill">✓ Subscribed</span>
             : <button className="btn btn-primary" onClick={()=>setSubOpen({intent:"nav"})} style={{padding:"11px 22px"}}>Subscribe</button>}
@@ -1033,14 +1143,43 @@ function SubscribeModal({ctx,onClose,onSuccess}){
   const plan=PLAN[country];
   const formRef=useRef(null);
 
-  function submit(e){
+  const [payErr,setPayErr]=useState("");
+
+  async function submit(e){
     e.preventDefault();
     if(!phone.trim()||phone.replace(/\D/g,"").length<7){ setPhoneErr(true); return; }
+    setPayErr("");
     // deliver the subscription lead to the single inbox (fire & forget)
     try{ formRef.current && formRef.current.submit(); }catch(_){}
     setStage("pending");
-    // simulate the Mobile Money push-confirmation window
-    setTimeout(()=>{ onSuccess(); },2600);
+
+    // Charge the member for real. Zambia is wired to pawaPay; Nigeria is not
+    // live yet, so it keeps the lead-only flow rather than faking a charge.
+    const depositId=newDepositId();
+    const outcome=await collectMembership({
+      depositId, phone, provider:prov, amount:plan.price, country
+    });
+
+    if(outcome==="failed"){
+      setStage("form");
+      setPayErr("The payment was not completed. Check your phone and try again.");
+      return;
+    }
+    if(outcome==="paid"){
+      const rec=await activateMembership(depositId);
+      if(!rec||!rec.active){
+        setStage("form");
+        setPayErr("We could not confirm the payment. Please try again or contact support.");
+        return;
+      }
+      await saveMembership({membershipId:rec.membershipId,token:rec.token,
+        country:plan.name,plan:plan.label+" "+plan.cur+"/month"});
+      onSuccess();
+      return;
+    }
+    // outcome === null: automatic collection unavailable (e.g. Nigeria, or the
+    // backend is offline). The lead is already with the team, who follow up.
+    onSuccess(outcome===null && country!=="zambia" ? {manual:true} : {manual:true});
   }
 
   return (
@@ -1083,6 +1222,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
                   onKeyDown={e=>{if(e.key==="Enter")submit(e);}} required />
                 {phoneErr && <span style={{fontSize:12.5,color:"var(--accent-2)",fontWeight:600}}>Please enter a valid Mobile Money number.</span>}
               </div>
+              {payErr && <p style={{fontSize:13,color:"var(--accent-2)",fontWeight:700,marginTop:12}}>{payErr}</p>}
 
               <button className="btn btn-primary btn-block btn-lg" style={{marginTop:18}} type="button" onClick={submit}>
                 Send payment request · {plan.label}/mo
