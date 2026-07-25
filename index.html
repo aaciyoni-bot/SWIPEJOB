@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GOOJOB — Work Abroad. Change Your Life. Relocation Jobs for Zambia & Nigeria</title>
+<title>RELJOB — Work Abroad. Change Your Life. Relocation Jobs for Zambia & Nigeria</title>
 <meta name="description" content="Verified relocation jobs across the world. Flights, visa and housing arranged. Built for workers from Zambia and Nigeria. Salaries from 26,000 ZMW/month. Couples, families and single mothers welcome." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -80,6 +80,8 @@
   .logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--brand-2),var(--brand));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:var(--sh-brand)}
   .logo b{color:var(--brand)}
   .logo .go-accent{color:var(--accent-2)}
+  .logo-tag{font-family:var(--font-body);font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);border-inline-start:1px solid var(--line);padding-inline-start:10px;margin-inline-start:2px}
+  @media(max-width:900px){.logo-tag{display:none}}
   .nav-links{display:flex;gap:26px;margin-inline-start:14px}
   .nav-links a{font-size:14.5px;font-weight:600;color:var(--ink-2);transition:color .15s}
   .nav-links a:hover{color:var(--brand-2)}
@@ -218,9 +220,10 @@
   .tcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh-1)}
   .tcard .quote{font-size:15.5px;color:var(--ink-2);line-height:1.65}
   .tcard .who{display:flex;align-items:center;gap:12px;margin-top:20px}
-  .tcard .who .av,.tcard .who .av img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+  .tcard .who .tavatar{flex:none;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-weight:800;font-size:16px}
   .tcard .who b{font-size:14.5px;display:block}
   .tcard .who span{font-size:13px;color:var(--muted)}
+  .tcard .who .origin{font-size:12px;color:var(--brand-2);font-weight:600;margin-top:2px}
   .stars{color:var(--accent);font-size:14px;margin-bottom:12px}
 
   /* FAQ */
@@ -576,9 +579,9 @@ const IMG = id => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&
 const HERO_PHOTOS=["photo-1521737604893-d14cc237f11d","photo-1522202176988-66273c2fd55f","photo-1600880292203-757bb62b4baf","photo-1531123897727-8f129e1688ce"];
 const CAT_IMG={farm:"photo-1500937386664-56d1dfef3854",hotel:"photo-1566073771259-6a8506099945",chef:"photo-1577219491135-ce391730fb2c",caregiver:"photo-1576091160399-112ba8d25d1d",construction:"photo-1504307651254-35680f356dfd",driver:"photo-1449965408869-eaa3f722e40d",cleaning:"photo-1581578731548-c64695cc6952",default:"photo-1521737604893-d14cc237f11d"};
 const TESTI=[
-  {name:"Grace M.",role:"Caregiver in Israel 🇮🇱",img:"photo-1531123897727-8f129e1688ce",q:"I applied from Lusaka on a Sunday. Two weeks later I had my flight and visa sorted. Today I send money home every month.",r:5},
-  {name:"Emeka O.",role:"Farm Worker in Portugal 🇵🇹",img:"photo-1507003211169-0a1dd7228f2d",q:"Housing is included so I save almost everything I earn. GOOJOB made the whole process simple and clear.",r:5},
-  {name:"Joyce & Peter",role:"Couple, Hotel Staff in Cyprus 🇨🇾",img:"photo-1521572163474-6864f9cf17ab",q:"We travelled together and work at the same resort. Our daughter is with us and school costs are covered. A dream.",r:5},
+  {name:"Grace Mwanza",role:"Caregiver in Israel 🇮🇱",from:"Lusaka",initials:"GM",color:"#1d3a8a",q:"I applied from Lusaka on a Sunday. Two weeks later I had my flight and visa sorted. Today I send money home every month.",r:5},
+  {name:"Chanda Phiri",role:"Farm Worker in Portugal 🇵🇹",from:"Kitwe",initials:"CP",color:"#0f8a5f",q:"Housing is included so I save almost everything I earn. RELJOB made the whole process simple and clear.",r:5},
+  {name:"Joyce & Peter Banda",role:"Couple · Hotel Staff in Cyprus 🇨🇾",from:"Ndola",initials:"JB",color:"#b23a86",q:"We travelled together and work at the same resort. Our daughter is with us and her school costs are covered. A real dream come true.",r:5},
 ];
 
 function SmartImg({src,alt,fb}){
@@ -707,7 +710,7 @@ function App(){
     setSubOpen(false);
     if(pending) setTimeout(()=>setApplyJob(pending),120);
     else if(manual) setSuccess({title:"Request received ✅",msg:"We have your membership request. Our team will contact you on WhatsApp to complete the Mobile Money payment and activate your account. Meanwhile you can browse and prepare your profile."});
-    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your membership is active. You can now apply to any job on GOOJOB. Browse and send your profile — employers will contact you directly."});
+    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your membership is active. You can now apply to any job on RELJOB. Browse and send your profile — employers will contact you directly."});
   }
 
   const scrollTo=(id)=>{setMenu(false);const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});};
@@ -718,7 +721,7 @@ function App(){
       <header className="nav">
         <div className="wrap nav-inner">
           <a href="#top" className="logo" onClick={e=>{e.preventDefault();scrollTo("top");}}>
-            <span className="mark">✈</span><span>GOO<span className="go-accent">JOB</span></span>
+            <span className="mark">✈</span><span>REL<span className="go-accent">JOB</span></span><span className="logo-tag">Relocation&nbsp;Jobs</span>
           </a>
           <nav className="nav-links">
             <a onClick={()=>scrollTo("jobs")}>Jobs</a>
@@ -739,7 +742,7 @@ function App(){
                 ? <button className="gbtn" onClick={signInGoogle}>{GLOGO} Sign in with Google</button>
                 : (GOOGLE_CLIENT_ID
                     ? <div ref={googleBtnRef}></div>
-                    : <button className="gbtn" onClick={()=>setSuccess({title:"Sign in with Google",msg:"Google sign-in for GOOJOB is being activated and will appear here shortly. In the meantime you can browse every job and subscribe with Mobile Money as normal — no account needed."})}>{GLOGO} Sign in with Google</button>))}
+                    : <button className="gbtn" onClick={()=>setSuccess({title:"Sign in with Google",msg:"Google sign-in for RELJOB is being activated and will appear here shortly. In the meantime you can browse every job and subscribe with Mobile Money as normal — no account needed."})}>{GLOGO} Sign in with Google</button>))}
           {subscribed
             ? <span className="sub-pill">✓ Subscribed</span>
             : <button className="btn btn-primary" onClick={()=>setSubOpen({intent:"nav"})} style={{padding:"11px 22px"}}>Subscribe</button>}
@@ -914,7 +917,7 @@ function App(){
           <div className="wrap">
             <div className="sec-head" style={{marginInline:"auto",textAlign:"center"}}>
               <span className="eyebrow">Simple &amp; safe</span>
-              <h2>How GOOJOB works</h2>
+              <h2>How RELJOB works</h2>
               <p>Four steps from where you are today to a job that changes your family's future.</p>
             </div>
             <div className="steps">
@@ -940,8 +943,8 @@ function App(){
                   <div className="stars">{"★".repeat(t.r)}</div>
                   <p className="quote">“{t.q}”</p>
                   <div className="who">
-                    <SmartImg src={IMG(t.img)} fb="🙂" />
-                    <div><b>{t.name}</b><span>{t.role}</span></div>
+                    <span className="tavatar" style={{background:t.color}}>{t.initials}</span>
+                    <div><b>{t.name}</b><span>{t.role}</span><span className="origin">🇿🇲 From {t.from}, Zambia</span></div>
                   </div>
                 </div>
               ))}
@@ -957,7 +960,7 @@ function App(){
               <h2>Questions &amp; answers</h2>
             </div>
             <div className="faq">
-              <Faq q="Who can use GOOJOB?">Right now we are running a pilot for applicants in Zambia 🇿🇲 and Nigeria 🇳🇬. Anyone can browse the jobs for free.</Faq>
+              <Faq q="Who can use RELJOB?">Right now we are running a pilot for applicants in Zambia 🇿🇲 and Nigeria 🇳🇬. Anyone can browse the jobs for free.</Faq>
               <Faq q="Why do I need a subscription?">Browsing is free. A small Mobile Money subscription lets you apply to jobs and send your profile directly to employers. It keeps the platform serious and full of real opportunities.</Faq>
               <Faq q="How do I pay?">With Mobile Money — MTN MoMo, Airtel Money, Zamtel Kwacha in Zambia, and MTN, Airtel, OPay, PalmPay and Paga in Nigeria.</Faq>
               <Faq q="Do I need a CV?">No. Instead of a CV we ask for your personal details, a photo and a short work questionnaire. Simple and fast.</Faq>
@@ -1003,8 +1006,9 @@ function App(){
         <div className="wrap">
           <div className="fgrid">
             <div>
-              <div className="logo" style={{fontSize:24}}><span className="mark">✈</span> GOO<span style={{color:"#f6a623"}}>JOB</span></div>
-              <p style={{marginTop:14,maxWidth:"38ch",fontSize:14,color:"#a9a293"}}>Connecting hard-working people in Africa with verified relocation jobs around the world. Flights, visa and housing arranged.</p>
+              <div className="logo" style={{fontSize:24}}><span className="mark">✈</span> REL<span style={{color:"#f6a623"}}>JOB</span></div>
+              <p style={{marginTop:10,fontSize:13,fontWeight:700,color:"#f6a623",letterSpacing:".04em"}}><span dir="ltr"><b style={{color:"#fff"}}>REL</b>OCATION · <b style={{color:"#fff"}}>JOB</b>S</span></p>
+              <p style={{marginTop:10,maxWidth:"38ch",fontSize:14,color:"#a9a293"}}>Connecting hard-working people in Africa with verified relocation jobs around the world. Flights, visa and housing arranged.</p>
               <div style={{marginTop:16,fontSize:22}}>🇿🇲 🇳🇬</div>
             </div>
             <div>
@@ -1023,7 +1027,7 @@ function App(){
             </div>
           </div>
           <div className="disc">
-            © 2026 GOOJOB. Pilot program for Zambia &amp; Nigeria. GOOJOB is a listing and matching platform; employment terms are agreed directly with each employer. Salary figures are indicative and vary by employer, role and location. Always verify offer details before travelling.
+            © 2026 RELJOB. Pilot program for Zambia &amp; Nigeria. RELJOB is a listing and matching platform; employment terms are agreed directly with each employer. Salary figures are indicative and vary by employer, role and location. Always verify offer details before travelling.
           </div>
         </div>
       </footer>
@@ -1232,7 +1236,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
 
               {/* hidden lead-delivery form (routes to single inbox) */}
               <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" style={{display:"none"}}>
-                <input type="hidden" name="_subject" value="🔔 New GOOJOB subscription request" />
+                <input type="hidden" name="_subject" value="🔔 New RELJOB subscription request" />
                 <input type="hidden" name="_captcha" value="false" />
                 <input type="hidden" name="_template" value="table" />
                 <input type="hidden" name="Type" value="Subscription" />
@@ -1412,7 +1416,7 @@ function PostAdModal({onClose,onSuccess}){
         </div>
         <div className="modal-body">
           <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" onSubmit={submit}>
-            <input type="hidden" name="_subject" value="📢 New GOOJOB job-ad submission" />
+            <input type="hidden" name="_subject" value="📢 New RELJOB job-ad submission" />
             <input type="hidden" name="_captcha" value="false" />
             <input type="hidden" name="_template" value="table" />
             <input type="hidden" name="Type" value="Job ad submission" />

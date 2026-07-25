@@ -8,7 +8,7 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 /* =====================================================================
-   GOOJOB / SwipeJob backend — Mobile Money subscriptions via pawaPay.
+   RELJOB / SwipeJob backend — Mobile Money subscriptions via pawaPay.
 
    Before this existed the subscription step was SIMULATED (a 2.6s timer),
    so nobody was ever actually charged. Now Zambian members get a real MoMo
@@ -93,7 +93,7 @@ app.post('/api/pay', async (req, res) => {
             amount: String(Math.round(amount * 100) / 100),
             currency: 'ZMW',
             payer: { type: 'MMO', accountDetails: { phoneNumber: '260' + msisdn, provider: code } },
-            customerMessage: 'GOOJOB membership'
+            customerMessage: 'RELJOB membership'
         }, { headers: pawapayHeaders(), timeout: 25000 });
 
         res.json({ tx_ref: depositId, status: r.data && r.data.status });
