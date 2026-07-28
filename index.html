@@ -255,10 +255,7 @@
   footer .legal-links{border-top:1px solid #2a271f;margin-top:20px;padding-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center}
   footer .legal-links a{color:#a9a293;font-size:13px;padding:0}
   footer .legal-links a:hover{color:#fff}
-  .wa-fab{position:fixed;bottom:20px;inset-inline-end:20px;z-index:60;display:inline-flex;align-items:center;gap:9px;background:#25D366;color:#fff;font-weight:700;font-size:14.5px;padding:12px 18px 12px 15px;border-radius:999px;box-shadow:0 10px 26px -6px rgba(37,211,102,.6);transition:transform .18s ease,box-shadow .18s ease}
-  .wa-fab:hover{transform:translateY(-2px);box-shadow:0 14px 30px -6px rgba(37,211,102,.7)}
-  .wa-fab svg{width:22px;height:22px;flex:none}
-  @media(max-width:560px){.wa-fab span{display:none}.wa-fab{padding:14px;border-radius:50%}}
+  /* customer support via email only */
 
   /* ---------- Modal ---------- */
   .overlay{position:fixed;inset:0;z-index:100;background:rgba(15,13,9,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:28px 16px;overflow-y:auto;animation:fade .2s ease}
@@ -377,10 +374,7 @@ const { useState, useEffect, useMemo, useRef } = React;
 const INBOX = "aaci.yoni@gmail.com";
 const FORM_ENDPOINT = "https://formsubmit.co/" + INBOX;
 
-// TODO(Yoni): replace with the REAL RELJOB support WhatsApp number (currently a PLACEHOLDER).
-// Zambia format, digits only, incl. country code 260. e.g. real: 26097XXXXXXX
-const SUPPORT_WHATSAPP = "260970000000";
-const SUPPORT_WA_LINK = "https://wa.me/" + SUPPORT_WHATSAPP + "?text=" + encodeURIComponent("Hi RELJOB, I need help with my relocation membership.");
+const SUPPORT_EMAIL = "office@orizisgroup.com";  // public customer-support / contact address
 
 /* Payments backend (pawaPay Mobile Money). With this set, Zambian members get
    a real MoMo PIN prompt and are actually charged. Empty ('') or unreachable
@@ -723,7 +717,7 @@ function App(){
     const pending=subOpen&&subOpen.job;
     setSubOpen(false);
     if(pending) setTimeout(()=>setApplyJob(pending),120);
-    else if(manual) setSuccess({title:"Request received ✅",msg:"We have your membership request. Our team will contact you on WhatsApp to complete the Mobile Money payment and activate your account. Meanwhile you can browse and prepare your profile."});
+    else if(manual) setSuccess({title:"Request received ✅",msg:"We have your membership request. Our team will contact you by email to complete the Mobile Money payment and activate your account. Meanwhile you can browse and prepare your profile."});
     else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your RELJOB relocation membership is active. Browse the opportunities and send your profile — we'll submit your application to relevant opportunities on your behalf and our team will guide your next steps."});
   }
 
@@ -1048,7 +1042,7 @@ function App(){
             <a href="privacy.html">Privacy Policy</a>
             <a href="refunds.html">Refund &amp; Cancellation</a>
             <a href="accessibility.html">Accessibility</a>
-            <a href={SUPPORT_WA_LINK} target="_blank" rel="noopener noreferrer">WhatsApp support</a>
+            <a href={"mailto:"+SUPPORT_EMAIL}>Contact us</a>
           </div>
           <div className="powered">Powered by <b>ORIZIS&nbsp;TECHNOLOGY</b></div>
         </div>
@@ -1059,10 +1053,6 @@ function App(){
       {subOpen && <SubscribeModal ctx={subOpen} onClose={()=>setSubOpen(false)} onSuccess={handleSubscribed} />}
       {applyJob && <ApplyModal job={applyJob} user={user} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Profile received! 🎉",msg:"Thank you — your profile has reached our relocation team. We'll submit your application to relevant opportunities on your behalf and contact you using the details you provided to guide your next steps. Good luck!"});}} />}
       {success && <SuccessModal data={success} onClose={()=>setSuccess(null)} />}
-      <a className="wa-fab" href={SUPPORT_WA_LINK} target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
-        <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.04 4C9.9 4 4.92 8.98 4.92 15.12c0 2.02.54 3.98 1.56 5.71L4.8 27.2l6.53-1.66a11.06 11.06 0 0 0 4.71 1.06h.01c6.13 0 11.11-4.98 11.12-11.12A11.05 11.05 0 0 0 16.04 4Zm0 20.32h-.01c-1.49 0-2.95-.4-4.22-1.15l-.3-.18-3.87.98 1.03-3.77-.2-.31a9.16 9.16 0 0 1-1.4-4.9c0-5.07 4.13-9.2 9.2-9.2 2.46 0 4.77.96 6.5 2.7a9.13 9.13 0 0 1 2.69 6.5c0 5.07-4.13 9.2-9.22 9.2Zm5.05-6.89c-.28-.14-1.64-.81-1.9-.9-.25-.09-.43-.14-.62.14-.18.28-.71.9-.87 1.08-.16.18-.32.2-.6.07-.28-.14-1.17-.43-2.23-1.38-.82-.73-1.38-1.64-1.54-1.92-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.49.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.62-1.5-.85-2.05-.22-.53-.45-.46-.62-.47-.16-.01-.35-.01-.53-.01-.18 0-.49.07-.74.35-.25.28-.97.95-.97 2.31 0 1.36.99 2.68 1.13 2.86.14.18 1.95 2.98 4.73 4.18.66.28 1.18.45 1.58.58.66.21 1.27.18 1.74.11.53-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33Z"/></svg>
-        <span>Need help?</span>
-      </a>
       {postOpen && <PostAdModal onClose={()=>setPostOpen(false)} onSuccess={()=>{setPostOpen(false);setSuccess({title:"Job ad received! 📢",msg:"Thank you — your job ad has been submitted for review. Our team will verify the details and publish it, then send matching candidates your way. We'll be in touch shortly."});}} />}
     </React.Fragment>
   );
