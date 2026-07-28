@@ -724,7 +724,7 @@ function App(){
     setSubOpen(false);
     if(pending) setTimeout(()=>setApplyJob(pending),120);
     else if(manual) setSuccess({title:"Request received ✅",msg:"We have your membership request. Our team will contact you on WhatsApp to complete the Mobile Money payment and activate your account. Meanwhile you can browse and prepare your profile."});
-    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your RELJOB relocation-consulting membership is active. Browse the opportunities and send your profile — our relocation consultants will contact you to guide your next steps."});
+    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your RELJOB relocation membership is active. Browse the opportunities and send your profile — we'll submit your application to relevant opportunities on your behalf and our team will guide your next steps."});
   }
 
   const scrollTo=(id)=>{setMenu(false);const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});};
@@ -975,9 +975,9 @@ function App(){
             </div>
             <div className="faq">
               <Faq q="Who can use RELJOB?">Right now we are running a pilot for applicants in Zambia 🇿🇲 and Nigeria 🇳🇬. Anyone can browse the jobs for free.</Faq>
-              <Faq q="What am I paying for?">Browsing is free. Your Mobile Money membership is a <b>relocation-consulting service</b>: our team reviews your profile and personally guides you toward working abroad — choosing the right opportunities and preparing your documents, flight and visa. The listings are indicative opportunities that show you what the market looks like.</Faq>
+              <Faq q="What am I paying for?">Browsing is free. Your Mobile Money membership is a <b>relocation service</b>: we <b>prepare and submit your profile (your application) to relevant opportunities on your behalf</b>, and our team personally guides you toward working abroad — documents, flight and visa. The listings are indicative opportunities that show you what the market looks like.</Faq>
               <Faq q="How do I pay?">With Mobile Money — MTN MoMo, Airtel Money, Zamtel Kwacha in Zambia, and MTN, Airtel, OPay, PalmPay and Paga in Nigeria.</Faq>
-              <Faq q="Do I need a CV?">No. Instead of a CV we ask for your personal details, a photo and a short work questionnaire. Simple and fast.</Faq>
+              <Faq q="Do I need a CV?">No formal CV needed. We ask for your personal details, a photo and a short work questionnaire, then <b>build your profile and submit it for you</b>. Simple and fast.</Faq>
               <Faq q="What about salary and housing?">Salaries start at 26,000 ZMW/month when housing is included, and from 46,000 ZMW/month when it is not (clearly marked on each job). Amounts vary by employer and role.</Faq>
               <Faq q="Can my partner and children come with me?">Yes. Around 30% of jobs welcome couples, with housing and children included, plus an education allowance for kids up to age 12. Single mothers receive these same family benefits.</Faq>
               <Faq q="Are flights and visa covered?">For about 75% of jobs the employer arranges the flight and visa, and 60% also offer a yearly paid trip home. Each job page shows exactly what's included.</Faq>
@@ -1041,7 +1041,7 @@ function App(){
             </div>
           </div>
           <div className="disc">
-            © 2026 RELJOB. Pilot program for Zambia &amp; Nigeria. RELJOB is a relocation-consulting service. Job listings are indicative opportunities that illustrate the market — they are not guaranteed offers of employment. Your membership pays for relocation consulting and guidance. Salary figures are indicative and vary. Always verify any offer independently before travelling or paying any third party.
+            © 2026 RELJOB. Pilot program for Zambia &amp; Nigeria. RELJOB is a relocation-consulting service. Job listings are indicative opportunities that illustrate the market — they are not guaranteed offers of employment. Your membership pays for our relocation service — preparing and submitting your application to opportunities, plus consulting and guidance. Salary figures are indicative and vary. Always verify any offer independently before travelling or paying any third party.
           </div>
           <div className="legal-links">
             <a href="terms.html">Terms of Service</a>
@@ -1057,7 +1057,7 @@ function App(){
       {/* ---------------- MODALS ---------------- */}
       {detail && <JobDetail job={detail} subscribed={subscribed} onClose={()=>setDetail(null)} onApply={()=>onApplyClick(detail)} />}
       {subOpen && <SubscribeModal ctx={subOpen} onClose={()=>setSubOpen(false)} onSuccess={handleSubscribed} />}
-      {applyJob && <ApplyModal job={applyJob} user={user} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Profile received! 🎉",msg:"Thank you — your profile has reached our relocation team. Our consultants will review it and contact you using the details you provided, to guide your next steps toward working abroad. Good luck!"});}} />}
+      {applyJob && <ApplyModal job={applyJob} user={user} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Profile received! 🎉",msg:"Thank you — your profile has reached our relocation team. We'll submit your application to relevant opportunities on your behalf and contact you using the details you provided to guide your next steps. Good luck!"});}} />}
       {success && <SuccessModal data={success} onClose={()=>setSuccess(null)} />}
       <a className="wa-fab" href={SUPPORT_WA_LINK} target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
         <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.04 4C9.9 4 4.92 8.98 4.92 15.12c0 2.02.54 3.98 1.56 5.71L4.8 27.2l6.53-1.66a11.06 11.06 0 0 0 4.71 1.06h.01c6.13 0 11.11-4.98 11.12-11.12A11.05 11.05 0 0 0 16.04 4Zm0 20.32h-.01c-1.49 0-2.95-.4-4.22-1.15l-.3-.18-3.87.98 1.03-3.77-.2-.31a9.16 9.16 0 0 1-1.4-4.9c0-5.07 4.13-9.2 9.2-9.2 2.46 0 4.77.96 6.5 2.7a9.13 9.13 0 0 1 2.69 6.5c0 5.07-4.13 9.2-9.22 9.2Zm5.05-6.89c-.28-.14-1.64-.81-1.9-.9-.25-.09-.43-.14-.62.14-.18.28-.71.9-.87 1.08-.16.18-.32.2-.6.07-.28-.14-1.17-.43-2.23-1.38-.82-.73-1.38-1.64-1.54-1.92-.16-.28-.02-.43.12-.57.13-.13.28-.32.42-.49.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.62-1.5-.85-2.05-.22-.53-.45-.46-.62-.47-.16-.01-.35-.01-.53-.01-.18 0-.49.07-.74.35-.25.28-.97.95-.97 2.31 0 1.36.99 2.68 1.13 2.86.14.18 1.95 2.98 4.73 4.18.66.28 1.18.45 1.58.58.66.21 1.27.18 1.74.11.53-.08 1.64-.67 1.87-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33Z"/></svg>
@@ -1218,7 +1218,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
         <div className="modal-head">
           <button className="x" onClick={onClose} aria-label="Close">✕</button>
           <h3 className="mtitle">Activate your membership</h3>
-          <p className="msub">{ctx&&ctx.intent==="apply"?"RELJOB relocation-consulting membership — one step and our team can start guiding you.":"RELJOB relocation-consulting membership — apply to opportunities and get personal guidance to work abroad."}</p>
+          <p className="msub">{ctx&&ctx.intent==="apply"?"RELJOB relocation membership — one step and we'll submit your application and start guiding you.":"RELJOB relocation membership — we submit your profile to opportunities and guide you every step to work abroad."}</p>
         </div>
         <div className="modal-body">
           {stage==="form" ? (
@@ -1231,7 +1231,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
               <div className="plan-row">
                 <div className="plan on">
                   <div className="price">{plan.label}</div>
-                  <div className="cur">{plan.cur} / month · consulting membership</div>
+                  <div className="cur">{plan.cur} / month · relocation membership</div>
                 </div>
               </div>
 
@@ -1258,7 +1258,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
                 Send payment request · {plan.label}/mo
               </button>
               <div className="secure">🔒 Secured with Mobile Money — no card needed</div>
-              <p className="pay-note">You'll receive a prompt on your phone to approve the {plan.label} {plan.cur} payment with your Mobile Money PIN. This activates your RELJOB relocation-consulting membership — listings are indicative opportunities, not guaranteed job offers.</p>
+              <p className="pay-note">You'll receive a prompt on your phone to approve the {plan.label} {plan.cur} payment with your Mobile Money PIN. This activates your RELJOB relocation membership — we submit your application to relevant opportunities and give you personal guidance. Listings are indicative, not guaranteed job offers.</p>
 
               {/* hidden lead-delivery form (routes to single inbox) */}
               <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" style={{display:"none"}}>
