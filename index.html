@@ -712,7 +712,7 @@ function App(){
     setSubOpen(false);
     if(pending) setTimeout(()=>setApplyJob(pending),120);
     else if(manual) setSuccess({title:"Request received ✅",msg:"We have your membership request. Our team will contact you on WhatsApp to complete the Mobile Money payment and activate your account. Meanwhile you can browse and prepare your profile."});
-    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your membership is active. You can now apply to any job on RELJOB. Browse and send your profile — employers will contact you directly."});
+    else setSuccess({title:"You're subscribed! 🎉",msg:"Your Mobile Money payment went through and your RELJOB relocation-consulting membership is active. Browse the opportunities and send your profile — our relocation consultants will contact you to guide your next steps."});
   }
 
   const scrollTo=(id)=>{setMenu(false);const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});};
@@ -926,7 +926,7 @@ function App(){
               <div className="step"><div className="num">1</div><h3>Subscribe with Mobile Money</h3><p>Activate your membership in seconds using MTN, Airtel, Zamtel, OPay and more.</p></div>
               <div className="step"><div className="num">2</div><h3>Browse verified jobs</h3><p>Explore 10,000+ relocation positions with clear salary, housing and travel details.</p></div>
               <div className="step"><div className="num">3</div><h3>Send your profile</h3><p>Share your details, a photo and a short questionnaire — no CV needed.</p></div>
-              <div className="step"><div className="num">4</div><h3>Get contacted</h3><p>The employer reviews your profile and reaches out to arrange the next steps.</p></div>
+              <div className="step"><div className="num">4</div><h3>Get contacted</h3><p>Our relocation consultants review your profile and reach out to guide your next steps.</p></div>
             </div>
           </div>
         </section>
@@ -963,7 +963,7 @@ function App(){
             </div>
             <div className="faq">
               <Faq q="Who can use RELJOB?">Right now we are running a pilot for applicants in Zambia 🇿🇲 and Nigeria 🇳🇬. Anyone can browse the jobs for free.</Faq>
-              <Faq q="Why do I need a subscription?">Browsing is free. A small Mobile Money subscription lets you apply to jobs and send your profile directly to employers. It keeps the platform serious and full of real opportunities.</Faq>
+              <Faq q="What am I paying for?">Browsing is free. Your Mobile Money membership is a <b>relocation-consulting service</b>: our team reviews your profile and personally guides you toward working abroad — choosing the right opportunities and preparing your documents, flight and visa. The listings are indicative opportunities that show you what the market looks like.</Faq>
               <Faq q="How do I pay?">With Mobile Money — MTN MoMo, Airtel Money, Zamtel Kwacha in Zambia, and MTN, Airtel, OPay, PalmPay and Paga in Nigeria.</Faq>
               <Faq q="Do I need a CV?">No. Instead of a CV we ask for your personal details, a photo and a short work questionnaire. Simple and fast.</Faq>
               <Faq q="What about salary and housing?">Salaries start at 26,000 ZMW/month when housing is included, and from 46,000 ZMW/month when it is not (clearly marked on each job). Amounts vary by employer and role.</Faq>
@@ -1029,7 +1029,7 @@ function App(){
             </div>
           </div>
           <div className="disc">
-            © 2026 RELJOB. Pilot program for Zambia &amp; Nigeria. RELJOB is a listing and matching platform; employment terms are agreed directly with each employer. Salary figures are indicative and vary by employer, role and location. Always verify offer details before travelling.
+            © 2026 RELJOB. Pilot program for Zambia &amp; Nigeria. RELJOB is a relocation-consulting service. Job listings are indicative opportunities that illustrate the market — they are not guaranteed offers of employment. Your membership pays for relocation consulting and guidance. Salary figures are indicative and vary. Always verify any offer independently before travelling or paying any third party.
           </div>
           <div className="powered">Powered by <b>ORIZIS&nbsp;TECHNOLOGY</b></div>
         </div>
@@ -1038,7 +1038,7 @@ function App(){
       {/* ---------------- MODALS ---------------- */}
       {detail && <JobDetail job={detail} subscribed={subscribed} onClose={()=>setDetail(null)} onApply={()=>onApplyClick(detail)} />}
       {subOpen && <SubscribeModal ctx={subOpen} onClose={()=>setSubOpen(false)} onSuccess={handleSubscribed} />}
-      {applyJob && <ApplyModal job={applyJob} user={user} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Application sent! 🎉",msg:"Your profile has been delivered to the employer. If you're a good match, they will contact you directly using the details you provided. Good luck!"});}} />}
+      {applyJob && <ApplyModal job={applyJob} user={user} onClose={()=>setApplyJob(null)} onSuccess={()=>{setApplyJob(null);setSuccess({title:"Profile received! 🎉",msg:"Thank you — your profile has reached our relocation team. Our consultants will review it and contact you using the details you provided, to guide your next steps toward working abroad. Good luck!"});}} />}
       {success && <SuccessModal data={success} onClose={()=>setSuccess(null)} />}
       {postOpen && <PostAdModal onClose={()=>setPostOpen(false)} onSuccess={()=>{setPostOpen(false);setSuccess({title:"Job ad received! 📢",msg:"Thank you — your job ad has been submitted for review. Our team will verify the details and publish it, then send matching candidates your way. We'll be in touch shortly."});}} />}
     </React.Fragment>
@@ -1116,7 +1116,7 @@ function JobDetail({job,subscribed,onClose,onApply}){
             {job.type==="couple" && <li><span className="ic">✔</span> Couple-friendly: both partners employed, family housing, children welcome</li>}
             {job.childrenAllowed && <li><span className="ic">✔</span> Education allowance for children up to age 12</li>}
             {job.singleMotherWelcome && <li><span className="ic">✔</span> Single mothers welcome — family benefits included</li>}
-            <li><span className="ic">✔</span> Legal contract arranged directly with the employer</li>
+            <li><span className="ic">✔</span> Guidance with the employment contract and relocation paperwork</li>
           </ul>
 
           <h4 style={{fontSize:15,margin:"18px 0 4px"}}>Requirements</h4>
@@ -1195,7 +1195,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
         <div className="modal-head">
           <button className="x" onClick={onClose} aria-label="Close">✕</button>
           <h3 className="mtitle">Activate your membership</h3>
-          <p className="msub">{ctx&&ctx.intent==="apply"?"One quick step and you can apply to this job.":"Unlock applications to all 10,000+ jobs."}</p>
+          <p className="msub">{ctx&&ctx.intent==="apply"?"RELJOB relocation-consulting membership — one step and our team can start guiding you.":"RELJOB relocation-consulting membership — apply to opportunities and get personal guidance to work abroad."}</p>
         </div>
         <div className="modal-body">
           {stage==="form" ? (
@@ -1208,7 +1208,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
               <div className="plan-row">
                 <div className="plan on">
                   <div className="price">{plan.label}</div>
-                  <div className="cur">{plan.cur} / month · full access</div>
+                  <div className="cur">{plan.cur} / month · consulting membership</div>
                 </div>
               </div>
 
@@ -1235,7 +1235,7 @@ function SubscribeModal({ctx,onClose,onSuccess}){
                 Send payment request · {plan.label}/mo
               </button>
               <div className="secure">🔒 Secured with Mobile Money — no card needed</div>
-              <p className="pay-note">You'll receive a prompt on your phone to approve the {plan.label} {plan.cur} payment with your Mobile Money PIN.</p>
+              <p className="pay-note">You'll receive a prompt on your phone to approve the {plan.label} {plan.cur} payment with your Mobile Money PIN. This activates your RELJOB relocation-consulting membership — listings are indicative opportunities, not guaranteed job offers.</p>
 
               {/* hidden lead-delivery form (routes to single inbox) */}
               <form ref={formRef} action={FORM_ENDPOINT} method="POST" target="goojob_sink" style={{display:"none"}}>
@@ -1355,7 +1355,7 @@ function ApplyModal({job,user,onClose,onSuccess}){
                 <select name="Ready to relocate" required defaultValue="Yes"><option>Yes</option><option>Within 3 months</option><option>Need more info</option></select>
               </div>
               <div className="fld full"><label>Why do you want this job?</label>
-                <textarea name="Motivation" required placeholder="Tell the employer a little about yourself and why you'd be a great fit…"></textarea>
+                <textarea name="Motivation" required placeholder="Tell us a little about yourself and why you'd be a great fit…"></textarea>
               </div>
 
               {/* photo (not a CV) */}
@@ -1370,9 +1370,9 @@ function ApplyModal({job,user,onClose,onSuccess}){
             </div>
 
             <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={sending} style={{marginTop:20}}>
-              {sending? "Sending your profile…" : "Send my profile to the employer →"}
+              {sending? "Sending your profile…" : "Send my profile to the relocation team →"}
             </button>
-            <div className="secure">🔒 Your details are sent securely to the employer</div>
+            <div className="secure">🔒 Your details are sent securely to our relocation team</div>
           </form>
         </div>
       </div>

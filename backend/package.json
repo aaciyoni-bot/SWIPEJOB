@@ -1,7 +1,7 @@
 {
   "name": "goojob-backend",
   "version": "1.0.0",
-  "description": "RELJOB / SwipeJob API server - pawaPay Mobile Money subscriptions (Zambia)",
+  "description": "RELJOB / SwipeJob API server - pawaPay Mobile Money relocation-consulting membership (Zambia)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

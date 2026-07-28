@@ -93,7 +93,7 @@ app.post('/api/pay', async (req, res) => {
             amount: String(Math.round(amount * 100) / 100),
             currency: 'ZMW',
             payer: { type: 'MMO', accountDetails: { phoneNumber: '260' + msisdn, provider: code } },
-            customerMessage: 'RELJOB membership'
+            customerMessage: 'RELJOB relocation consulting'
         }, { headers: pawapayHeaders(), timeout: 25000 });
 
         res.json({ tx_ref: depositId, status: r.data && r.data.status });
