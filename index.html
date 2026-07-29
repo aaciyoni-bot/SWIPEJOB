@@ -1536,5 +1536,14 @@ function Faq({q,children}){
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
+
+<!-- Registers the service worker so the site is installable as an app. -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js').catch(function () { /* offline shell is optional */ });
+        });
+    }
+</script>
 </body>
 </html>
