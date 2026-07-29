@@ -1,0 +1,16 @@
+{
+  "name": "RELJOB — Relocation Jobs Abroad",
+  "short_name": "RELJOB",
+  "description": "Verified relocation jobs abroad for workers from Zambia & Nigeria — flights, visa and housing arranged.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1f52",
+  "theme_color": "#1d3a8a",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
