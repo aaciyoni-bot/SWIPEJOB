@@ -344,10 +344,12 @@
     .steps{grid-template-columns:repeat(2,1fr)}
     .jobs-grid,.tgrid{grid-template-columns:repeat(2,1fr)}
     footer .fgrid{grid-template-columns:1fr 1fr}
-  }
-  @media(max-width:680px){
+    /* the full link row + sign-in + subscribe never fit under 940px — burger takes over */
     .nav-links{display:none}
     .hamburger{display:block}
+    .mobile-menu{display:flex}
+  }
+  @media(max-width:680px){
     section{padding:56px 0}
     .jobs-grid,.tgrid,.steps{grid-template-columns:1fr}
     .form-grid{grid-template-columns:1fr}
@@ -356,10 +358,31 @@
     .hero-stats{gap:18px}
     .prov-grid{grid-template-columns:repeat(2,1fr)}
     footer .fgrid{grid-template-columns:1fr}
-    .mobile-menu{display:flex}
+    /* header: one compact row — logo + subscribe + burger. Sign-in lives in the burger menu. */
+    .nav-inner{height:58px;gap:10px}
+    .nav-inner .gbtn,.nav-inner .user-pill{display:none}
+    .logo{font-size:18px;gap:7px}
+    .logo .mark{width:30px;height:30px}
+    .nav-inner .btn{padding:9px 15px;font-size:13px}
+    .sub-pill{font-size:12px;padding:7px 11px}
+    /* buttons may wrap instead of sliding off-screen */
+    .btn{white-space:normal;text-align:center}
+    /* category chips: one swipeable row instead of a 2.5-screen wall */
+    .cats{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+      margin-inline:-16px;padding-inline:16px;padding-bottom:6px}
+    .cats::-webkit-scrollbar{display:none}
+    .chip{flex:none}
+    /* filter bar: clean full-width stack, no broken two-column weave */
+    .filters{flex-direction:column;align-items:stretch}
+    .field{width:100%}
+    .inp,select.inp{width:100%}
+    .toggle-row .tgl{flex:1 1 auto;text-align:center}
   }
   .mobile-menu{display:none;flex-direction:column;gap:2px;padding:10px 22px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
   .mobile-menu a{padding:12px 6px;font-weight:600;border-bottom:1px solid var(--surface-2);color:var(--ink-2)}
+  /* must come AFTER the base rule above — same specificity, source order wins
+     (the old sheet had it before, so the burger menu never opened at all) */
+  @media(max-width:940px){.mobile-menu{display:flex}}
 
   /* --- mobile hardening: kill horizontal overflow & tighten small screens --- */
   html,body{overflow-x:hidden;max-width:100%}
@@ -797,6 +820,9 @@ function App(){
             <a onClick={()=>scrollTo("how")}>How it works</a>
             <a onClick={()=>scrollTo("faq")}>FAQ</a>
             <a onClick={()=>{setMenu(false);setPostOpen(true);}} style={{color:"var(--accent-2)",fontWeight:700}}>Post a job (employers)</a>
+            {user
+              ? <a onClick={()=>{setMenu(false);signOut();}}>👋 Sign out ({user.given||user.name})</a>
+              : <a onClick={()=>{setMenu(false);if(fbAuth)signInGoogle();else setSuccess({title:"Sign in with Google",msg:"Google sign-in for RELJOB is being activated and will appear here shortly. In the meantime you can browse every job and subscribe with Mobile Money as normal — no account needed."});}} style={{display:"flex",alignItems:"center",gap:8}}>{GLOGO} Sign in with Google</a>}
           </div>
         )}
       </header>

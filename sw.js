@@ -1,5 +1,5 @@
 /* RELJOB service worker - enables app installation and a basic offline shell */
-const CACHE = 'reljob-v1';
+const CACHE = 'reljob-v2';
 
 self.addEventListener('install', e => {
     self.skipWaiting();
